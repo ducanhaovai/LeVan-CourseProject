@@ -1,0 +1,149 @@
+/* Container chính */
+.hero-container {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to right, #fefcbf, #fefce8, #ccfbf1);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .hero-container {
+        flex-direction: row;
+        padding: 3rem;
+        text-align: left;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-container {
+        padding: 4rem;
+        justify-content: space-between;
+        /* Giãn cách giữa chữ và ảnh */
+    }
+}
+
+/* Chứa nội dung chữ */
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 100%;
+    /* Mặc định là 100% trên màn hình nhỏ */
+    margin-right: 0;
+    /* Đảm bảo không có khoảng trống thêm ở màn hình nhỏ */
+}
+
+@media (min-width: 768px) {
+    .hero-content {
+        max-width: 50%;
+        /* Chiếm 50% chiều rộng trên màn hình lớn hơn */
+        margin-right: 2rem;
+        /* Thêm khoảng cách giữa chữ và ảnh */
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-content {
+        margin-right: 4rem;
+        /* Tăng khoảng cách với ảnh trên màn hình lớn hơn */
+    }
+}
+
+/* Căn chỉnh tiêu đề */
+.hero-title {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    /* Kích thước chữ cho màn hình nhỏ */
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-title {
+        font-size: 3.75rem;
+    }
+}
+
+/* Mô tả nội dung */
+.hero-description {
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    /* Kích thước chữ nhỏ cho di động */
+    color: #718096;
+}
+
+@media (min-width: 768px) {
+    .hero-description {
+        font-size: 1rem;
+    }
+}
+
+/* Nút bấm */
+.hero-button {
+    background-color: #ed8936;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.hero-button:hover {
+    background-color: #dd6b20;
+}
+
+/* Container ảnh */
+.hero-image {
+    position: relative;
+    /* Đặt vị trí để có thể thay đổi trên di động */
+    width: 100%;
+    /* Chiếm 100% chiều rộng trên di động */
+    height: auto;
+    /* Chiều cao tự động */
+    margin-top: 2rem;
+    /* Khoảng cách với phần chữ trên di động */
+    z-index: 5;
+}
+
+@media (min-width: 768px) {
+    .hero-image {
+        position: absolute;
+        /* Đặt vị trí ảnh lên trên cho màn hình lớn */
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 50%;
+        /* Chiếm 50% chiều rộng trên màn hình lớn */
+        margin-top: 0;
+        /* Loại bỏ khoảng cách */
+        z-index: 5;
+        /* Ảnh nằm dưới chữ */
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-image {
+        width: 45%;
+
+    }
+}
+
+
+.image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0.75rem;
+
+}
