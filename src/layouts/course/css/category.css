@@ -1,0 +1,159 @@
+/* Container chính */
+.category-container {
+    background-color: #f7fafc;
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
+    .category-container {
+        padding: 1rem;
+    }
+}
+
+.category-wrapper {
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .category-header {
+        justify-content: center;
+        /* Canh giữa các phần tử trên màn hình nhỏ */
+        text-align: center;
+    }
+}
+
+.category-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .category-title {
+        font-size: 1.5rem;
+        
+    }
+}
+
+.category-description {
+    font-size: 1rem;
+    color: #718096;
+    margin-bottom: 1rem;
+}
+
+.category-button {
+    background-color: #ffffff;
+    color: #2d3748;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.category-button:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Grid danh mục */
+.category-grid {
+    display: grid;
+    /* Tailwind: grid */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Tailwind: grid-cols-2 */
+    gap: 1.5rem;
+    /* Tailwind: gap-6 */
+}
+
+@media (min-width: 768px) {
+    .category-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        /* Tailwind: md:grid-cols-3 */
+    }
+}
+
+@media (min-width: 1024px) {
+    .category-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        /* Tailwind: lg:grid-cols-5 */
+    }
+}
+
+/* Card danh mục */
+.category-card {
+    background-color: #ffffff;
+    /* Tailwind: bg-white */
+    border-radius: 0.75rem;
+    /* Tailwind: rounded-xl */
+    padding: 1.5rem;
+    /* Tailwind: p-6 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Tailwind: shadow-md */
+    transition: all 0.3s ease-in-out;
+}
+
+.category-card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    /* Tailwind: hover:shadow-lg */
+    transform: translateY(-0.25rem);
+    /* Tailwind: hover:-translate-y-1 */
+}
+
+/* Nội dung card */
+.category-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Icon của danh mục */
+.category-icon {
+    background-color: #fffaf0;
+    /* Tailwind: bg-orange-100 */
+    padding: 0.75rem;
+    border-radius: 9999px;
+    /* Tailwind: rounded-full */
+    margin-bottom: 1rem;
+}
+
+/* Kích thước icon */
+.icon {
+    width: 2rem;
+    /* Tailwind: w-8 */
+    height: 2rem;
+    /* Tailwind: h-8 */
+    color: #ed8936;
+    /* Tailwind: text-orange-500 */
+}
+
+/* Tên danh mục */
+.category-name {
+    font-weight: 600;
+    /* Tailwind: font-semibold */
+    color: #2d3748;
+    /* Tailwind: text-gray-800 */
+    margin-bottom: 0.5rem;
+}
+
+/* Số lượng khóa học */
+.category-course-count {
+    color: #718096;
+    /* Tailwind: text-gray-600 */
+    font-size: 0.875rem;
+    /* Tailwind: text-sm */
+}

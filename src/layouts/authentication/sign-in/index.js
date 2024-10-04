@@ -71,7 +71,7 @@ function SignIn() {
       }
       setOpenSnackbar(true);
       if (process.env.NODE_ENV === "development") {
-        console.error(err); // Chỉ hiển thị lỗi trong môi trường development
+        console.error(err); 
       }
     }
   };

@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
-
+import { jwtDecode } from "jwt-decode";
 // react-router components
-import { useLocation, Link } from "react-router-dom";
-
-
-
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { logout } from "../../../api/apiAuth";
 // @material-ui core components
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
-
+import MenuItem from "@mui/material/MenuItem";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
@@ -48,16 +46,27 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
-
+  const [user, setUser] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
-    // Setting the navbar type
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const { first_name, last_name } = decodedToken;
+        setUser({ first_name, last_name });
+      } catch (error) {
+        console.error("Invalid token", error);
+      }
+    }
+
     if (fixedNavbar) {
       setNavbarType("sticky");
     } else {
       setNavbarType("static");
     }
 
-    // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
       setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
     }
@@ -67,7 +76,26 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
 
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
-
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        await logout(token);
+        localStorage.removeItem("token");
+        setUser(null);
+        handleProfileMenuClose();
+        navigate("/authentication/sign-in");
+      } catch (error) {
+        console.error("Error during logout", error);
+      }
+    }
+  };
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
@@ -129,25 +157,65 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
                 icon={{ component: "search", direction: "left" }}
               />
             </SoftBox>
-            <SoftBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in">
-                <IconButton sx={navbarIconButton} size="small">
-                  <Icon
-                    sx={({ palette: { dark, white } }) => ({
-                      color: light ? white.main : dark.main,
-                    })}
-                  >
-                    account_circle
-                  </Icon>
+            <SoftBox color={light ? "white" : "inherit"} display="flex" alignItems="center">
+              {user ? (
+                <SoftBox display="flex" alignItems="center">
+                  <IconButton sx={navbarIconButton} size="small" onClick={handleProfileMenuOpen}>
+                    <img
+                      src={team2}
+                      alt="profile"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </IconButton>
                   <SoftTypography
                     variant="button"
                     fontWeight="medium"
                     color={light ? "white" : "dark"}
                   >
-                    Sign in
+                    {user.first_name} {user.last_name}
                   </SoftTypography>
-                </IconButton>
-              </Link>
+                  <Menu
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorEl)}
+                    onClose={handleProfileMenuClose}
+                  >
+                    <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+                    <MenuItem onClick={handleProfileMenuClose}>Settings</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  </Menu>
+                </SoftBox>
+              ) : (
+                <Link to="/authentication/sign-in">
+                  <IconButton sx={navbarIconButton} size="small">
+                    <Icon
+                      sx={({ palette: { dark, white } }) => ({
+                        color: light ? white.main : dark.main,
+                      })}
+                    >
+                      account_circle
+                    </Icon>
+                    <SoftTypography
+                      variant="button"
+                      fontWeight="medium"
+                      color={light ? "white" : "dark"}
+                    >
+                      Sign in
+                    </SoftTypography>
+                  </IconButton>
+                </Link>
+              )}
               <IconButton
                 size="small"
                 color="inherit"
@@ -185,7 +253,5 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
     </AppBar>
   );
 }
-
-
 
 export default DashboardNavbar;
