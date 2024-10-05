@@ -18,6 +18,10 @@ import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/CreditCard";
 import ProtectedRoute from "./hook/ProtectedRoute";
 import Student from "layouts/student";
+import { Book } from "lucide-react";
+import Course from "layouts/course";
+import ManagerCourse from "layouts/course";
+import CourseListing from "layouts/CourseStudent";
 
 const routes = [
   {
@@ -37,7 +41,7 @@ const routes = [
     route: "/student",
     icon: <Cube size="12px" />,
     component: <Student />,
-    element: <ProtectedRoute element={<Student />} role={1} />,
+    element: <Student />,
     noCollapse: true,
   },
   {
@@ -58,6 +62,26 @@ const routes = [
     icon: <CreditCard size="12px" />,
     component: <Billing />,
     element: <ProtectedRoute element={<Billing />} role={1} />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Manager Course",
+    key: "mcourse",
+    route: "/mcourse",
+    icon: <Book size="12px" />,
+    component: <ManagerCourse />,
+    element: <ManagerCourse />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Course",
+    key: "course",
+    route: "/course",
+    icon: <Book size="12px" />,
+    component: <CourseListing />,
+    element: <CourseListing />,
     noCollapse: true,
   },
 
