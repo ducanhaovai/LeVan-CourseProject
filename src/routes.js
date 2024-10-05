@@ -22,6 +22,7 @@ import { Book } from "lucide-react";
 import Course from "layouts/course";
 import ManagerCourse from "layouts/course";
 import CourseListing from "layouts/CourseStudent";
+import Youtube from "layouts/index";
 
 const routes = [
   {
@@ -114,6 +115,16 @@ const routes = [
     icon: <SpaceShip size="12px" />,
     component: <SignUp />,
     element: <SignUp />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Youtube",
+    key: "youtube",
+    route: "/youtube",
+    icon: <SpaceShip size="12px" />,
+    component: <Youtube />,
+    element: <Youtube />,
     noCollapse: true,
   },
 ];
