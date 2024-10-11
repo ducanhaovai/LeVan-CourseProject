@@ -1,5 +1,5 @@
 import React from "react";
-import YouTubePlaylist from "./youtubeTest";
+
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import CourseDetail from "./CourseDetail";
 

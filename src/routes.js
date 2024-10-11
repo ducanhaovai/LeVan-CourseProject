@@ -23,6 +23,7 @@ import Course from "layouts/course";
 import ManagerCourse from "layouts/course";
 import CourseListing from "layouts/CourseStudent";
 import Youtube from "layouts/index";
+import CourseDetail from "layouts/CourseDetail";
 
 const routes = [
   {
@@ -107,6 +108,7 @@ const routes = [
     element: <SignIn />,
     noCollapse: true,
   },
+
   {
     type: "collapse",
     name: "Sign Up",
@@ -125,6 +127,16 @@ const routes = [
     icon: <SpaceShip size="12px" />,
     component: <Youtube />,
     element: <Youtube />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Course Detail",
+    key: "coursedetail",
+    route: "/courses/:id",
+    icon: <SpaceShip size="12px" />,
+    component: <CourseDetail />,
+    element: <CourseDetail />,
     noCollapse: true,
   },
 ];

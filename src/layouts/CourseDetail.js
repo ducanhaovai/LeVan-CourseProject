@@ -1,54 +1,116 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Sử dụng useParams để lấy id từ URL
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import YouTubePlayer from "./YouTubePlayer";
+import YouTubePlayer from "./YouTubePlayer"; // Import component YouTubePlayer để nhúng video YouTube
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 
 export default function CourseDetail() {
-  const { id } = useParams(); // Lấy id từ URL (nếu đang dùng react-router)
-  const [course, setCourse] = useState(null); // State để lưu trữ dữ liệu khóa học
-  const [error, setError] = useState(null); // State để lưu lỗi nếu có
-  const token = localStorage.getItem("token"); // Lấy token từ localStorage (nếu cần xác thực)
+  const { id } = useParams(); // Lấy id từ URL sử dụng useParams của react-router-dom
+  const [course, setCourse] = useState(null); // State để lưu trữ thông tin khóa học
+  const [error, setError] = useState(null); // State để lưu trữ lỗi khi xảy ra
+  const [loading, setLoading] = useState(true); // State để kiểm soát loading
+  const token = localStorage.getItem("token"); // Lấy token từ localStorage (nếu có xác thực)
 
   useEffect(() => {
+    // Hàm lấy dữ liệu chi tiết khóa học dựa vào id
     const fetchCourseDetail = async () => {
       try {
-        // Gửi request đến API backend của bạn để lấy thông tin khóa học với id=13
-        const response = await axios.get(`http://localhost:3001/courses/15`, {
+        setLoading(true); // Bắt đầu tải dữ liệu
+        const response = await axios.get(`http://localhost:3001/courses/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`, // Nếu API yêu cầu xác thực, thêm header này
+            Authorization: `Bearer ${token}`, // Thêm header Authorization nếu cần xác thực
           },
         });
 
-        // Cập nhật state `course` với dữ liệu trả về từ API
-        setCourse(response.data);
-        console.log("Course Data:", response.data); // Log dữ liệu để kiểm tra
+        setCourse(response.data); // Cập nhật state `course` với dữ liệu trả về
+        setLoading(false); // Kết thúc tải dữ liệu
+        console.log("Course Data:", response.data); // In ra console để kiểm tra dữ liệu trả về
       } catch (error) {
         console.error("Failed to fetch course details:", error);
         setError("Failed to fetch course details."); // Cập nhật state `error` nếu có lỗi
+        setLoading(false);
       }
     };
 
-    fetchCourseDetail(); // Gọi hàm fetchCourseDetail để lấy dữ liệu
-  }, [token]); // Chạy lại mỗi khi `token` thay đổi
+    fetchCourseDetail(); // Gọi hàm lấy dữ liệu chi tiết khóa học khi component mount
+  }, [id, token]); // Chạy lại effect mỗi khi id hoặc token thay đổi
 
-  // Hiển thị thông báo lỗi nếu có
+  // Kiểm tra trạng thái nếu đang tải dữ liệu
+  if (loading) return <div>Loading...</div>;
+
+  // Nếu xảy ra lỗi khi lấy dữ liệu, hiển thị thông báo lỗi
   if (error) return <div>Error: {error}</div>;
 
-  // Hiển thị thông báo Loading nếu dữ liệu chưa tải xong
-  if (!course) return <div>Loading...</div>;
+  // Nếu không có dữ liệu khóa học, hiển thị thông báo
+  if (!course) return <div>No course data available</div>;
 
-  // Nếu dữ liệu đã được tải, hiển thị chi tiết khóa học
   return (
-    <div className="container mx-auto px-4 py-8">
+    <DashboardLayout>
+      {/* Tiêu đề khóa học */}
       <h1 className="text-3xl font-bold mb-6">{course.title}</h1>
+      {/* Mô tả khóa học */}
       <p className="text-gray-600 mb-4">{course.description}</p>
 
-      <YouTubePlayer videoId={course.video_id} />
+      {/* Hiển thị các phần (sections) của khóa học */}
+      {course.sections &&
+        course.sections.map((section) => (
+          <div key={section.id} className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">{section.title}</h2>
+            <p className="text-gray-600 mb-4">{section.description}</p>
+
+            {/* Hiển thị video nếu là phần miễn phí */}
+            {section.is_free ? (
+              <YouTubePlayer videoId={section.video_url} />
+            ) : (
+              <div className="bg-gray-200 p-4 text-center">
+                <p className="text-lg font-bold">
+                  This section is only available for premium users.
+                </p>
+              </div>
+            )}
+
+            {/* Hiển thị nội dung trong từng phần */}
+            <div className="ml-4">
+              {section.contents &&
+                section.contents.map((content) => (
+                  <div key={content.content_id} className="mb-4">
+                    <h3 className="text-xl font-medium">{content.title}</h3>
+                    <p className="text-gray-600">{content.description}</p>
+
+                    {/* Hiển thị nội dung tùy theo loại */}
+                    {content.content_type === "video" && (
+                      <YouTubePlayer videoId={content.content_url} />
+                    )}
+                    {content.content_type === "document" && (
+                      <a
+                        href={content.content_url}
+                        className="text-blue-500"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Document
+                      </a>
+                    )}
+                    {content.content_type === "quiz" && (
+                      <a
+                        href={content.content_url}
+                        className="text-blue-500"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Start Quiz
+                      </a>
+                    )}
+                  </div>
+                ))}
+            </div>
+          </div>
+        ))}
 
       <p className="text-gray-600">Price: ${course.price}</p>
       <p className="text-gray-600">Duration: {course.duration} hours</p>
       <p className="text-gray-600">Total Enrollments: {course.total_enrollments}</p>
       <p className="text-gray-600">Rating: {course.rating}</p>
-    </div>
+    </DashboardLayout>
   );
 }
