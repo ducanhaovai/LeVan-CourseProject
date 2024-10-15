@@ -1,9 +1,10 @@
-import axios from "axios";
+import axiosInstance from "hook/AxiosInterceptor";
+
 const ADMIN_API_URL = process.env.REACT_APP_ADMIN_API_URL;
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchUsers = async (token) => {
-  return axios.get(`${ADMIN_API_URL}/users`, {
+  return axiosInstance.get(`${ADMIN_API_URL}/users`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -12,7 +13,7 @@ export const fetchUsers = async (token) => {
 
 export const fetchInstructors = async (token) => {
   try {
-    const response = await axios.get(`${API_URL}/instructors`, {
+    const response = await axiosInstance.get(`${API_URL}/instructors`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -26,7 +27,7 @@ export const fetchInstructors = async (token) => {
 
 export const fetchCategories = async (token) => {
   try {
-    const response = await axios.get(`${API_URL}/categories`, {
+    const response = await axiosInstance.get(`${API_URL}/categories`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -39,7 +40,7 @@ export const fetchCategories = async (token) => {
 };
 
 export const fetchCourses = async (token) => {
-  return axios.get(`${API_URL}/courses`, {
+  return axiosInstance.get(`${API_URL}/courses`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -47,7 +48,7 @@ export const fetchCourses = async (token) => {
 };
 
 export const updateUserRole = async (userId, newRole, token) => {
-  return axios.put(
+  return axiosInstance.put(
     `${ADMIN_API_URL}/users/role/${userId}`,
     { role: newRole },
     {
@@ -59,7 +60,7 @@ export const updateUserRole = async (userId, newRole, token) => {
 };
 
 export const deleteUser = async (userId, token) => {
-  return axios.delete(`${ADMIN_API_URL}/users/delete/${userId}`, {
+  return axiosInstance.delete(`${ADMIN_API_URL}/users/delete/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -67,7 +68,7 @@ export const deleteUser = async (userId, token) => {
 };
 
 export const updateUserInfo = async (userId, userData, token) => {
-  return axios.put(`${ADMIN_API_URL}/users/info/${userId}`, userData, {
+  return axiosInstance.put(`${ADMIN_API_URL}/users/info/${userId}`, userData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -75,7 +76,7 @@ export const updateUserInfo = async (userId, userData, token) => {
 };
 
 export const updateCourse = async (courseId, courseData, token) => {
-  return axios.put(`${API_URL}/courses/${courseId}`, courseData, {
+  return axiosInstance.put(`${API_URL}/courses/${courseId}`, courseData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -83,7 +84,7 @@ export const updateCourse = async (courseId, courseData, token) => {
 };
 
 export const deleteCourse = async (courseId, token) => {
-  return axios.delete(`${API_URL}/courses/${courseId}`, {
+  return axiosInstance.delete(`${API_URL}/courses/${courseId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -91,7 +92,7 @@ export const deleteCourse = async (courseId, token) => {
 };
 
 export const createCategory = async (categoryData, token) => {
-  return axios.post(`${API_URL}/categories`, categoryData, {
+  return axiosInstance.post(`${API_URL}/categories`, categoryData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -100,7 +101,7 @@ export const createCategory = async (categoryData, token) => {
 
 export const createCourse = async (courseData, token) => {
   try {
-    const response = await axios.post(`${API_URL}/courses`, courseData, {
+    const response = await axiosInstance.post(`${API_URL}/courses`, courseData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -113,7 +114,7 @@ export const createCourse = async (courseData, token) => {
 };
 
 export const updateCategory = async (categoryId, categoryData, token) => {
-  return axios.put(`${API_URL}/categories/${categoryId}`, categoryData, {
+  return axiosInstance.put(`${API_URL}/categories/${categoryId}`, categoryData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -121,7 +122,7 @@ export const updateCategory = async (categoryId, categoryData, token) => {
 };
 
 export const deleteCategory = async (categoryId, token) => {
-  return axios.delete(`${API_URL}/categories/${categoryId}`, {
+  return axiosInstance.delete(`${API_URL}/categories/${categoryId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

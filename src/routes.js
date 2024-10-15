@@ -10,7 +10,6 @@ import SignUp from "layouts/authentication/sign-up";
 // Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";
 import Office from "examples/Icons/Office";
-import Settings from "examples/Icons/Settings";
 import Document from "examples/Icons/Document";
 import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
@@ -19,11 +18,10 @@ import Cube from "examples/Icons/CreditCard";
 import ProtectedRoute from "./hook/ProtectedRoute";
 import Student from "layouts/student";
 import { Book } from "lucide-react";
-import Course from "layouts/course";
 import ManagerCourse from "layouts/course";
 import CourseListing from "layouts/CourseStudent";
-import Youtube from "layouts/index";
 import CourseDetail from "layouts/CourseDetail";
+import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
 
 const routes = [
   {
@@ -32,7 +30,6 @@ const routes = [
     key: "dashboard",
     route: "/dashboard",
     icon: <Shop size="12px" />,
-    component: <Dashboard />,
     element: <ProtectedRoute element={<Dashboard />} role={1} />,
     noCollapse: true,
   },
@@ -120,23 +117,21 @@ const routes = [
     noCollapse: true,
   },
   {
-    type: "collapse",
-    name: "Youtube",
-    key: "youtube",
-    route: "/youtube",
+    name: "Course Details",
+    key: "coursedetails",
+    route: "/courses/test",
     icon: <SpaceShip size="12px" />,
-    component: <Youtube />,
-    element: <Youtube />,
+    component: <CoursePageDetail />,
+    element: <CoursePageDetail />,
     noCollapse: true,
   },
   {
-    type: "collapse",
     name: "Course Detail",
     key: "coursedetail",
     route: "/courses/:id",
     icon: <SpaceShip size="12px" />,
-    component: <CourseDetail />,
-    element: <CourseDetail />,
+    component: <CoursePageDetail />,
+    element: <CoursePageDetail />,
     noCollapse: true,
   },
 ];

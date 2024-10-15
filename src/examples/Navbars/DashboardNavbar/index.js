@@ -88,6 +88,7 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
       try {
         await logout(token);
         localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
         setUser(null);
         handleProfileMenuClose();
         navigate("/authentication/sign-in");

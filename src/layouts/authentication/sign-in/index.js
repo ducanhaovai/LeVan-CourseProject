@@ -27,21 +27,28 @@ function SignIn() {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
-
+  const API_URL = process.env.REACT_APP_API_URL_AUTH;
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateInputs()) return;
 
     try {
-      const response = await axios.post("http://localhost:3001/api/auth/login", {
+      const response = await axios.post(`${API_URL}/login`, {
         email,
         password,
       });
-      const token = response.data.token;
 
-      if (token) {
-        localStorage.setItem("token", token);
-        const decoded = jwtDecode(token);
+      const { accessToken, refreshToken, role } = response.data;
+
+      if (accessToken && refreshToken) {
+        // Save tokens in localStorage
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
+        // Decode the access token to get role and other information
+        const decoded = jwtDecode(accessToken);
+
+        // Navigate to different dashboards based on role
         if (decoded.role === 1) {
           navigate("/dashboard");
         } else if (decoded.role === 2) {
@@ -56,6 +63,7 @@ function SignIn() {
         setOpenSnackbar(true);
       }
     } catch (err) {
+      // Handle different error scenarios
       if (err.response) {
         if (err.response.status === 401) {
           setError("Sai email hoặc mật khẩu. Vui lòng kiểm tra lại.");
@@ -71,7 +79,7 @@ function SignIn() {
       }
       setOpenSnackbar(true);
       if (process.env.NODE_ENV === "development") {
-        console.error(err); 
+        console.error(err);
       }
     }
   };

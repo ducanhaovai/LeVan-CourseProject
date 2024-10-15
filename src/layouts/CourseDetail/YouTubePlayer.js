@@ -18,16 +18,16 @@ function YouTubePlayer({ videoId }) {
 
   // Các tùy chọn cho player
   const playerOptions = {
-    height: "500", 
-    width: "100%", 
+    height: "500",
+    width: "100%",
     playerVars: {
-      autoplay: 0, 
+      autoplay: 0,
       controls: 1,
-      rel: 0, 
-      showinfo: 0, 
-      modestbranding: 1, 
+      rel: 0,
+      showinfo: 0,
+      modestbranding: 1,
 
-      disablekb: 1, 
+      disablekb: 1,
       iv_load_policy: 3,
     },
   };
@@ -35,10 +35,10 @@ function YouTubePlayer({ videoId }) {
   return (
     <div>
       <YouTube
-        videoId={videoId} 
-        opts={playerOptions} 
-        onReady={onReady} 
-        onStateChange={onStateChange} 
+        videoId={videoId}
+        opts={playerOptions}
+        onReady={onReady}
+        onStateChange={onStateChange}
       />
     </div>
   );

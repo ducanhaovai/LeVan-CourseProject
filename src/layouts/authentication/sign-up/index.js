@@ -20,7 +20,7 @@ import curved6 from "assets/images/curved-images/curved14.jpg";
 
 function SignUp() {
   const [agreement, setAgremment] = useState(true);
-
+  const API_URL = process.env.REACT_APP_API_URL;
   const handleSetAgremment = () => setAgremment(!agreement);
   const [formData, setFormData] = useState({
     username: "",
@@ -92,7 +92,7 @@ function SignUp() {
     }
 
     try {
-      await axios.post("http://localhost:3001/api/auth/register", {
+      await axios.post(`${API_URL}/register`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,

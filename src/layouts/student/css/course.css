@@ -165,7 +165,6 @@
     background-color: #e66054;
 }
 
-/* Tối ưu hóa cho thiết bị di động */
 @media (max-width: 768px) {
     .course-card {
         margin: 0 auto;

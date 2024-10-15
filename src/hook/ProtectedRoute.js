@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const ProtectedRoute = ({ element, role }) => {
-  const [isAuthorized, setIsAuthorized] = useState(null);
+  const [authStatus, setAuthStatus] = useState("loading"); // 'loading', 'authorized', 'unauthorized'
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -13,24 +13,31 @@ const ProtectedRoute = ({ element, role }) => {
       try {
         const decoded = jwtDecode(token);
 
-        if (decoded.role === role && isAuthorized !== true) {
-          setIsAuthorized(true);
-        } else if (decoded.role !== role && isAuthorized !== false) {
-          setIsAuthorized(false);
+        if (decoded.role === role) {
+          setAuthStatus("authorized");
+        } else {
+          setAuthStatus("unauthorized");
         }
       } catch (error) {
         console.error("Invalid token:", error);
-        setIsAuthorized(false);
+        setAuthStatus("unauthorized");
       }
     } else {
-      setIsAuthorized(false);
+      setAuthStatus("unauthorized");
     }
-  }, [role, isAuthorized]);
+  }, [role]);
 
-  if (isAuthorized === null) return null;
+  // Hiển thị trạng thái chờ khi đang kiểm tra quyền truy cập
+  if (authStatus === "loading") {
+    return <div>Loading...</div>;
+  }
 
-  if (!isAuthorized) return <Navigate to="/login" />;
+  // Nếu không được phép, chuyển hướng về trang đăng nhập
+  if (authStatus === "unauthorized") {
+    return <Navigate to="/authentication/sign-in" />;
+  }
 
+  // Nếu được phép, render component cần hiển thị
   return element;
 };
 
