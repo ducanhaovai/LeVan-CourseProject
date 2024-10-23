@@ -78,10 +78,4 @@ function GradientLineChart({ title, description, height, chart }) {
   return title || description ? <Card>{renderChart}</Card> : renderChart;
 }
 
-GradientLineChart.defaultProps = {
-  title: "",
-  description: "",
-  height: "19.125rem",
-};
-
 export default GradientLineChart;

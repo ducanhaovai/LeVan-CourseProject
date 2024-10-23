@@ -1,5 +1,5 @@
 import axiosInstance from "hook/AxiosInterceptor";
-
+import axios from "axios";
 const ADMIN_API_URL = process.env.REACT_APP_ADMIN_API_URL;
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -58,7 +58,15 @@ export const updateUserRole = async (userId, newRole, token) => {
     }
   );
 };
-
+export const getCourseDetails = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/courses/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching course details:", error);
+    throw error;
+  }
+};
 export const deleteUser = async (userId, token) => {
   return axiosInstance.delete(`${ADMIN_API_URL}/users/delete/${userId}`, {
     headers: {

@@ -22,6 +22,7 @@ import ManagerCourse from "layouts/course";
 import CourseListing from "layouts/CourseStudent";
 import CourseDetail from "layouts/CourseDetail";
 import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
+import CourseCheckout from "layouts/checkout/CourseCheckout";
 
 const routes = [
   {
@@ -116,15 +117,7 @@ const routes = [
     element: <SignUp />,
     noCollapse: true,
   },
-  {
-    name: "Course Details",
-    key: "coursedetails",
-    route: "/courses/test",
-    icon: <SpaceShip size="12px" />,
-    component: <CoursePageDetail />,
-    element: <CoursePageDetail />,
-    noCollapse: true,
-  },
+
   {
     name: "Course Detail",
     key: "coursedetail",
@@ -132,6 +125,16 @@ const routes = [
     icon: <SpaceShip size="12px" />,
     component: <CoursePageDetail />,
     element: <CoursePageDetail />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Check out",
+    key: "checkout",
+    route: "/checkout",
+    icon: <SpaceShip size="12px" />,
+    component: <CourseCheckout />,
+    element: <CourseCheckout />,
     noCollapse: true,
   },
 ];

@@ -10,24 +10,33 @@ import CourseSidebar from "./components/CourseSidebar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-const CoursePageDetail = () => {
+import { jwtDecode } from "jwt-decode";
+const CoursePageDetail = ({ courseId }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [course, setCourse] = useState(null);
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
   useEffect(() => {
     const fetchCourseDetail = async () => {
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id; // Get the user ID from the token
       try {
-        setLoading(true);
         const response = await axios.get(`http://localhost:3001/courses/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
+
+        const enrollmentResponse = await axios.get(
+          `http://localhost:3001/api/enrollments/status/${userId}/${id}`
+        );
+
         setCourse(response.data);
+        setEnrollmentStatus(enrollmentResponse.data.enrollmentStatus);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch course details:", error);
@@ -45,9 +54,9 @@ const CoursePageDetail = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case "overview":
-        return <OverviewTab />;
+        return <OverviewTab course={course} />;
       case "curriculum":
-        return <CurriculumTab course={course} />;
+        return <CurriculumTab course={course} enrollmentStatus={enrollmentStatus} />;
       case "instructor":
         return <InstructorTab course={course} />;
       case "faqs":
@@ -71,7 +80,7 @@ const CoursePageDetail = () => {
           </div>
 
           <div className="w-full md:w-1/3">
-            <CourseSidebar />
+            <CourseSidebar currentUser={currentUser} course={course} />
           </div>
         </div>
       </div>

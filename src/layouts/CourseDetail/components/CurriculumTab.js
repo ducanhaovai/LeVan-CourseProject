@@ -1,8 +1,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
-import YouTubePlayer from "../YouTubePlayer";
 
-const CurriculumTab = ({ course }) => {
+const CurriculumTab = ({ course, enrollmentStatus }) => {
   const [expandedSections, setExpandedSections] = useState([]);
 
   const toggleSection = (sectionId) => {
@@ -11,7 +10,6 @@ const CurriculumTab = ({ course }) => {
     );
   };
 
-  // Kiểm tra xem course có tồn tại và có sections không
   if (!course || !course.sections || course.sections.length === 0) {
     return <div>No course curriculum available</div>;
   }
@@ -31,14 +29,12 @@ const CurriculumTab = ({ course }) => {
 
           {expandedSections.includes(section.id) && (
             <div className="p-4 bg-gray-50">
-              {section.is_free ? (
+              {/* Allow free sections or check if enrollment is completed */}
+              {section.is_free || enrollmentStatus === "completed" ? (
                 <ul className="space-y-2">
                   {section.contents.map((content) => (
                     <li key={content.content_id} className="flex items-center">
                       <span className="mr-2">📚</span> {content.title}: {content.description}
-                      {/* {content.content_type === "video" && (
-                        // <YouTubePlayer videoId={content.content_url} />
-                      )} */}
                       {content.content_type === "document" && (
                         <a
                           href={content.content_url}
@@ -63,6 +59,7 @@ const CurriculumTab = ({ course }) => {
                   ))}
                 </ul>
               ) : (
+                // If section is locked and the user doesn't have access
                 <div className="bg-gray-200 p-4 text-center">
                   <p className="text-lg font-bold">
                     This section is only available for premium users.

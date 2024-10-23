@@ -49,11 +49,4 @@ function Invoice({ date, id, price, noGutter }) {
   );
 }
 
-// Thiết lập giá trị mặc định cho các props của Invoice
-Invoice.defaultProps = {
-  noGutter: false,
-};
-
-
-
 export default Invoice;
