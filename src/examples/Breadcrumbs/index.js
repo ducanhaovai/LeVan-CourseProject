@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
-
-
+import { Link, useParams, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import { Breadcrumbs as MuiBreadcrumbs } from "@mui/material";
@@ -9,9 +8,27 @@ import Icon from "@mui/material/Icon";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
+import { fetchCourseTitleById } from "api/apiAdmin";
 
-function Breadcrumbs({ icon, title, route, light = false }) {
+function Breadcrumbs({ icon, route, light = false }) {
+  const [title, setTitle] = useState("");
+  const { id } = useParams();
+  const location = useLocation();
   const routes = route.slice(0, -1);
+
+  useEffect(() => {
+    const fetchTitle = async () => {
+      if (id) {
+        const courseTitle = await fetchCourseTitleById(id);
+        setTitle(courseTitle || "Course");
+      } else {
+        const currentPath = location.pathname.split("/").pop();
+        setTitle(currentPath.replace("-", " "));
+      }
+    };
+
+    fetchTitle();
+  }, [id, location.pathname]);
 
   return (
     <SoftBox mr={{ xs: 0, xl: 8 }}>
@@ -44,7 +61,7 @@ function Breadcrumbs({ icon, title, route, light = false }) {
               opacity={light ? 0.8 : 0.5}
               sx={{ lineHeight: 0 }}
             >
-              {el}
+              {el.replace("-", " ")}
             </SoftTypography>
           </Link>
         ))}
@@ -55,7 +72,7 @@ function Breadcrumbs({ icon, title, route, light = false }) {
           color={light ? "white" : "dark"}
           sx={{ lineHeight: 0 }}
         >
-          {title.replace("-", " ")}
+          {title ? title.replace("-", " ") : "Loading..."}
         </SoftTypography>
       </MuiBreadcrumbs>
       <SoftTypography
@@ -65,12 +82,10 @@ function Breadcrumbs({ icon, title, route, light = false }) {
         color={light ? "white" : "dark"}
         noWrap
       >
-        {title.replace("-", " ")}
+        {title ? title.replace("-", " ") : "Loading..."}
       </SoftTypography>
     </SoftBox>
   );
 }
-
-
 
 export default Breadcrumbs;

@@ -158,9 +158,14 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
                 icon={{ component: "search", direction: "left" }}
               />
             </SoftBox>
-            <SoftBox color={light ? "white" : "inherit"} display="flex" alignItems="center">
+            <SoftBox
+              color={light ? "white" : "inherit"}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               {user ? (
-                <SoftBox display="flex" alignItems="center">
+                <SoftBox display="flex" flexDirection="row  " alignItems="center" flex={1}>
                   <IconButton sx={navbarIconButton} size="small" onClick={handleProfileMenuOpen}>
                     <img
                       src={team2}
@@ -177,7 +182,7 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
                     fontWeight="medium"
                     color={light ? "white" : "dark"}
                   >
-                    {user.first_name} {user.last_name}
+                    {user.last_name}
                   </SoftTypography>
                   <Menu
                     anchorEl={anchorEl}

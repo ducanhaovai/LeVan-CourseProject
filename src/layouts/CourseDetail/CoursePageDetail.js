@@ -11,6 +11,8 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Breadcrumbs from "examples/Breadcrumbs";
 const CoursePageDetail = ({ courseId }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const { id } = useParams();
@@ -19,10 +21,13 @@ const CoursePageDetail = ({ courseId }) => {
   const [error, setError] = useState(null);
   const [course, setCourse] = useState(null);
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   useEffect(() => {
     const fetchCourseDetail = async () => {
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.id; // Get the user ID from the token
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        setCurrentUser(decodedToken);
+      }
       try {
         const response = await axios.get(`http://localhost:3001/courses/${id}`, {
           headers: {
@@ -30,13 +35,16 @@ const CoursePageDetail = ({ courseId }) => {
           },
         });
 
-
         const enrollmentResponse = await axios.get(
-          `http://localhost:3001/api/enrollments/status/${userId}/${id}`
+          `http://localhost:3001/api/enrollments/status/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-
         setCourse(response.data);
-        setEnrollmentStatus(enrollmentResponse.data.enrollmentStatus);
+        setEnrollmentStatus(enrollmentResponse.data.enrollmentStatus || "not_enrolled");
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch course details:", error);
@@ -70,6 +78,8 @@ const CoursePageDetail = ({ courseId }) => {
 
   return (
     <DashboardLayout>
+      <DashboardNavbar />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <CourseHeader course={course} />
 
@@ -80,7 +90,11 @@ const CoursePageDetail = ({ courseId }) => {
           </div>
 
           <div className="w-full md:w-1/3">
-            <CourseSidebar currentUser={currentUser} course={course} />
+            <CourseSidebar
+              currentUser={currentUser}
+              course={course}
+              enrollmentStatus={enrollmentStatus}
+            />
           </div>
         </div>
       </div>

@@ -23,6 +23,7 @@ import CourseListing from "layouts/CourseStudent";
 import CourseDetail from "layouts/CourseDetail";
 import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
 import CourseCheckout from "layouts/checkout/CourseCheckout";
+import CourseContent from "layouts/courseContents";
 
 const routes = [
   {
@@ -128,13 +129,12 @@ const routes = [
     noCollapse: true,
   },
   {
-    type: "collapse",
-    name: "Check out",
-    key: "checkout",
-    route: "/checkout",
+    name: "Course contents",
+    key: "coursecontent",
+    route: "/learn/:id",
     icon: <SpaceShip size="12px" />,
-    component: <CourseCheckout />,
-    element: <CourseCheckout />,
+    component: <CourseContent />,
+    element: <CourseContent />,
     noCollapse: true,
   },
 ];

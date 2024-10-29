@@ -17,7 +17,7 @@ const CurriculumTab = ({ course, enrollmentStatus }) => {
   return (
     <div className="mt-6">
       <h2 className="text-2xl font-bold mb-4">Course Curriculum</h2>
-      {course.sections.map((section, index) => (
+      {course.sections.map((section) => (
         <div key={section.id} className="mb-4 border border-gray-200 rounded-lg">
           <button
             className="flex justify-between items-center w-full p-4 text-left"
@@ -29,7 +29,6 @@ const CurriculumTab = ({ course, enrollmentStatus }) => {
 
           {expandedSections.includes(section.id) && (
             <div className="p-4 bg-gray-50">
-              {/* Allow free sections or check if enrollment is completed */}
               {section.is_free || enrollmentStatus === "completed" ? (
                 <ul className="space-y-2">
                   {section.contents.map((content) => (
@@ -59,7 +58,6 @@ const CurriculumTab = ({ course, enrollmentStatus }) => {
                   ))}
                 </ul>
               ) : (
-                // If section is locked and the user doesn't have access
                 <div className="bg-gray-200 p-4 text-center">
                   <p className="text-lg font-bold">
                     This section is only available for premium users.

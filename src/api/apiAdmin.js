@@ -46,6 +46,15 @@ export const fetchCourses = async (token) => {
     },
   });
 };
+export const fetchCourseTitleById = async (id) => {
+  try {
+    const response = await axios.get(`http://localhost:3001/courses/${id}`);
+    return response.data.title;
+  } catch (error) {
+    console.error("Error fetching course title:", error);
+    return null;
+  }
+};
 
 export const updateUserRole = async (userId, newRole, token) => {
   return axiosInstance.put(
