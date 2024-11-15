@@ -2,38 +2,54 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../student/css/course.css";
-import { GraduationCap, Clock5 } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
+
 export default function CourseCard({ course }) {
   const navigate = useNavigate();
-
   const handleCourseClick = () => {
     navigate(`/courses/${course.id}`);
   };
   return (
-    <div className="course-card" onClick={handleCourseClick}>
-      <div className="course-image">
+    <div className="course-card " onClick={handleCourseClick}>
+      <div className="course-image shine-animation">
         <img src={course.thumbnail} alt={course.title} />
-        <span className="course-tag">{course.name}</span>
       </div>
 
       <div className="course-content">
-        <h3 className="course-title">{course.title}</h3>
+        <ul className="meta list-wrap">
+          <li className="meta-item">
+            <i className="fa-regular fa-calendar"></i>
+            <p className="meta-p">{course.sections.length} sections</p>
+          </li>
+          <li className="meta-item">
+            <i className="fa-regular fa-user"></i>
+            <p>{course.total_enrollments} students</p>
+          </li>
+          <li className="meta-item">
+            <i className="fa-regular fa-clock"></i>
+            <p>{course.duration} hourse</p>
+          </li>
+        </ul>
+        <h5 className="course-title">
+          <span>{course.title}</span>
+        </h5>
+        <ul className="courses-item-meta list-wrap">
+          <li className="courses-item-tag">
+            <a>{course.category_name}</a>
+          </li>
+          <li className="avg-rating flex items-center">
+            <i className="fas fa-star"></i>
+            <p>({course.rating} Review)</p>
+          </li>
+        </ul>
         <p className="course-instructor">
-          by {course.instructor_first_name} {course.instructor_last_name}
+          By: {course.instructor_first_name} {course.instructor_last_name}
         </p>
-        <div className="course-info">
-          <div className="flex items-center">
-            <Clock5 />
-            <span className="pl-1">{course.duration} Hours</span>
-          </div>
-          <div className="flex items-center">
-            <GraduationCap /> <span className="pl-1">{course.total_enrollments}</span>
-          </div>
-        </div>
-        <div className="course-footer">
-          <span className="course-price">{course.price}</span>
-          <button className="course-button">View More</button>
+        <div className="course-footer pt-4">
+          <button className="course-button">
+            <span>Enroll Now</span>
+            <i className="fa-solid fa-arrow-right"></i>
+          </button>
+          <span className="course-price">${course.price}</span>
         </div>
       </div>
     </div>

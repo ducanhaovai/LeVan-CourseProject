@@ -13,6 +13,7 @@ import SoftButton from "components/SoftButton";
 
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import curved9 from "assets/images/curved-images/curved-6.jpg";
+import axiosInstance from "hook/AxiosInterceptor";
 
 function SignIn() {
   const [rememberMe, setRememberMe] = useState(true);
@@ -33,22 +34,18 @@ function SignIn() {
     if (!validateInputs()) return;
 
     try {
-      const response = await axios.post(`${API_URL}/login`, {
+      const response = await axiosInstance.post(`${API_URL}/login`, {
         email,
         password,
       });
 
-      const { accessToken, refreshToken, role } = response.data;
+      const { accessToken, role } = response.data;
 
-      if (accessToken && refreshToken) {
-        // Save tokens in localStorage
+      if (accessToken) {
         localStorage.setItem("token", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
 
-        // Decode the access token to get role and other information
         const decoded = jwtDecode(accessToken);
 
-        // Navigate to different dashboards based on role
         if (decoded.role === 1) {
           navigate("/dashboard");
         } else if (decoded.role === 2) {

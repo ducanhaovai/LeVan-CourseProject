@@ -37,7 +37,7 @@ function Invoice({ date, id, price, noGutter }) {
           lineHeight={0}
           ml={3}
           sx={{ cursor: "pointer" }} // Sửa lỗi typo ở đây
-          onClick={() => alert(`Downloading PDF for invoice ID: ${id}`)} // Có thể thêm sự kiện click nếu cần
+          onClick={() => alert(`Downloading PDF for invoice ID: ${id}`)} 
         >
           <Icon fontSize="small">picture_as_pdf</Icon>
           <SoftTypography variant="button" fontWeight="bold">

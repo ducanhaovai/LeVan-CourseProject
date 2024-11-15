@@ -5,9 +5,8 @@ import placeholderImage from "../../../../assets/images/ivana-square.jpg";
 function CourseCard({ course }) {
   return (
     <div className="course-card">
-      <div className="course-image">
+      <div className="course-image shine-animation">
         <img src={course.image} alt={course.title} />
-        <span className="course-tag">{course.category}</span>
       </div>
 
       <div className="course-content">

@@ -13,7 +13,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Breadcrumbs from "examples/Breadcrumbs";
-const CoursePageDetail = ({ courseId }) => {
+import CommentForm from "./components/Comment";
+import { fetchCoursesId } from "api/apiAdmin";
+import { checkEnrollmentStatus } from "api/apiEnrollments";
+
+const CoursePageDetail = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const { id } = useParams();
   const token = localStorage.getItem("token");
@@ -29,26 +33,15 @@ const CoursePageDetail = ({ courseId }) => {
         setCurrentUser(decodedToken);
       }
       try {
-        const response = await axios.get(`http://localhost:3001/courses/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const courseResponse = await fetchCoursesId(id, token);
+        const enrollmentResponse = await checkEnrollmentStatus(id, token);
 
-        const enrollmentResponse = await axios.get(
-          `http://localhost:3001/api/enrollments/status/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCourse(response.data);
-        setEnrollmentStatus(enrollmentResponse.data.enrollmentStatus || "not_enrolled");
+        setCourse(courseResponse.data);
+        setEnrollmentStatus(enrollmentResponse?.enrollmentStatus || "not_enrolled");
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch course details:", error);
-        setError("Failed to fetch course details.");
+        setError("Failed to fetch course details: " + error.message);
         setLoading(false);
       }
     };
@@ -56,7 +49,6 @@ const CoursePageDetail = ({ courseId }) => {
     fetchCourseDetail();
   }, [id, token]);
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!course) return <div>No course data available</div>;
   const renderTabContent = () => {
@@ -79,7 +71,7 @@ const CoursePageDetail = ({ courseId }) => {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <CourseHeader course={course} />
 
@@ -97,6 +89,7 @@ const CoursePageDetail = ({ courseId }) => {
             />
           </div>
         </div>
+        <CommentForm />
       </div>
     </DashboardLayout>
   );

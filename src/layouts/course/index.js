@@ -223,9 +223,6 @@ function ManagerCourse() {
       <DashboardLayout>
         <DashboardNavbar />
         <SoftBox py={3}>
-          <SoftTypography variant="h4" color="text">
-            Loading...
-          </SoftTypography>
         </SoftBox>
         <Footer />
       </DashboardLayout>

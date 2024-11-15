@@ -2,7 +2,7 @@ import { CheckCircle } from "lucide-react";
 
 export default function Certification() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
         <StatCard number="25K+" label="Active Students" />
         <StatCard number="899" label="Total Courses" />

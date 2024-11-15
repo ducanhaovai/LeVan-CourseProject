@@ -40,15 +40,34 @@ export const fetchCategories = async (token) => {
 };
 
 export const fetchCourses = async (token) => {
-  return axiosInstance.get(`${API_URL}/courses`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const courseResponse = await axiosInstance.get(`${API_URL}/courses`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return courseResponse;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+export const fetchCoursesId = async (id, token) => {
+  try {
+    const courseResponse = await axiosInstance.get(`${API_URL}/courses/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return courseResponse;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
 };
 export const fetchCourseTitleById = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:3001/courses/${id}`);
+    const response = await axiosInstance.get(`http://localhost:3001/courses/${id}`);
     return response.data.title;
   } catch (error) {
     console.error("Error fetching course title:", error);
@@ -69,7 +88,7 @@ export const updateUserRole = async (userId, newRole, token) => {
 };
 export const getCourseDetails = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/courses/${id}`);
+    const response = await axiosInstance.get(`${API_URL}/courses/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching course details:", error);

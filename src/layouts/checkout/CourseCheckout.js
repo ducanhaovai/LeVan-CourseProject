@@ -51,7 +51,7 @@ export default function CourseCheckout() {
     fetchCourseData();
   }, [searchParams]);
 
-  if (loading) return <div>Loading...</div>;
+
   if (error) return <div>Error: {error}</div>;
   if (!course) return <div>No course data available</div>;
   const handlePayment = async () => {
@@ -82,11 +82,11 @@ export default function CourseCheckout() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+
   if (error) return <div>Error: {error}</div>;
   return (
     <DashboardLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-2/3">
             <h1 className="text-2xl font-bold mb-6">Checkout</h1>

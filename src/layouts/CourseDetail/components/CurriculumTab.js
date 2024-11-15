@@ -32,7 +32,7 @@ const CurriculumTab = ({ course, enrollmentStatus }) => {
               {section.is_free || enrollmentStatus === "completed" ? (
                 <ul className="space-y-2">
                   {section.contents.map((content) => (
-                    <li key={content.content_id} className="flex items-center">
+                    <li key={`${section.id}-${content.content_id}`} className="flex items-center">
                       <span className="mr-2">📚</span> {content.title}: {content.description}
                       {content.content_type === "document" && (
                         <a

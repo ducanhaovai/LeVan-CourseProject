@@ -15,13 +15,12 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
-// Component hiển thị thông tin tác giả
+
 function Author({ user }) {
   return (
     <SoftBox display="flex" alignItems="center" px={1} py={0.5}>
       <SoftBox mr={2}>
         <SoftAvatar alt={user.username} size="sm" variant="rounded">
-          {/* Hiển thị ký tự đầu của first_name và last_name */}
           {user.first_name[0] + user.last_name[0]}
         </SoftAvatar>
       </SoftBox>
@@ -148,7 +147,6 @@ function Tables() {
     rows: users.map((user) => ({
       Logo: (
         <SoftAvatar alt={user.username} size="sm" variant="rounded">
-          {/* Thay đổi màu chữ logo thành màu đen */}
           <SoftTypography variant="caption" color="black">
             {user.first_name[0] + user.last_name[0]}
           </SoftTypography>
@@ -233,7 +231,6 @@ function Tables() {
         </Card>
       </SoftBox>
 
-      {/* Modal Chỉnh Sửa */}
       <Modal open={openEditModal} onClose={() => setOpenEditModal(false)}>
         <Card style={{ padding: "20px", margin: "100px auto", width: "400px" }}>
           <h2>Edit User</h2>

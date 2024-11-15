@@ -7,7 +7,6 @@ function CourseCard({ course }) {
     <div className="course-card">
       <div className="course-image">
         <img src={course.image} alt={course.title} />
-        <span className="course-tag">{course.category}</span>
       </div>
 
       <div className="course-content">

@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const ProtectedRoute = ({ element, role }) => {
-  const [authStatus, setAuthStatus] = useState("loading"); // 'loading', 'authorized', 'unauthorized'
+  const [authStatus, setAuthStatus] = useState("loading"); 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,10 +27,6 @@ const ProtectedRoute = ({ element, role }) => {
     }
   }, [role]);
 
-  // Hiển thị trạng thái chờ khi đang kiểm tra quyền truy cập
-  if (authStatus === "loading") {
-    return <div>Loading...</div>;
-  }
 
   // Nếu không được phép, chuyển hướng về trang đăng nhập
   if (authStatus === "unauthorized") {

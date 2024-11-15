@@ -1,10 +1,11 @@
 import axios from "axios";
+import axiosInstance from "hook/AxiosInterceptor";
 
 const API_URL = process.env.REACT_APP_API_URL_AUTH;
 
 export const logout = async (token) => {
   try {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `${API_URL}/logout`,
       {},
       {

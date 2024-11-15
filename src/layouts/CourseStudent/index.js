@@ -5,26 +5,6 @@ import Footer from "examples/Footer";
 import CourseCard from "./components/CourseCard";
 import { fetchCourses, fetchUsers, fetchCategories } from "../../api/apiAdmin";
 
-const FilterOption = ({ title, options, selectedOptions, onChange }) => (
-  <div className="mb-4">
-    <h3 className="font-semibold mb-2">{title}</h3>
-    {options.map((option) => (
-      <div key={option} className="flex items-center mb-1">
-        <input
-          type="checkbox"
-          id={option}
-          checked={selectedOptions.includes(option)}
-          onChange={() => onChange(option)}
-          className="mr-2"
-        />
-        <label htmlFor={option} className="text-sm text-gray-700">
-          {option}
-        </label>
-      </div>
-    ))}
-  </div>
-);
-
 export default function CourseListing() {
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -39,10 +19,11 @@ export default function CourseListing() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -69,37 +50,29 @@ export default function CourseListing() {
     fetchData();
   }, []);
 
-  const handleFilterChange = (filterType, option) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [filterType]: prevFilters[filterType].includes(option)
-        ? prevFilters[filterType].filter((item) => item !== option)
-        : [...prevFilters[filterType], option],
-    }));
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
   const filteredCourses = courses.filter((course) => {
     const matchesCategory =
       filters.category.length === 0 || filters.category.includes(course.category_id);
     const matchesInstructor =
       filters.instructor.length === 0 || filters.instructor.includes(course.instructor_id);
-
     const matchesSearch =
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const isActive = course.status === 1;
 
-    return matchesCategory && matchesInstructor && matchesSearch;
+    return matchesCategory && matchesInstructor && matchesSearch && isActive;
   });
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
 
   if (loading) {
     return (
       <DashboardLayout>
         <DashboardNavbar />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold mb-8">Loading...</h1>
         </div>
         <Footer />
@@ -111,7 +84,7 @@ export default function CourseListing() {
     return (
       <DashboardLayout>
         <DashboardNavbar />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto py-8">
           <h1 className="text-3xl font-bold mb-8">{error}</h1>
         </div>
         <Footer />
@@ -122,36 +95,17 @@ export default function CourseListing() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">All Courses</h1>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search for courses..."
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2"
-          />
+          <p className="text-base">
+            Showing {indexOfFirstItem + 1}-
+            {indexOfLastItem > filteredCourses.length ? filteredCourses.length : indexOfLastItem} of{" "}
+            {filteredCourses.length} Results
+          </p>
         </div>
-
         <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/4 pr-8 mb-8 md:mb-0">
-            <FilterOption
-              title="Course Category"
-              options={categories.map((category) => category.name)}
-              selectedOptions={filters.category}
-              onChange={(option) => handleFilterChange("category", option)}
-            />
-            <FilterOption
-              title="Instructors"
-              options={instructors.map((instructor) => instructor.username)}
-              selectedOptions={filters.instructor}
-              onChange={(option) => handleFilterChange("instructor", option)}
-            />
-          </div>
-
-          <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentItems.map((course) => (
               <CourseCard key={course.id} course={course} />
             ))}
           </div>

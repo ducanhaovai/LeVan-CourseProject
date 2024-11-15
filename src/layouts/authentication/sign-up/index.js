@@ -17,10 +17,10 @@ import Socials from "layouts/authentication/components/Socials";
 import Separator from "layouts/authentication/components/Separator";
 
 import curved6 from "assets/images/curved-images/curved14.jpg";
-
+const API_URL = process.env.REACT_APP_API_URL_AUTH;
 function SignUp() {
   const [agreement, setAgremment] = useState(true);
-  const API_URL = process.env.REACT_APP_API_URL;
+
   const handleSetAgremment = () => setAgremment(!agreement);
   const [formData, setFormData] = useState({
     username: "",

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { createBrowserHistory } from "history";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3001",
@@ -7,44 +8,21 @@ const axiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+const browserHistory = createBrowserHistory();
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      alert("Your session has expired. Please log in again.");
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      localStorage.removeItem("token");
 
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        const { data } = await axios.post("http://localhost:3001/api/auth/token/refresh", {
-          token: refreshToken,
-        });
-        localStorage.setItem("token", data.accessToken);
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+      browserHistory.push("/login");
+      window.location.reload();
 
-        return axiosInstance(originalRequest);
-      } catch (err) {
-        console.error("Refresh token expired or invalid:", err);
-        return Promise.reject(error);
-      }
+      return Promise.reject(error);
     }
-
     return Promise.reject(error);
   }
 );

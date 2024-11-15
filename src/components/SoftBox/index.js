@@ -21,6 +21,7 @@ const SoftBox = forwardRef(
       {...rest}
       ref={ref}
       ownerState={{ variant, bgColor, color, opacity, borderRadius, shadow }}
+      
     />
   )
 );

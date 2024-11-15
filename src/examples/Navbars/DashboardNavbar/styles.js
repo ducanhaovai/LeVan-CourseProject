@@ -1,4 +1,3 @@
-
 function navbar(theme, ownerState) {
   const { palette, boxShadows, functions, transitions, breakpoints, borders } = theme;
   const { transparentNavbar, absolute, light } = ownerState;
@@ -107,13 +106,9 @@ const navbarIconButton = ({ typography: { size }, breakpoints }) => ({
   },
 });
 
-const navbarMobileMenu = ({ breakpoints }) => ({
+const navbarMobileMenu = {
   display: "inline-block",
   lineHeight: 0,
-
-  [breakpoints.up("xl")]: {
-    display: "none",
-  },
-});
+};
 
 export { navbar, navbarContainer, navbarRow, navbarIconButton, navbarMobileMenu };

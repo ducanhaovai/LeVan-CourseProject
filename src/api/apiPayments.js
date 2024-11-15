@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "hook/AxiosInterceptor";
 
 const BASE_URL = process.env.REACT_APP_Payments_API_URL;
 
@@ -10,7 +11,7 @@ export const makePayment = async ({
   transaction_id,
 }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/payment`, {
+    const response = await axiosInstance.post(`${BASE_URL}/payment`, {
       user_id,
       course_id,
       amount,

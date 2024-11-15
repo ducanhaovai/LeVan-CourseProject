@@ -165,43 +165,45 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
               justifyContent="space-between"
             >
               {user ? (
-                <SoftBox display="flex" flexDirection="row  " alignItems="center" flex={1}>
-                  <IconButton sx={navbarIconButton} size="small" onClick={handleProfileMenuOpen}>
-                    <img
-                      src={team2}
-                      alt="profile"
-                      style={{
-                        width: "30px",
-                        height: "30px",
-                        borderRadius: "50%",
+                <div className="min-w-fit">
+                  <SoftBox display="flex" flexDirection="row  " alignItems="center" flex={1}>
+                    <IconButton sx={navbarIconButton} size="small" onClick={handleProfileMenuOpen}>
+                      <img
+                        src={team2}
+                        alt="profile"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </IconButton>
+                    <SoftTypography
+                      variant="button"
+                      fontWeight="medium"
+                      color={light ? "white" : "dark"}
+                    >
+                      {user.last_name}
+                    </SoftTypography>
+                    <Menu
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
                       }}
-                    />
-                  </IconButton>
-                  <SoftTypography
-                    variant="button"
-                    fontWeight="medium"
-                    color={light ? "white" : "dark"}
-                  >
-                    {user.last_name}
-                  </SoftTypography>
-                  <Menu
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "right",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleProfileMenuClose}
-                  >
-                    <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleProfileMenuClose}>Settings</MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  </Menu>
-                </SoftBox>
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorEl)}
+                      onClose={handleProfileMenuClose}
+                    >
+                      <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
+                      <MenuItem onClick={handleProfileMenuClose}>Settings</MenuItem>
+                      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    </Menu>
+                  </SoftBox>
+                </div>
               ) : (
                 <Link to="/authentication/sign-in">
                   <IconButton sx={navbarIconButton} size="small">

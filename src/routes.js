@@ -20,7 +20,7 @@ import Student from "layouts/student";
 import { Book } from "lucide-react";
 import ManagerCourse from "layouts/course";
 import CourseListing from "layouts/CourseStudent";
-import CourseDetail from "layouts/CourseDetail";
+
 import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
 import CourseCheckout from "layouts/checkout/CourseCheckout";
 import CourseContent from "layouts/courseContents";
@@ -128,6 +128,16 @@ const routes = [
     element: <CoursePageDetail />,
     noCollapse: true,
   },
+  {
+    name: "Course Checkout",
+    key: "coursecheckout",
+    route: "/checkout/:courseId",
+    icon: <SpaceShip size="12px" />,
+    component: <CourseCheckout />,
+    element: <CourseCheckout />,
+    noCollapse: true,
+  },
+
   {
     name: "Course contents",
     key: "coursecontent",
