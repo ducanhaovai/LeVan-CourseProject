@@ -10,7 +10,13 @@ export const fetchUsers = async (token) => {
     },
   });
 };
-
+export const fetchUsersByID = async (userId, token) => {
+  return axiosInstance.get(`${ADMIN_API_URL}/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 export const fetchInstructors = async (token) => {
   try {
     const response = await axiosInstance.get(`${API_URL}/instructors`, {
@@ -38,6 +44,19 @@ export const fetchCategories = async (token) => {
     throw error;
   }
 };
+export const fetchCategoriesByID = async (id, token) => {
+  try {
+    const response = await axiosInstance.get(`${API_URL}/categories/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
 
 export const fetchCourses = async (token) => {
   try {
@@ -52,9 +71,9 @@ export const fetchCourses = async (token) => {
     throw error;
   }
 };
-export const fetchCoursesId = async (id, token) => {
+export const fetchCoursesId = async (courseId, token) => {
   try {
-    const courseResponse = await axiosInstance.get(`${API_URL}/courses/${id}`, {
+    const courseResponse = await axiosInstance.get(`${API_URL}/courses/${courseId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -65,6 +84,24 @@ export const fetchCoursesId = async (id, token) => {
     throw error;
   }
 };
+export const fetchCourseBySlug = async (slug, token) => {
+  try {
+    const response = await axiosInstance.get(`${API_URL}/courses/${slug}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.data) {
+      throw new Error("API did not return 'data' field.");
+    }
+
+    return response; // Trả về toàn bộ response nếu `data` tồn tại
+  } catch (error) {
+    console.error("Error fetching course by slug:", error.message);
+    throw error;
+  }
+};
+
 export const fetchCourseTitleById = async (id) => {
   try {
     const response = await axiosInstance.get(`http://localhost:3001/courses/${id}`);
@@ -72,6 +109,16 @@ export const fetchCourseTitleById = async (id) => {
   } catch (error) {
     console.error("Error fetching course title:", error);
     return null;
+  }
+};
+export const fetchCourseTitleBySlug = async (slug) => {
+  try {
+    const response = await axios.get(`${API_URL}/courses/${slug}`);
+    
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching course title:", error);
+    throw error;
   }
 };
 

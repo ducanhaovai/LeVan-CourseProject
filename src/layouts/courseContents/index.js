@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Button } from "./components/button";
 import { Progress } from "./components/progress";
@@ -20,8 +19,8 @@ import {
 } from "lucide-react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import axios from "axios";
 import { useParams } from "react-router-dom";
+import { fetchCourseBySlug } from "api/apiAdmin";
 
 export default function CourseContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -29,16 +28,22 @@ export default function CourseContent() {
   const [courseData, setCourseData] = useState({ sections: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Fetch course data from API
   useEffect(() => {
     const fetchCourseData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("User is not authenticated");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await axios.get(`http://localhost:3001/courses/${id}`);
-        setCourseData(response.data);
+        const courseResponse = await fetchCourseBySlug(slug, token);
+        setCourseData(courseResponse.data.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching course data:", error);
@@ -48,10 +53,8 @@ export default function CourseContent() {
     };
 
     fetchCourseData();
-  }, [id]);
-
-
-  if (error) return <div>{error}</div>;
+  }, [slug]);
+  console.count("Render count");
 
   return (
     <DashboardLayout>
@@ -97,11 +100,14 @@ export default function CourseContent() {
                 <h2 className="font-bold text-lg">Course content</h2>
               </div>
               <p className="text-sm text-gray-600">
-                {courseData.sections.length} sections •{" "}
-                {courseData.sections.reduce(
-                  (acc, section) => acc + (section.contents.length || 0),
-                  0
-                )}{" "}
+                {Array.isArray(courseData.sections) ? courseData.sections.length : 0} sections •{" "}
+                {Array.isArray(courseData.sections)
+                  ? courseData.sections.reduce(
+                      (acc, section) =>
+                        acc + (Array.isArray(section.content) ? section.content.length : 0),
+                      0
+                    )
+                  : 0}{" "}
                 lectures
               </p>
             </div>
@@ -113,25 +119,29 @@ export default function CourseContent() {
                       {section.title}
                     </AccordionTrigger>
                     <AccordionContent>
-                      {section.contents.map((content) => (
-                        <div
-                          key={content.id}
-                          className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => setCurrentLecture(content)}
-                        >
-                          {content.content_type === "video" ? (
-                            <PlayCircle className="h-4 w-4 text-gray-400 mr-2" />
-                          ) : content.content_type === "document" ? (
-                            <FileText className="h-4 w-4 text-gray-400 mr-2" />
-                          ) : (
-                            <CheckCircle2 className="h-4 w-4 text-blue-600 mr-2" />
-                          )}
-                          <div className="flex-1">
-                            <p className="text-sm">{content.title}</p>
-                            <p className="text-xs text-gray-500">{content.description}</p>
+                      {Array.isArray(section.content) ? (
+                        section.content.map((content) => (
+                          <div
+                            key={content.id}
+                            className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => setCurrentLecture(content)}
+                          >
+                            {content.content_type === "video" ? (
+                              <PlayCircle className="h-4 w-4 text-gray-400 mr-2" />
+                            ) : content.content_type === "document" ? (
+                              <FileText className="h-4 w-4 text-gray-400 mr-2" />
+                            ) : (
+                              <CheckCircle2 className="h-4 w-4 text-blue-600 mr-2" />
+                            )}
+                            <div className="flex-1">
+                              <p className="text-sm">{content.title}</p>
+                              <p className="text-xs text-gray-500">{content.description}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500">No content available</p>
+                      )}
                     </AccordionContent>
                   </AccordionItem>
                 ))}
@@ -181,10 +191,7 @@ export default function CourseContent() {
             <Progress value={22} className="w-48" />
             <p className="text-sm text-gray-600">
               2 of{" "}
-              {courseData.sections.reduce(
-                (acc, section) => acc + (section.contents.length || 0),
-                0
-              )}{" "}
+              {courseData.sections.reduce((acc, section) => acc + (section.content.length || 0), 0)}{" "}
               complete
             </p>
           </div>

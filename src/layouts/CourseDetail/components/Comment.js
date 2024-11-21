@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageSquare } from "lucide-react";
@@ -13,27 +13,29 @@ const Button = ({ className, ...props }) => (
   />
 );
 
-const Input = ({ className, ...props }) => (
+const Input = React.forwardRef(({ className, ...props }, ref) => (
   <input
+    ref={ref}
     className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 ${className}`}
     {...props}
   />
-);
+));
 
-const Textarea = ({ className, ...props }) => (
+const Textarea = React.forwardRef(({ className, ...props }, ref) => (
   <textarea
+    ref={ref}
     className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 ${className}`}
     {...props}
   />
-);
-
-const Checkbox = ({ className, ...props }) => (
+));
+const Checkbox = React.forwardRef(({ className, ...props }, ref) => (
   <input
+    ref={ref}
     type="checkbox"
     className={`form-checkbox h-5 w-5 rounded border-gray-300 focus:ring-orange-500 ${className}`}
     {...props}
   />
-);
+));
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -69,7 +71,6 @@ export default function CommentForm() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
     setIsSubmitting(false);
     reset();
   };

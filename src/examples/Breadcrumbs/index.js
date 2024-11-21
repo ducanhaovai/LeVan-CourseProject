@@ -1,34 +1,36 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-
-// @mui material components
 import { Breadcrumbs as MuiBreadcrumbs } from "@mui/material";
 import Icon from "@mui/material/Icon";
-
-// Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-import { fetchCourseTitleById } from "api/apiAdmin";
-
+import { fetchCourseTitleBySlug } from "api/apiAdmin";
 function Breadcrumbs({ icon, route, light = false }) {
   const [title, setTitle] = useState("");
-  const { id } = useParams();
+  const { slug } = useParams();
   const location = useLocation();
-  const routes = route.slice(0, -1);
 
   useEffect(() => {
     const fetchTitle = async () => {
-      if (id) {
-        const courseTitle = await fetchCourseTitleById(id);
-        setTitle(courseTitle || "Course");
+      if (slug) {
+        try {
+          const courseData = await fetchCourseTitleBySlug(slug);
+          setTitle(courseData.title || "Course");
+        } catch (error) {
+          console.error("Failed to fetch course title:", error);
+          setTitle("Course");
+        }
       } else {
+        // If slug is not available, fallback to parsing the current path
         const currentPath = location.pathname.split("/").pop();
         setTitle(currentPath.replace("-", " "));
       }
     };
 
     fetchTitle();
-  }, [id, location.pathname]);
+  }, [slug, location.pathname]);
+
+  const filteredRoutes = route.filter((el) => el !== slug && isNaN(Number(el)));
 
   return (
     <SoftBox mr={{ xs: 0, xl: 8 }}>
@@ -50,8 +52,8 @@ function Breadcrumbs({ icon, route, light = false }) {
             <Icon>{icon}</Icon>
           </SoftTypography>
         </Link>
-        {routes.map((el) => (
-          <Link to={`/${el}`} key={el}>
+        {filteredRoutes.map((el, index) => (
+          <Link to={`/${el}`} key={index}>
             <SoftTypography
               component="span"
               variant="button"
@@ -72,7 +74,7 @@ function Breadcrumbs({ icon, route, light = false }) {
           color={light ? "white" : "dark"}
           sx={{ lineHeight: 0 }}
         >
-          {title ? title.replace("-", " ") : "Loading..."}
+          {title || "Loading..."}
         </SoftTypography>
       </MuiBreadcrumbs>
       <SoftTypography
@@ -82,7 +84,7 @@ function Breadcrumbs({ icon, route, light = false }) {
         color={light ? "white" : "dark"}
         noWrap
       >
-        {title ? title.replace("-", " ") : "Loading..."}
+        {title || "Loading..."}
       </SoftTypography>
     </SoftBox>
   );

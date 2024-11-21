@@ -13,7 +13,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import routes from "routes";
 import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
-import brand from "assets/images/logo-ct.png";
+import brand from "assets/images/logos/logoLevan.png";
 import LoadingSpinner from "hook/LoadingSpinner";
 
 export default function App() {
@@ -114,7 +114,7 @@ export default function App() {
               <Sidenav
                 color={sidenavColor}
                 brand={brand}
-                brandName="Soft UI Dashboard"
+                brandName="Le Van Academy"
                 routes={routes}
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
@@ -139,7 +139,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={brand}
-            brandName="Soft UI Dashboard"
+            brandName="Le Van Academy"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}

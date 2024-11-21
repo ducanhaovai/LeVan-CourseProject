@@ -2,11 +2,11 @@ import axiosInstance from "hook/AxiosInterceptor";
 
 const BASE_URL = process.env.REACT_APP_Enrollments_API_URL;
 
-export const enrollCourse = async (user_id, course_id) => {
+export const enrollCourse = async (user_id, courseSlug) => {
   try {
     const response = await axiosInstance.post(`${BASE_URL}/enroll`, {
       user_id,
-      course_id,
+      course_slug: courseSlug, 
     });
     return response.data;
   } catch (error) {

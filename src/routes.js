@@ -1,4 +1,4 @@
-// Soft UI Dashboard React layouts
+
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
@@ -7,7 +7,6 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
-// Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";
 import Office from "examples/Icons/Office";
 import Document from "examples/Icons/Document";
@@ -122,7 +121,7 @@ const routes = [
   {
     name: "Course Detail",
     key: "coursedetail",
-    route: "/courses/:id",
+    route: "/courses/:slug",
     icon: <SpaceShip size="12px" />,
     component: <CoursePageDetail />,
     element: <CoursePageDetail />,
@@ -131,7 +130,7 @@ const routes = [
   {
     name: "Course Checkout",
     key: "coursecheckout",
-    route: "/checkout/:courseId",
+    route: "/checkout/:slug",
     icon: <SpaceShip size="12px" />,
     component: <CourseCheckout />,
     element: <CourseCheckout />,
@@ -141,7 +140,7 @@ const routes = [
   {
     name: "Course contents",
     key: "coursecontent",
-    route: "/learn/:id",
+    route: "/learn/:slug",
     icon: <SpaceShip size="12px" />,
     component: <CourseContent />,
     element: <CourseContent />,

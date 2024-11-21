@@ -1,4 +1,3 @@
-// src/components/CourseCard.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../student/css/course.css";
@@ -6,7 +5,7 @@ import "../../student/css/course.css";
 export default function CourseCard({ course }) {
   const navigate = useNavigate();
   const handleCourseClick = () => {
-    navigate(`/courses/${course.id}`);
+      navigate(`/courses/${course.slug}`);
   };
   return (
     <div className="course-card " onClick={handleCourseClick}>
