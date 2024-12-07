@@ -1,4 +1,3 @@
-
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 
@@ -22,9 +21,6 @@ import PlaceholderCard from "examples/Cards/PlaceholderCard";
 // Overview page components
 import Header from "layouts/profile/components/Header";
 import PlatformSettings from "layouts/profile/components/PlatformSettings";
-
-// Data
-import profilesListData from "layouts/profile/data/profilesListData";
 
 // Images
 import homeDecor1 from "assets/images/home-decor-1.jpg";
@@ -75,7 +71,7 @@ function Overview() {
             />
           </Grid>
           <Grid item xs={12} xl={4}>
-            <ProfilesList title="conversations" profiles={profilesListData} />
+            <ProfilesList title="conversations" />
           </Grid>
         </Grid>
       </SoftBox>

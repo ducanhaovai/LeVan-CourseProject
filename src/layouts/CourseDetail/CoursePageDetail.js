@@ -12,6 +12,9 @@ import { fetchCategoriesByID } from "api/apiAdmin";
 import PageLearn from "./components/PageLearn";
 import PageDesReq from "./components/pageDesRe";
 import CourseContent from "./components/CourseContent";
+import Instructor from "./components/Instructor/PageInstructor";
+import Footer from "examples/Footer";
+import Reviews from "./components/Review";
 
 const CoursePageDetail = () => {
   const { slug } = useParams();
@@ -70,17 +73,23 @@ const CoursePageDetail = () => {
         <div className="container mx-auto py-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             <div className="col-span-12 md:col-span-8 space-y-6">
-              <div className="border-b-2 border-gray-200 pb-10 ">
+              <div className="border-b-2 border-gray-200 pb-5 ">
                 <CourseHeader course={course} user={instructor} category={category} />
               </div>
-              <div className="border-b-2 border-gray-200 pb-10 ">
+              <div className="border-b-2 border-gray-200 pb-5 ">
                 <PageLearn />
               </div>
-              <div className="border-b-2 border-gray-200 pb-10 ">
+              <div className="border-b-2 border-gray-200 pb-5 ">
                 <PageDesReq />
               </div>
-              <div className="border-b-2 border-gray-200 pb-10 ">
+              <div className="border-b-2 border-gray-200 pb-5 ">
                 <CourseContent course={course} enrollmentStatus={enrollmentStatus} />
+              </div>
+              <div className="border-b-2 border-gray-200 pb-5">
+                <Instructor />
+              </div>
+              <div className="border-b-2 border-gray-200 pb-5">
+                <Reviews />
               </div>
               <CommentForm />
             </div>
@@ -95,6 +104,7 @@ const CoursePageDetail = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </>
     </DashboardLayout>
   );

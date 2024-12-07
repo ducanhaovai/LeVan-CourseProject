@@ -114,7 +114,7 @@ export const fetchCourseTitleById = async (id) => {
 export const fetchCourseTitleBySlug = async (slug) => {
   try {
     const response = await axios.get(`${API_URL}/courses/${slug}`);
-    
+
     return response.data.data;
   } catch (error) {
     console.error("Error fetching course title:", error);

@@ -34,20 +34,26 @@ import {
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
+  setOpenConfiguratorChat,
 } from "context";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
+import { Popover } from "@mui/material";
+import ProfilesList from "examples/Lists/ProfilesList";
 
 function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useSoftUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, openConfiguratorChat } =
+    controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
   const [user, setUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElProfile, setAnchorElProfile] = useState(null);
+  const [anchorElChat, setAnchorElChat] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -77,11 +83,18 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
   const handleProfileMenuClose = () => {
-    setAnchorEl(null);
+    setAnchorElProfile(null);
   };
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorElProfile(event.currentTarget);
   };
+  const handleChatOpen = (event) => {
+    setAnchorElChat(event.currentTarget);
+  };
+  const handleChatClose = () => {
+    setAnchorElChat(null);
+  };
+
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -99,6 +112,7 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   };
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  const handleConfiguratorChatOpen = () => setOpenConfiguratorChat(dispatch, !openConfiguratorChat);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
 
@@ -139,6 +153,14 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
       />
     </Menu>
   );
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "chat-popover" : undefined;
 
   return (
     <AppBar
@@ -182,11 +204,9 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
                       variant="button"
                       fontWeight="medium"
                       color={light ? "white" : "dark"}
-                    >
-                      {user.last_name}
-                    </SoftTypography>
+                    ></SoftTypography>
                     <Menu
-                      anchorEl={anchorEl}
+                      anchorEl={anchorElProfile}
                       anchorOrigin={{
                         vertical: "bottom",
                         horizontal: "right",
@@ -195,7 +215,7 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
                         vertical: "top",
                         horizontal: "right",
                       }}
-                      open={Boolean(anchorEl)}
+                      open={Boolean(anchorElProfile)}
                       onClose={handleProfileMenuClose}
                     >
                       <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
@@ -242,6 +262,40 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
               >
                 <Icon>settings</Icon>
               </IconButton>
+              <div>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-haspopup="true"
+                  sx={navbarIconButton}
+                  onClick={handleChatOpen} // Mở Popover
+                >
+                  <Icon>message-circle</Icon>
+                </IconButton>
+                <Popover
+                  id={id}
+                  open={Boolean(anchorElChat)}
+                  anchorEl={anchorElChat}
+                  onClose={handleChatClose} // Đóng Popover
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  PaperProps={{
+                    style: {
+                      width: "400px", // Điều chỉnh kích thước popup
+                      maxHeight: "500px",
+                    },
+                  }}
+                  disableScrollLock={true}
+                >
+                  <ProfilesList title="Chat with Users" />
+                </Popover>
+              </div>
               <IconButton
                 size="small"
                 color="inherit"

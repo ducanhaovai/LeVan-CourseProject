@@ -21,7 +21,7 @@ const PageLearn = () => {
 
   return (
     <div className="container whitespace-nowrap ">
-      <h2 className="text-xl font-semibold mb-6">What you will learn</h2>
+      <h2 className="text-xl font-medium mb-6">What you will learn</h2>
       <div className="flex flex-col sm:flex-row justify-between gap-4">
         <ul className="flex-1 space-y-2">
           {learnItemsLeft.map((item, index) => (

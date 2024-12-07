@@ -50,7 +50,7 @@
   animation: lds-ellipsis3 0.6s infinite;
 }
 .css-6g765d-MuiToolbar-root {
-  padding-left: 0px !important;
+  padding-left: 16px !important;
 }
 .css-z8q62l {
   padding: 15px !important;
@@ -105,4 +105,13 @@
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+.message-bubble {
+  max-width: 80%;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+textarea {
+  background-color: inherit;
 }

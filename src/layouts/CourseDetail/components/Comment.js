@@ -1,150 +1,123 @@
 "use client";
 
-import * as z from "zod";
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { MessageSquare } from "lucide-react";
-
-const Button = ({ className, ...props }) => (
-  <button
-    className={`px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition-colors duration-200 rounded-3xl ${className}`}
-    {...props}
-  />
-);
-
-const Input = React.forwardRef(({ className, ...props }, ref) => (
-  <input
-    ref={ref}
-    className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 ${className}`}
-    {...props}
-  />
-));
-
-const Textarea = React.forwardRef(({ className, ...props }, ref) => (
-  <textarea
-    ref={ref}
-    className={`w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 ${className}`}
-    {...props}
-  />
-));
-const Checkbox = React.forwardRef(({ className, ...props }, ref) => (
-  <input
-    ref={ref}
-    type="checkbox"
-    className={`form-checkbox h-5 w-5 rounded border-gray-300 focus:ring-orange-500 ${className}`}
-    {...props}
-  />
-));
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  comment: z.string().min(10, {
-    message: "Comment must be at least 10 characters.",
-  }),
-  saveDetails: z.boolean().default(false),
-});
+import { useState } from "react";
+import { Star } from "lucide-react";
+import { Button } from "./Instructor/Button";
 
 export default function CommentForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [hoveredRating, setHoveredRating] = useState(0);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      comment: "",
-      saveDetails: false,
-    },
-  });
-
-  const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    reset();
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
 
   return (
-    <div className="w-full max-w-2xl rounded-lg   ">
-      <div className="flex items-center gap-2 mb-6">
-        <MessageSquare className="h-6 w-6 " />
-        <h2 className="text-2xl font-bold text-gray-800">Leave A Comment</h2>
-      </div>
-      <p className="text-sm text-gray-600 mb-6">
+    <div className="p-4 sm:p-6 ">
+      <h2 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6">Leave A Reply</h2>
+      <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
         Your email address will not be published. Required fields are marked *
       </p>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Name *
-          </label>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field }) => <Input {...field} id="name" placeholder="Your name" />}
-          />
-          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Ratings */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Ratings</label>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((index) => (
+              <button
+                key={index}
+                type="button"
+                className="p-0 hover:scale-110 transition-transform"
+                onMouseEnter={() => setHoveredRating(index)}
+                onMouseLeave={() => setHoveredRating(0)}
+                onClick={() => setRating(index)}
+              >
+                <Star
+                  className={`w-5 h-5 ${
+                    index <= (hoveredRating || rating)
+                      ? "fill-primary text-primary"
+                      : "text-muted-foreground"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email *
-          </label>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <Input {...field} id="email" type="email" placeholder="your@email.com" />
-            )}
-          />
-          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
+        {/* Input Fields */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label htmlFor="firstName" className="block text-sm font-medium">
+              First Name
+            </label>
+            <input
+              id="firstName"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="phone" className="block text-sm font-medium">
+              Phone
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="title" className="block text-sm font-medium">
+              Title
+            </label>
+            <input
+              id="title"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
+          </div>
         </div>
 
-        <div>
-          <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
-            Comment *
+        {/* Comment Textarea */}
+        <div className="space-y-2">
+          <label htmlFor="comment" className="block text-sm font-medium">
+            Comment
           </label>
-          <Controller
-            name="comment"
-            control={control}
-            render={({ field }) => (
-              <Textarea {...field} id="comment" rows={4} placeholder="Write your comment here..." />
-            )}
+          <textarea
+            id="comment"
+            required
+            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 min-h-[150px]"
           />
-          {errors.comment && <p className="mt-1 text-sm text-red-600">{errors.comment.message}</p>}
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Controller
-            name="saveDetails"
-            control={control}
-            render={({ field }) => (
-              <Checkbox
-                id="saveDetails"
-                checked={field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
-              />
-            )}
+        {/* Remember Me */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="remember"
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
           />
-          <label htmlFor="saveDetails" className="text-sm text-gray-700">
-            Save my name and email in this browser for the next time I comment
+          <label htmlFor="remember" className="text-sm">
+            Save my name, email, and website in this browser for the next time I comment.
           </label>
         </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
-          {isSubmitting ? "Posting..." : "Post Comment"}
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          className="w-full bg-[#1d1b48] hover:bg-[#1d1b48]/90 text-white text-sm sm:text-base py-2 sm:py-3"
+        >
+          Post Comment →
         </Button>
       </form>
     </div>

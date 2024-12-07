@@ -22,15 +22,15 @@ import ConfiguratorRoot from "examples/Configurator/ConfiguratorRoot";
 // Soft UI Dashboard React context
 import {
   useSoftUIController,
-  setOpenConfigurator,
+  setOpenConfiguratorChat,
   setTransparentSidenav,
   setFixedNavbar,
   setSidenavColor,
 } from "context";
 
-function Configurator() {
+function ConfiguratorChat() {
   const [controller, dispatch] = useSoftUIController();
-  const { openConfigurator, transparentSidenav, fixedNavbar, sidenavColor } = controller;
+  const { openConfiguratorChat, transparentSidenav, fixedNavbar, sidenavColor } = controller;
   const [disabled, setDisabled] = useState(false);
   const sidenavColors = ["primary", "dark", "info", "success", "warning", "error"];
 
@@ -49,7 +49,7 @@ function Configurator() {
     return () => window.removeEventListener("resize", handleDisabled);
   }, []);
 
-  const handleCloseConfigurator = () => setOpenConfigurator(dispatch, false);
+  const handleCloseConfiguratorChat = () => setOpenConfiguratorChat(dispatch, false);
   const handleTransparentSidenav = () => setTransparentSidenav(dispatch, true);
   const handleWhiteSidenav = () => setTransparentSidenav(dispatch, false);
   const handleFixedNavbar = () => setFixedNavbar(dispatch, !fixedNavbar);
@@ -68,7 +68,7 @@ function Configurator() {
   });
 
   return (
-    <ConfiguratorRoot variant="permanent" ownerState={{ openConfigurator }}>
+    <ConfiguratorRoot variant="permanent" ownerState={{ openConfigurator: openConfiguratorChat }}>
       <SoftBox
         display="flex"
         justifyContent="space-between"
@@ -93,7 +93,7 @@ function Configurator() {
             cursor: "pointer",
             mt: 2,
           })}
-          onClick={handleCloseConfigurator}
+          onClick={handleCloseConfiguratorChat}
         >
           close
         </Icon>
@@ -180,9 +180,48 @@ function Configurator() {
         </SoftBox>
 
         <Divider />
+
+        <SoftBox mt={3} mb={2}>
+          <SoftBox mb={2}>
+            <SoftButton
+              component={Link}
+              href="https://www.creative-tim.com/product/soft-ui-dashboard-react"
+              target="_blank"
+              rel="noreferrer"
+              color="dark"
+              variant="gradient"
+              fullWidth
+            >
+              free download
+            </SoftButton>
+          </SoftBox>
+          <SoftButton
+            component={Link}
+            href="https://www.creative-tim.com/learning-lab/react/quick-start/soft-ui-dashboard/"
+            target="_blank"
+            rel="noreferrer"
+            color="dark"
+            variant="outlined"
+            fullWidth
+          >
+            view documentation
+          </SoftButton>
+        </SoftBox>
+        <SoftBox display="flex" justifyContent="center">
+          <a
+            className="github-button"
+            href="https://github.com/creativetimofficial/soft-ui-dashboard-react"
+            data-icon="octicon-star"
+            data-size="large"
+            data-show-count="true"
+            aria-label="Star creativetimofficial/soft-ui-dashboard-react on GitHub"
+          >
+            Star
+          </a>
+        </SoftBox>
         <SoftBox mt={3} textAlign="center">
           <SoftBox mb={0.5}>
-            <SoftTypography variant="h6">Thank you for sharing!</SoftTypography>
+            <SoftTypography variant="h6">Thank you for sharing!aaaaaaaaaaaa</SoftTypography>
           </SoftBox>
 
           <SoftBox display="flex" justifyContent="center">
@@ -215,4 +254,4 @@ function Configurator() {
   );
 }
 
-export default Configurator;
+export default ConfiguratorChat;

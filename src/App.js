@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,7 +7,6 @@ import SoftBox from "components/SoftBox";
 import Sidenav from "examples/Sidenav";
 import Configurator from "examples/Configurator";
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
 import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
@@ -15,6 +14,9 @@ import routes from "routes";
 import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import brand from "assets/images/logos/logoLevan.png";
 import LoadingSpinner from "hook/LoadingSpinner";
+import { ChatProvider } from "hook/ChatContext";
+import ChatDock from "layouts/Chat/components/ChatDock";
+import { NotificationProvider } from "hook/NotificationContext";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -22,7 +24,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
-  const [isLoading, setIsLoading] = useState(true); // Set initial state to true
+  const [isLoading, setIsLoading] = useState(true);
 
   // Cache for the rtl
   useMemo(() => {
@@ -62,9 +64,9 @@ export default function App() {
     setIsLoading(true);
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000); // Set delay to 2 seconds (2000ms)
+    }, 1000);
 
-    return () => clearTimeout(timer); // Clear the timeout on unmount
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   const getRoutes = (allRoutes) => {
@@ -77,7 +79,7 @@ export default function App() {
 
   const configsButton = (
     <SoftBox
-      display="flex"
+      display="none"
       justifyContent="center"
       alignItems="center"
       width="3.5rem"
@@ -94,21 +96,25 @@ export default function App() {
       onClick={handleConfiguratorOpen}
     >
       <Icon fontSize="default" color="inherit">
-        settings
+        setting
       </Icon>
     </SoftBox>
+  );
+
+  // Determine if we should show ChatDock
+  const shouldShowChatDock = !["/authentication/sign-in", "/authentication/sign-up"].includes(
+    pathname
   );
 
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
-  return direction === "rtl" ? (
-    <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className={`fade-in ${!isLoading ? "show" : ""}`}>
-          {" "}
+  return (
+    <NotificationProvider>
+      <ChatProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
           {layout === "dashboard" && (
             <>
               <Sidenav
@@ -123,36 +129,13 @@ export default function App() {
               {configsButton}
             </>
           )}
-          {layout === "vr" && <Configurator />}
           <Routes>
             {getRoutes(routes)}
             <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
           </Routes>
-        </div>
-      </ThemeProvider>
-    </CacheProvider>
-  ) : (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand={brand}
-            brandName="Le Van Academy"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-          <Configurator />
-          {configsButton}
-        </>
-      )}
-      {layout === "vr" && <Configurator />}
-      <Routes>
-        {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
-      </Routes>
-    </ThemeProvider>
+          {shouldShowChatDock && <ChatDock />}
+        </ThemeProvider>
+      </ChatProvider>
+    </NotificationProvider>
   );
 }

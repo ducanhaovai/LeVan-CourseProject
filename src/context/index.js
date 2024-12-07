@@ -1,7 +1,4 @@
-  
 import { createContext, useContext, useReducer, useMemo } from "react";
-
-
 
 // The Soft UI Dashboard PRO Material main context
 const SoftUI = createContext(null);
@@ -30,6 +27,9 @@ function reducer(state, action) {
     case "OPEN_CONFIGURATOR": {
       return { ...state, openConfigurator: action.value };
     }
+    case "OPEN_CONFIGURATOR_CHAT": {
+      return { ...state, openConfiguratorChat: action.value };
+    }
     case "DIRECTION": {
       return { ...state, direction: action.value };
     }
@@ -51,6 +51,7 @@ function SoftUIControllerProvider({ children }) {
     transparentNavbar: true,
     fixedNavbar: true,
     openConfigurator: false,
+    openConfiguratorChat: false,
     direction: "ltr",
     layout: "dashboard",
   };
@@ -75,7 +76,6 @@ function useSoftUIController() {
 
 // Typechecking props for the SoftUIControllerProvider
 
-
 // Context module functions
 const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
 const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
@@ -83,11 +83,14 @@ const setSidenavColor = (dispatch, value) => dispatch({ type: "SIDENAV_COLOR", v
 const setTransparentNavbar = (dispatch, value) => dispatch({ type: "TRANSPARENT_NAVBAR", value });
 const setFixedNavbar = (dispatch, value) => dispatch({ type: "FIXED_NAVBAR", value });
 const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGURATOR", value });
+const setOpenConfiguratorChat = (dispatch, value) =>
+  dispatch({ type: "OPEN_CONFIGURATOR_CHAT", value });
 const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 
 export {
   SoftUIControllerProvider,
+  setOpenConfiguratorChat,
   useSoftUIController,
   setMiniSidenav,
   setTransparentSidenav,

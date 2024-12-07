@@ -9,7 +9,7 @@ export default function PageDesReq() {
   return (
     <div className="space-y-8">
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold mb-6">Requirements</h2>
+        <h2 className="text-xl font-medium mb-6">Requirements</h2>
         <ul className="space-y-2 list-disc pl-5">
           <li className="text-sm text-muted-foreground">
             There are no skill prerequisites for this course although it&apos;s helpful if you are
@@ -29,7 +29,7 @@ export default function PageDesReq() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold mb-6">About This Course</h2>
+        <h2 className="text-xl font-medium mb-6">About This Course</h2>
         <div
           className={`space-y-4 overflow-hidden transition-all duration-300 ${
             isExpanded ? "max-h-[1000px]" : "max-h-24"

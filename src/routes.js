@@ -1,4 +1,3 @@
-
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
@@ -23,6 +22,7 @@ import CourseListing from "layouts/CourseStudent";
 import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
 import CourseCheckout from "layouts/checkout/CourseCheckout";
 import CourseContent from "layouts/courseContents";
+import Chat from "layouts/Chat";
 
 const routes = [
   {
@@ -144,6 +144,15 @@ const routes = [
     icon: <SpaceShip size="12px" />,
     component: <CourseContent />,
     element: <CourseContent />,
+    noCollapse: true,
+  },
+  {
+    name: "ChatUser",
+    key: "ChatUser",
+    route: "/chat/:roomId",
+    icon: <SpaceShip size="12px" />,
+    component: <Chat />,
+    element: <Chat />,
     noCollapse: true,
   },
 ];
