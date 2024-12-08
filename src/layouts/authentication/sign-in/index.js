@@ -14,6 +14,7 @@ import SoftButton from "components/SoftButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import curved9 from "assets/images/curved-images/curved-6.jpg";
 import axiosInstance from "hook/AxiosInterceptor";
+import usePrevent from "hook/PreventHandler";
 
 function SignIn() {
   const [rememberMe, setRememberMe] = useState(true);
@@ -29,6 +30,7 @@ function SignIn() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL_AUTH;
+  usePrevent();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateInputs()) return;

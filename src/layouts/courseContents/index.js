@@ -21,6 +21,8 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useParams } from "react-router-dom";
 import { fetchCourseBySlug } from "api/apiAdmin";
+import ReactPlayer from "react-player";
+import usePrevent from "hook/PreventHandler";
 
 export default function CourseContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -55,7 +57,7 @@ export default function CourseContent() {
     fetchCourseData();
   }, [slug]);
   console.count("Render count");
-
+  usePrevent()
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -156,14 +158,14 @@ export default function CourseContent() {
           >
             <div className="aspect-video bg-black mb-4 rounded-lg flex items-center justify-center text-white">
               {currentLecture?.content_type === "video" && (
-                <iframe
+                <ReactPlayer
                   className="w-full h-full"
                   src={currentLecture.content_url}
                   title="Lecture Content"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
-                ></iframe>
+                ></ReactPlayer>
               )}
             </div>
 
