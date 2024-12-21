@@ -18,6 +18,7 @@ import SoftInput from "components/SoftInput";
 // Soft UI Dashboard React examples
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
+import { io } from "socket.io-client";
 
 // Custom styles for DashboardNavbar
 import {
@@ -42,6 +43,7 @@ import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import { Popover } from "@mui/material";
 import ProfilesList from "examples/Lists/ProfilesList";
+import { fetchNotifications } from "api/apiNotifications";
 
 function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const [navbarType, setNavbarType] = useState();
@@ -54,7 +56,37 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const [anchorElChat, setAnchorElChat] = useState(null);
+
   const navigate = useNavigate();
+  const socket = io("http://localhost:3001");
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const { id, role } = decodedToken;
+        if (role === 1) {
+          fetchNotifications(id)
+            .then((data) => {
+              if (data && data.success) {
+                setNotifications(data.data);
+              } else {
+                setNotifications([]);
+              }
+            })
+            .catch((error) => {
+              console.error("Fetching notifications failed", error);
+              setNotifications([]);
+            });
+        }
+      } catch (error) {
+        console.error("Invalid token", error);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -82,6 +114,11 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
 
     return () => window.removeEventListener("scroll", handleTransparentNavbar);
   }, [dispatch, fixedNavbar]);
+  const handleNotificationClick = (index) => {
+    setNotifications((prev) =>
+      prev.map((notification, i) => (i === index ? { ...notification, read: true } : notification))
+    );
+  };
   const handleProfileMenuClose = () => {
     setAnchorElProfile(null);
   };
@@ -116,43 +153,34 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
 
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
-      sx={{ mt: 2 }}
-    >
-      <NotificationItem
-        image={<img src={team2} alt="person" />}
-        title={["New message", "from Laur"]}
-        date="13 minutes ago"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
-        image={<img src={logoSpotify} alt="person" />}
-        title={["New album", "by Travis Scott"]}
-        date="1 day"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
-        color="secondary"
-        image={
-          <Icon fontSize="small" sx={{ color: ({ palette: { white } }) => white.main }}>
-            payment
-          </Icon>
-        }
-        title={["", "Payment successfully completed"]}
-        date="2 days"
-        onClick={handleCloseMenu}
-      />
-    </Menu>
-  );
+  const renderMenu = () => {
+    return (
+      <Menu
+        anchorEl={openMenu}
+        anchorReference={null}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={Boolean(openMenu)}
+        onClose={handleCloseMenu}
+        sx={{ mt: 2 }}
+      >
+        {/* notification */}
+        <h2 className="text-lg font-semibold">Notifications</h2>
+        {notifications.map((notification, index) => (
+          <NotificationItem
+            key={index}
+            title={notification.message}
+            date={new Date(notification.createdAt).toLocaleString()}
+            onClick={() => handleNotificationClick(index)}
+            isRead={notification.read}
+          />
+        ))}
+      </Menu>
+    );
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -302,10 +330,22 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
                 sx={navbarIconButton}
                 aria-controls="notification-menu"
                 aria-haspopup="true"
-                variant="contained"
                 onClick={handleOpenMenu}
               >
                 <Icon className={light ? "text-white" : "text-dark"}>notifications</Icon>
+                {Array.isArray(notifications) && notifications.some((n) => !n.read) && (
+                  <SoftBox
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                    }}
+                  />
+                )}
               </IconButton>
               {renderMenu()}
             </SoftBox>

@@ -211,3 +211,14 @@ export const deleteCategory = async (categoryId, token) => {
     },
   });
 };
+export const fetchUserEnrolledCourses = async (token) => {
+  try {
+    const response = await axiosInstance.get(`${API_URL}/courses/enrolled`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching enrolled courses:", error);
+    throw error;
+  }
+};

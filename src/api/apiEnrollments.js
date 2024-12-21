@@ -2,11 +2,11 @@ import axiosInstance from "hook/AxiosInterceptor";
 
 const BASE_URL = process.env.REACT_APP_Enrollments_API_URL;
 
-export const enrollCourse = async (user_id, courseSlug) => {
+export const enrollCourse = async (user_id, courseSlug, course_id) => {
   try {
     const response = await axiosInstance.post(`${BASE_URL}/enroll`, {
       user_id,
-      course_slug: courseSlug, 
+      course_id: courseSlug,
     });
     return response.data;
   } catch (error) {
@@ -34,6 +34,17 @@ export const checkEnrollmentStatus = async (id, token) => {
     return response.data;
   } catch (error) {
     console.error("Error checking enrollment status:", error);
+    throw error;
+  }
+};
+export const fetchUserEnrolledCourses = async (token) => {
+  try {
+    const response = await axiosInstance.get(`${BASE_URL}/enrolled`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching enrolled courses:", error);
     throw error;
   }
 };

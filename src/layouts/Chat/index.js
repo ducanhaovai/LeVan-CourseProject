@@ -105,7 +105,7 @@ function Chat({ roomId, peerName }) {
   }, [messageText]);
 
   return (
-    <div className="w-full sm:w-[360px] h-full bg-white text-black rounded-lg shadow-lg flex flex-col max-h-[480px] animate-fade-up">
+    <div className="h-[480px] sm:w-[360px]  bg-white text-black rounded-lg shadow-lg flex flex-col max-h-[480px] animate-fade-up">
       <ChatHeader peerName={peerName} roomId={roomId} />
       <div className="flex-1 overflow-y-auto" ref={chatAreaRef}>
         <MessageList messages={messages} />

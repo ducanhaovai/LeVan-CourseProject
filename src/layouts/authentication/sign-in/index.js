@@ -41,45 +41,73 @@ function SignIn() {
         password,
       });
 
-      const { accessToken, role } = response.data;
+      const { accessToken } = response.data;
 
       if (accessToken) {
+        console.log("Token received:", accessToken);
         localStorage.setItem("token", accessToken);
 
-        const decoded = jwtDecode(accessToken);
+        try {
+          const decoded = jwtDecode(accessToken);
+          console.log("Decoded token:", decoded);
 
-        if (decoded.role === 1) {
-          navigate("/dashboard");
-        } else if (decoded.role === 2) {
-          navigate("/instructor-dashboard");
-        } else if (decoded.role === 3) {
-          navigate("/theme");
-        } else {
-          navigate("/");
+          if (decoded.exp) {
+            const currentTime = Date.now() / 1000;
+            console.log("Token expiry time:", decoded.exp);
+            console.log("Current time:", currentTime);
+
+            if (decoded.exp < currentTime) {
+              console.error("Token expired after login.");
+              setError("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
+              setOpenSnackbar(true);
+              localStorage.removeItem("token");
+              return;
+            }
+          }
+
+          switch (decoded.role) {
+            case 1:
+              navigate("/home");
+              break;
+            case 2:
+              navigate("/instructor-dashboard");
+              break;
+            case 3:
+              navigate("/home");
+              break;
+            default:
+              navigate("/");
+          }
+        } catch (decodeError) {
+          console.error("Token decoding failed:", decodeError);
+          setError("Không thể giải mã token.");
+          setOpenSnackbar(true);
         }
       } else {
-        setError("Login failed: No token received");
+        setError("Không nhận được token từ máy chủ.");
         setOpenSnackbar(true);
       }
     } catch (err) {
-      // Handle different error scenarios
+      console.error("Login error:", err);
+
       if (err.response) {
-        if (err.response.status === 401) {
-          setError("Sai email hoặc mật khẩu. Vui lòng kiểm tra lại.");
-        } else if (err.response.status === 404) {
-          setError("Lỗi 404: Không tìm thấy tài nguyên. Vui lòng kiểm tra đường dẫn.");
-        } else if (err.response.status === 400) {
-          setError("Yêu cầu không hợp lệ. Vui lòng kiểm tra lại thông tin đăng nhập.");
-        } else {
-          setError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
+        switch (err.response.status) {
+          case 401:
+            setError("Sai email hoặc mật khẩu.");
+            break;
+          case 404:
+            setError("Không tìm thấy tài nguyên.");
+            break;
+          case 400:
+            setError("Yêu cầu không hợp lệ.");
+            break;
+          default:
+            setError("Đã xảy ra lỗi không xác định.");
         }
       } else {
-        setError("Không thể kết nối với máy chủ. Vui lòng kiểm tra kết nối mạng.");
+        setError("Không thể kết nối với máy chủ.");
       }
       setOpenSnackbar(true);
-      if (process.env.NODE_ENV === "development") {
-        console.error(err);
-      }
     }
   };
 
@@ -109,25 +137,39 @@ function SignIn() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Token from localStorage:", token);
+
     if (token) {
       try {
         const decoded = jwtDecode(token);
+        console.log("Decoded token on load:", decoded);
+
         const currentTime = Date.now() / 1000;
+        console.log("Current time on load:", currentTime);
+
         if (decoded.exp && decoded.exp < currentTime) {
+          console.error("Token expired on load.");
           localStorage.removeItem("token");
           setError("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
           return;
         }
 
-        if (decoded.role === 1) {
-          navigate("/dashboard");
-        } else if (decoded.role === 2) {
-          navigate("/instructor-dashboard");
-        } else if (decoded.role === 3) {
-          navigate("/theme");
+        switch (decoded.role) {
+          case 1:
+            navigate("/home");
+            break;
+          case 2:
+            navigate("/instructor-dashboard");
+            break;
+          case 3:
+            navigate("/home");
+            break;
+          default:
+            navigate("/");
         }
-      } catch (err) {
-        setError("Token decoding failed:", err);
+      } catch (decodeError) {
+        console.error("Token decoding failed on load:", decodeError);
+        setError("Không thể giải mã token.");
       }
     }
   }, [navigate]);

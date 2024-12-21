@@ -36,10 +36,8 @@ function Overview() {
     <DashboardLayout>
       <Header />
       <SoftBox mt={5} mb={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} xl={4}>
-            <PlatformSettings />
-          </Grid>
+        {/* Info user */}
+        <Grid container spacing={2}>
           <Grid item xs={12} md={6} xl={4}>
             <ProfileInfoCard
               title="profile information"
@@ -75,6 +73,7 @@ function Overview() {
           </Grid>
         </Grid>
       </SoftBox>
+      {/* Course enrolent */}
       <SoftBox mb={3}>
         <Card>
           <SoftBox pt={2} px={2}>

@@ -50,6 +50,12 @@ const CourseContent = ({ course, enrollmentStatus }) => {
                           <CheckCircle2 className="h-4 w-4 text-blue-600 mr-2" />
                         </a>
                       )}
+                      {content.content_type === "application/pdf" && (
+                        <a href={content.content_url} target="_blank" rel="noopener noreferrer">
+                          <FileText className="h-4 w-4 text-gray-400 mr-2" />
+                          View PDF
+                        </a>
+                      )}
                       <div className="flex-1">
                         <p className="text-sm">{content.title}</p>
                         <p className="text-xs text-gray-500">{content.description}</p>

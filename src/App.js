@@ -18,6 +18,9 @@ import { ChatProvider } from "hook/ChatContext";
 import ChatDock from "layouts/Chat/components/ChatDock";
 import { NotificationProvider } from "hook/NotificationContext";
 
+import { jwtDecode } from "jwt-decode";
+import checkTokenExpiration from "hook/checkTokenExpiration";
+
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor } = controller;
@@ -59,7 +62,6 @@ export default function App() {
     document.body.setAttribute("dir", direction);
   }, [direction]);
 
-  // Manage loading spinner on route change
   useEffect(() => {
     setIsLoading(true);
     const timer = setTimeout(() => {
@@ -68,9 +70,31 @@ export default function App() {
 
     return () => clearTimeout(timer);
   }, [pathname]);
-
+  useEffect(() => {
+    checkTokenExpiration();
+  }, [pathname]);
   const getRoutes = (allRoutes) => {
+    const token = localStorage.getItem("token");
+    let userRole = null;
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        userRole = decoded.role;
+      } catch (err) {
+        console.error("Token decoding failed:", err);
+      }
+    }
+
     return allRoutes.map((route) => {
+      if (
+        route.element?.type?.name === "ProtectedRoute" &&
+        route.element?.props?.role === 1 &&
+        userRole !== 1
+      ) {
+        return null;
+      }
+
       return route.route ? (
         <Route path={route.route} element={route.element} key={route.key} />
       ) : null;
@@ -130,8 +154,9 @@ export default function App() {
             </>
           )}
           <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
             {getRoutes(routes)}
-            <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+            <Route path="*" element={<Navigate to="/authentication/sign-in" replace />} />
           </Routes>
           {shouldShowChatDock && <ChatDock />}
         </ThemeProvider>

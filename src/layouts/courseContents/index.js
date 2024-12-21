@@ -57,7 +57,7 @@ export default function CourseContent() {
     fetchCourseData();
   }, [slug]);
   console.count("Render count");
-  usePrevent()
+  usePrevent();
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -156,16 +156,25 @@ export default function CourseContent() {
               isSidebarOpen ? "" : "ml-0"
             } transition-margin duration-300`}
           >
-            <div className="aspect-video bg-black mb-4 rounded-lg flex items-center justify-center text-white">
+            <div className="aspect-video  mb-4 rounded-lg flex items-center justify-center text-white">
               {currentLecture?.content_type === "video" && (
                 <ReactPlayer
-                  className="w-full h-full"
-                  src={currentLecture.content_url}
+                  url={currentLecture.content_url}
                   title="Lecture Content"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
+                  controls={true}
+                  playing={true}
+                  width="100%"
+                  height="100%"
                 ></ReactPlayer>
+              )}
+              {currentLecture?.content_type === "document" && (
+                <iframe
+                  src={`${currentLecture.content_url}#toolbar=0`}
+                  width="100%"
+                  height="600px"
+                  allow="fullscreen"
+                  style={{ border: "none" }}
+                ></iframe>
               )}
             </div>
 

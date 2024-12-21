@@ -1,10 +1,16 @@
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
-
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import ManagerCourse from "layouts/course";
+import CourseListing from "layouts/CourseStudent";
+import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
+import CourseCheckout from "layouts/checkout/CourseCheckout";
+import CourseContent from "layouts/courseContents";
+import Chat from "layouts/Chat";
+import Student from "layouts/student";
 
 import Shop from "examples/Icons/Shop";
 import Office from "examples/Icons/Office";
@@ -13,32 +19,24 @@ import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/CreditCard";
-import ProtectedRoute from "./hook/ProtectedRoute";
-import Student from "layouts/student";
 import { Book } from "lucide-react";
-import ManagerCourse from "layouts/course";
-import CourseListing from "layouts/CourseStudent";
-
-import CoursePageDetail from "layouts/CourseDetail/CoursePageDetail";
-import CourseCheckout from "layouts/checkout/CourseCheckout";
-import CourseContent from "layouts/courseContents";
-import Chat from "layouts/Chat";
+import ProtectedRoute from "./hook/ProtectedRoute";
 
 const routes = [
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "dashboard",
+  //   route: "/dashboard",
+  //   icon: <Shop size="12px" />,
+  //   element: <ProtectedRoute element={<Dashboard />} role={1} />,
+  //   noCollapse: true,
+  // },
   {
     type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
-    route: "/dashboard",
-    icon: <Shop size="12px" />,
-    element: <ProtectedRoute element={<Dashboard />} role={1} />,
-    noCollapse: true,
-  },
-  {
-    type: "collapse",
-    name: "Student",
-    key: "student",
-    route: "/student",
+    name: "Home",
+    key: "home",
+    route: "/home",
     icon: <Cube size="12px" />,
     component: <Student />,
     element: <Student />,
@@ -84,7 +82,6 @@ const routes = [
     element: <CourseListing />,
     noCollapse: true,
   },
-
   { type: "title", title: "Account Pages", key: "account-pages" },
   {
     type: "collapse",
@@ -106,7 +103,6 @@ const routes = [
     element: <SignIn />,
     noCollapse: true,
   },
-
   {
     type: "collapse",
     name: "Sign Up",
@@ -117,7 +113,6 @@ const routes = [
     element: <SignUp />,
     noCollapse: true,
   },
-
   {
     name: "Course Detail",
     key: "coursedetail",
@@ -136,7 +131,6 @@ const routes = [
     element: <CourseCheckout />,
     noCollapse: true,
   },
-
   {
     name: "Course contents",
     key: "coursecontent",

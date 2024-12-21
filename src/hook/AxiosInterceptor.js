@@ -18,7 +18,7 @@ axiosInstance.interceptors.response.use(
 
       localStorage.removeItem("token");
 
-      browserHistory.push("/login");
+      browserHistory.push("/authentication/sign-in");
       window.location.reload();
 
       return Promise.reject(error);
