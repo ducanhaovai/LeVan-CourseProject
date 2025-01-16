@@ -104,7 +104,7 @@ export const fetchCourseBySlug = async (slug, token) => {
 
 export const fetchCourseTitleById = async (id) => {
   try {
-    const response = await axiosInstance.get(`http://localhost:3001/courses/${id}`);
+    const response = await axiosInstance.get(`https://node.levanacademy.com/courses/${id}`);
     return response.data.title;
   } catch (error) {
     console.error("Error fetching course title:", error);

@@ -56,11 +56,12 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const [anchorElChat, setAnchorElChat] = useState(null);
-
+  const [userID, setUserID] = useState(null);
   const navigate = useNavigate();
-  const socket = io("http://localhost:3001");
+  const socket = io("https://node.levanacademy.com");
   const [notifications, setNotifications] = useState([]);
-
+  const [enrollmentNotifications, setEnrollmentNotifications] = useState([]);
+  const [registrationNotifications, setRegistrationNotifications] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -71,7 +72,7 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
           fetchNotifications(id)
             .then((data) => {
               if (data && data.success) {
-                setNotifications(data.data);
+                setNotifications(data.data[0]);
               } else {
                 setNotifications([]);
               }
@@ -81,6 +82,32 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
               setNotifications([]);
             });
         }
+      } catch (error) {
+        console.error("Invalid token", error);
+      }
+    }
+  }, []);
+  useEffect(() => {
+    if (userID) {
+      async function loadNotifications() {
+        const result = await fetchNotifications(userID);
+        if (result.success) {
+          setNotifications(result.data);
+        } else {
+          console.error(result.error);
+        }
+      }
+      loadNotifications();
+    }
+  }, [userID]);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const { id } = decodedToken;
+        setUserID(id);
+        setUser(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);
       }
@@ -120,6 +147,7 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
     );
   };
   const handleProfileMenuClose = () => {
+    navigate(`/profile`);
     setAnchorElProfile(null);
   };
   const handleProfileMenuOpen = (event) => {
@@ -164,19 +192,33 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
         }}
         open={Boolean(openMenu)}
         onClose={handleCloseMenu}
+        PaperProps={{
+          style: {
+            maxHeight: 300, // Set a maximum height for the menu
+            overflow: "auto", // Make the menu scrollable
+          },
+        }}
         sx={{ mt: 2 }}
       >
         {/* notification */}
         <h2 className="text-lg font-semibold">Notifications</h2>
-        {notifications.map((notification, index) => (
-          <NotificationItem
-            key={index}
-            title={notification.message}
-            date={new Date(notification.createdAt).toLocaleString()}
-            onClick={() => handleNotificationClick(index)}
-            isRead={notification.read}
-          />
-        ))}
+        {notifications.slice(0, 6).map((notification, index) => {
+          const parsedDate = new Date(notification.created_at);
+          const displayDate = isNaN(parsedDate.getTime())
+            ? "Invalid Date"
+            : parsedDate.toLocaleString();
+
+          return (
+            <NotificationItem
+              key={index}
+              title={notification.message}
+              date={displayDate}
+              email={notification.email}
+              onClick={() => handleNotificationClick(index)}
+              isRead={notification.read}
+            />
+          );
+        })}
       </Menu>
     );
   };

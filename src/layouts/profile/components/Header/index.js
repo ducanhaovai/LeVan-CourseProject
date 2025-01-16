@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 
 // @mui material components
@@ -26,10 +24,10 @@ import Settings from "examples/Icons/Settings";
 import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
-import burceMars from "assets/images/bruce-mars.jpg";
+import burceMars from "assets/images/user/user4.jpg";
 import curved0 from "assets/images/curved-images/curved0.jpg";
 
-function Header() {
+function Header({ first_name = "First Name", last_name = "Last Name", userTitle = "Role" }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
 
@@ -54,7 +52,7 @@ function Header() {
   }, [tabsOrientation]);
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
-
+  const fullName = `${first_name} ${last_name}`;
   return (
     <SoftBox position="relative">
       <DashboardNavbar absolute light />
@@ -100,26 +98,12 @@ function Header() {
           <Grid item>
             <SoftBox height="100%" mt={0.5} lineHeight={1}>
               <SoftTypography variant="h5" fontWeight="medium">
-                Alex Thompson
+                {fullName.trim() || "N/A"}
               </SoftTypography>
               <SoftTypography variant="button" color="text" fontWeight="medium">
-                CEO / Co-Founder
+                {userTitle}
               </SoftTypography>
             </SoftBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-            <AppBar position="static">
-              <Tabs
-                orientation={tabsOrientation}
-                value={tabValue}
-                onChange={handleSetTabValue}
-                sx={{ background: "transparent" }}
-              >
-                <Tab label="App" icon={<Cube />} />
-                <Tab label="Message" icon={<Document />} />
-                <Tab label="Settings" icon={<Settings />} />
-              </Tabs>
-            </AppBar>
           </Grid>
         </Grid>
       </Card>

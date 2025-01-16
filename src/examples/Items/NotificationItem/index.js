@@ -12,7 +12,7 @@ const NotificationItem = forwardRef(
       ref={ref}
       sx={(theme) => ({
         ...menuItem(theme),
-        backgroundColor: !isRead ? theme.palette.action.hover : "inherit", // Đổi nền nếu chưa đọc
+        backgroundColor: !isRead ? theme.palette.action.hover : "inherit",
       })}
     >
       <SoftBox

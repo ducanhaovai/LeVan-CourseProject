@@ -37,6 +37,4 @@ function DefaultNavbarMobile({ open, close }) {
   );
 }
 
-
-
 export default DefaultNavbarMobile;

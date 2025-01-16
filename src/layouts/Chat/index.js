@@ -20,7 +20,7 @@ const getCurrentUserId = () => {
   return null;
 };
 
-const socket = io("http://localhost:3001");
+const socket = io("https://node.levanacademy.com");
 
 function Chat({ roomId, peerName }) {
   const [messages, setMessages] = useState([]);

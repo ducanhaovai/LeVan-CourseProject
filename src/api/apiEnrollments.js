@@ -48,3 +48,15 @@ export const fetchUserEnrolledCourses = async (token) => {
     throw error;
   }
 };
+export const fetchAllUserEnrolledCourses = async (token) => {
+  try {
+    const response = await axiosInstance.get(`${BASE_URL}/user-enrollments`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("data", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching enrolled courses:", error);
+    throw error;
+  }
+};

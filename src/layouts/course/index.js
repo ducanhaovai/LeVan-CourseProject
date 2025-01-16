@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -18,6 +21,13 @@ import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+// Alert component for feedback
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function ManagerCourse() {
   const [users, setUsers] = useState([]);
@@ -28,6 +38,7 @@ function ManagerCourse() {
   const [error, setError] = useState("");
   const [editingCourse, setEditingCourse] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -52,6 +63,7 @@ function ManagerCourse() {
         setLoading(false);
       } catch (error) {
         setError("Error fetching data");
+        setSnackbar({ open: true, message: "Failed to fetch data", severity: "error" });
         setLoading(false);
       }
     };
@@ -72,9 +84,9 @@ function ManagerCourse() {
         prevCourses.map((course) => (course.id === editingCourse.id ? editingCourse : course))
       );
       setOpenEditModal(false);
-      alert("Course info updated successfully!");
+      setSnackbar({ open: true, message: "Course updated successfully", severity: "success" });
     } catch (error) {
-      alert("Failed to update course info.");
+      setSnackbar({ open: true, message: "Failed to update course", severity: "error" });
     }
   };
 
@@ -91,10 +103,14 @@ function ManagerCourse() {
     try {
       await deleteCourse(courseId, token || "");
       setCourses((prevCourses) => prevCourses.filter((course) => course.id !== courseId));
-      alert("Course deleted successfully!");
+      setSnackbar({ open: true, message: "Course deleted successfully", severity: "success" });
     } catch (error) {
-      alert("Failed to delete course.");
+      setSnackbar({ open: true, message: "Failed to delete course", severity: "error" });
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbar({ open: false, message: "", severity: "" });
   };
 
   const formatDateTime = (dateTimeString) => {
@@ -121,99 +137,53 @@ function ManagerCourse() {
       { name: "Action", align: "center" },
     ],
     rows: courses.map((course) => ({
-      ID: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.id}
-        </SoftTypography>
-      ),
-      Title: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.title}
-        </SoftTypography>
-      ),
+      ID: <Typography variant="caption">{course.id}</Typography>,
+      Title: <Typography variant="caption">{course.title}</Typography>,
       Instructor: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
+        <Typography variant="caption">
           {instructors.find((inst) => inst.id === course.instructor_id)?.username || "Unknown"}
-        </SoftTypography>
+        </Typography>
       ),
-      Description: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.description}
-        </SoftTypography>
-      ),
-      Price: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.price}
-        </SoftTypography>
-      ),
-      Duration: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {`${course.duration} hours`}
-        </SoftTypography>
-      ),
+      Description: <Typography variant="caption">{course.description}</Typography>,
+      Price: <Typography variant="caption">${course.price}</Typography>,
+      Duration: <Typography variant="caption">{`${course.duration} hours`}</Typography>,
       Category: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
+        <Typography variant="caption">
           {categories.find((cat) => cat.id === course.category_id)?.name || "Unknown"}
-        </SoftTypography>
+        </Typography>
       ),
       "Published Date": (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {formatDateTime(course.published_date)}
-        </SoftTypography>
+        <Typography variant="caption">{formatDateTime(course.published_date)}</Typography>
       ),
       "Last update": (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {formatDateTime(course.last_updated)}
-        </SoftTypography>
+        <Typography variant="caption">{formatDateTime(course.last_updated)}</Typography>
       ),
-      "Total enrollments": (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.total_enrollments}
-        </SoftTypography>
-      ),
+      "Total enrollments": <Typography variant="caption">{course.total_enrollments}</Typography>,
       Status: (
-        <SoftTypography
-          variant="caption"
-          color={course.status ? "success" : "error"}
-          fontWeight="medium"
-        >
+        <Typography variant="caption" color={course.status ? "green" : "red"}>
           {course.status ? "Published" : "Unpublished"}
-        </SoftTypography>
+        </Typography>
       ),
-      Rating: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.rating}
-        </SoftTypography>
-      ),
+      Rating: <Typography variant="caption">{course.rating}</Typography>,
       PDF: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {course.pdf_url ? (
-            <a href={course.pdf_url} target="_blank" rel="noopener noreferrer">
-              Download PDF
-            </a>
-          ) : (
-            "No PDF Available"
-          )}
-        </SoftTypography>
+        <a href={course.pdf_url} target="_blank" rel="noopener noreferrer">
+          Download PDF
+        </a>
       ),
       Action: (
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleEditCourse(course)}
-            style={{ marginRight: 8 }}
-          >
+        <Box display="flex" justifyContent="center">
+          <Button variant="outlined" color="primary" onClick={() => handleEditCourse(course)}>
             Edit
           </Button>
           <Button
-            variant="contained"
+            variant="outlined"
             color="secondary"
+            style={{ marginLeft: 8 }}
             onClick={() => handleDeleteCourse(course.id)}
           >
             Delete
           </Button>
-        </div>
+        </Box>
       ),
     })),
   };
@@ -222,8 +192,9 @@ function ManagerCourse() {
     return (
       <DashboardLayout>
         <DashboardNavbar />
-        <SoftBox py={3}>
-        </SoftBox>
+        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+          <CircularProgress />
+        </Box>
         <Footer />
       </DashboardLayout>
     );
@@ -235,15 +206,16 @@ function ManagerCourse() {
       <SoftBox py={3}>
         <Card>
           <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SoftTypography variant="h6">Course Table</SoftTypography>
+            <Typography variant="h6">Course Management</Typography>
           </SoftBox>
           <Table columns={coursesTableData.columns} rows={coursesTableData.rows} />
         </Card>
       </SoftBox>
-
       <Modal open={openEditModal} onClose={() => setOpenEditModal(false)}>
         <Card style={{ padding: "20px", margin: "100px auto", width: "400px" }}>
-          <h2>Edit Course</h2>
+          <Typography variant="h5" gutterBottom>
+            Edit Course
+          </Typography>
           <TextField
             label="Title"
             name="title"
@@ -278,8 +250,8 @@ function ManagerCourse() {
             fullWidth
             margin="normal"
           />
-          <SoftBox display="flex" flexDirection="column" mt={2} mb={2}>
-            <SoftTypography variant="subtitle2">Category</SoftTypography>
+          <Box mt={2} mb={2}>
+            <Typography variant="subtitle2">Category</Typography>
             <Select
               name="category_id"
               value={editingCourse?.category_id || ""}
@@ -292,22 +264,28 @@ function ManagerCourse() {
                 </MenuItem>
               ))}
             </Select>
-          </SoftBox>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSaveCourse}
-            style={{ marginRight: 8 }}
-          >
-            Save
-          </Button>
-          <Button variant="contained" color="secondary" onClick={() => setOpenEditModal(false)}>
-            Cancel
-          </Button>
+          </Box>
+          <Box display="flex" justifyContent="space-between" mt={3}>
+            <Button variant="contained" color="primary" onClick={handleSaveCourse}>
+              Save
+            </Button>
+            <Button variant="contained" color="secondary" onClick={() => setOpenEditModal(false)}>
+              Cancel
+            </Button>
+          </Box>
         </Card>
       </Modal>
-
       <Footer />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </DashboardLayout>
   );
 }

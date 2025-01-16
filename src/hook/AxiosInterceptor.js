@@ -2,7 +2,7 @@ import axios from "axios";
 import { createBrowserHistory } from "history";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: "https://node.levanacademy.com",
   headers: {
     "Content-Type": "application/json",
   },

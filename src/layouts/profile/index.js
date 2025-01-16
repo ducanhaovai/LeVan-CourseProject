@@ -1,79 +1,141 @@
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-
-// @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-
-// Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-
-// Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import ProfilesList from "examples/Lists/ProfilesList";
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 import PlaceholderCard from "examples/Cards/PlaceholderCard";
+import { jwtDecode } from "jwt-decode";
+import { fetchUsersByID } from "api/apiAdmin";
 
-// Overview page components
-import Header from "layouts/profile/components/Header";
-import PlatformSettings from "layouts/profile/components/PlatformSettings";
-
-// Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
-import homeDecor2 from "assets/images/home-decor-2.jpg";
-import homeDecor3 from "assets/images/home-decor-3.jpg";
-import team1 from "assets/images/team-1.jpg";
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+import Header from "./components/Header";
+import { fetchAllUserEnrolledCourses } from "api/apiEnrollments";
 
 function Overview() {
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [enrollments, setEnrollments] = useState([]);
+  const getRoleName = (role) => {
+    const roles = {
+      1: "Admin",
+      3: "User",
+    };
+    return roles[role] || "Unknown";
+  };
+
+  const getStatusName = (status) => {
+    const statuses = {
+      1: "Active",
+      2: "Deactive",
+    };
+    return statuses[status] || "Unknown";
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+
+    fetchAllUserEnrolledCourses(token)
+      .then((data) => {
+        const relevantEnrollments = data[0];
+        console.log("Fetched and flattened enrollments:", relevantEnrollments);
+        setEnrollments(relevantEnrollments);
+      })
+      .catch((error) => {
+        console.error("Error fetching enrolled courses:", error);
+      });
+  }, []);
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.id;
+
+        const response = await fetchUsersByID(userId, token);
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error("Error fetching user information:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <SoftBox py={3} display="flex" justifyContent="center">
+          <SoftTypography variant="h5">Loading user information...</SoftTypography>
+        </SoftBox>
+        <Footer />
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
-      <Header />
+      <Header
+        first_name={userInfo.first_name || ""}
+        last_name={userInfo.last_name || ""}
+        userTitle={getRoleName(userInfo.role)}
+      />
       <SoftBox mt={5} mb={3}>
         {/* Info user */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} xl={4}>
-            <ProfileInfoCard
-              title="profile information"
-              description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-              info={{
-                fullName: "Alec M. Thompson",
-                mobile: "(44) 123 1234 123",
-                email: "alecthompson@mail.com",
-                location: "USA",
-              }}
-              social={[
-                {
-                  link: "https://www.facebook.com/CreativeTim/",
-                  icon: <FacebookIcon />,
-                  color: "facebook",
-                },
-                {
-                  link: "https://twitter.com/creativetim",
-                  icon: <TwitterIcon />,
-                  color: "twitter",
-                },
-                {
-                  link: "https://www.instagram.com/creativetimofficial/",
-                  icon: <InstagramIcon />,
-                  color: "instagram",
-                },
-              ]}
-              action={{ route: "", tooltip: "Edit Profile" }}
-            />
+            {userInfo && (
+              <ProfileInfoCard
+                title="Profile Information"
+                description="Welcome to your profile overview. Here, you can manage your personal information and social links."
+                info={{
+                  fullName:
+                    `${userInfo.first_name || ""} ${userInfo.last_name || ""}`.trim() || "N/A",
+                  username: userInfo.username || "N/A",
+                  email: userInfo.email || "N/A",
+                  status: getStatusName(userInfo.status),
+                  role: getRoleName(userInfo.role),
+                }}
+                social={[
+                  {
+                    link: "https://www.facebook.com/",
+                    icon: <FacebookIcon />,
+                    color: "facebook",
+                  },
+                  {
+                    link: "https://twitter.com/",
+                    icon: <TwitterIcon />,
+                    color: "twitter",
+                  },
+                  {
+                    link: "https://www.instagram.com/",
+                    icon: <InstagramIcon />,
+                    color: "instagram",
+                  },
+                ]}
+                action={{ route: "/edit-profile", tooltip: "Edit Profile" }}
+              />
+            )}
           </Grid>
           <Grid item xs={12} xl={4}>
-            <ProfilesList title="conversations" />
+            <ProfilesList title="Conversations" />
           </Grid>
         </Grid>
       </SoftBox>
-      {/* Course enrolent */}
+      {/* Course enrollment */}
       <SoftBox mb={3}>
         <Card>
           <SoftBox pt={2} px={2}>
@@ -90,74 +152,32 @@ function Overview() {
           </SoftBox>
           <SoftBox p={2}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6} xl={3}>
-                <DefaultProjectCard
-                  image={homeDecor1}
-                  label="project #2"
-                  title="modern"
-                  description="As Uber works through a huge amount of internal management turmoil."
-                  action={{
-                    type: "internal",
-                    route: "/pages/profile/profile-overview",
-                    color: "info",
-                    label: "view project",
-                  }}
-                  authors={[
-                    { image: team1, name: "Elena Morison" },
-                    { image: team2, name: "Ryan Milly" },
-                    { image: team3, name: "Nick Daniel" },
-                    { image: team4, name: "Peterson" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} xl={3}>
-                <DefaultProjectCard
-                  image={homeDecor2}
-                  label="project #1"
-                  title="scandinavian"
-                  description="Music is something that every person has his or her own specific opinion about."
-                  action={{
-                    type: "internal",
-                    route: "/pages/profile/profile-overview",
-                    color: "info",
-                    label: "view project",
-                  }}
-                  authors={[
-                    { image: team3, name: "Nick Daniel" },
-                    { image: team4, name: "Peterson" },
-                    { image: team1, name: "Elena Morison" },
-                    { image: team2, name: "Ryan Milly" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} xl={3}>
-                <DefaultProjectCard
-                  image={homeDecor3}
-                  label="project #3"
-                  title="minimalist"
-                  description="Different people have different taste, and various types of music."
-                  action={{
-                    type: "internal",
-                    route: "/pages/profile/profile-overview",
-                    color: "info",
-                    label: "view project",
-                  }}
-                  authors={[
-                    { image: team4, name: "Peterson" },
-                    { image: team3, name: "Nick Daniel" },
-                    { image: team2, name: "Ryan Milly" },
-                    { image: team1, name: "Elena Morison" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} xl={3}>
-                <PlaceholderCard title={{ variant: "h5", text: "New project" }} outlined />
-              </Grid>
+              {enrollments.length > 0 ? (
+                enrollments.map((enrollment, index) => (
+                  <Grid item xs={12} md={6} xl={3} key={index}>
+                    <DefaultProjectCard
+                      image={enrollment.thumbnail || "defaultCourseImage.jpg"}
+                      label={`Course #${index + 1}`}
+                      title={enrollment.title}
+                      description={enrollment.description}
+                      action={{
+                        type: "internal",
+                        route: `/courses/${enrollment.slug}`,
+                        color: "info",
+                        label: "view course",
+                      }}
+                    />
+                  </Grid>
+                ))
+              ) : (
+                <Grid item xs={12}>
+                  <SoftTypography>You are not enrolled in any courses.</SoftTypography>
+                </Grid>
+              )}
             </Grid>
           </SoftBox>
         </Card>
       </SoftBox>
-
       <Footer />
     </DashboardLayout>
   );

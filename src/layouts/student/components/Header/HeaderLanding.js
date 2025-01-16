@@ -1,7 +1,8 @@
 import React from "react";
 import { Zap } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 export default function HeaderLanding() {
+  const navigate = useNavigate();
   return (
     <div className="px-4">
       <div className="container mx-auto">
@@ -10,28 +11,27 @@ export default function HeaderLanding() {
           <div className="space-y-6 md:space-y-8">
             <div className="inline-flex items-center gap-2 bg-[#FFF5F5] rounded-full px-4 py-2">
               <Zap className="w-4 h-4 text-[#FF7235]" />
-              <span className="text-sm">The Leader in Online Learning</span>
+              <span className="text-sm">Xin chào, tôi là Lê Vân</span>
             </div>
 
             <div className="space-y-4">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#14142B]">
-                Get <span className="text-[#FF7235]">2500+</span> Best Online
+              <h1 className="text-3xl md:text-4xl lg:text-4xl font-bold text-[#14142B]">
+                Chuyên gia <span className="text-[#FF7235]">phun xăm</span> thẩm mỹ 
                 <br className="hidden md:block" />
-                Courses From UpSkill
+                với hơn 10 năm kinh nghiệm.
               </h1>
-              <p className="text-[#4E4B66] text-base md:text-lg">
-                Start, switch, or advance your career with more than 5,000 courses, Professional
-                Certificates, and degrees from world-class universities and companies.
+              <p className="text-[#4E4B66] text-base md:text-lg">          
+  Tôi đã tổ chức các khóa học tại nhiều quốc gia như Nhật Bản, Hàn Quốc, Indonesia, Malaysia và làm việc với hàng trăm học viên 
+quốc tế. Điều tôi luôn nhận được là câu hỏi về bí quyết thành công trong lĩnh vực này. Đây chính là thời 
+điểm lý tưởng để bạn đầu tư cho bản thân và phát triển sự nghiệp. Hãy để tôi đồng hành cùng bạn trên 
+hành trình chinh phục thành công!
               </p>
             </div>
 
             <div className="space-y-4 md:space-y-6">
               <div className="flex flex-col sm:flex-row gap-3">
-                <button className="bg-[#14142B] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#14142B]/90 transition-colors inline-flex items-center justify-center">
-                  Get Started <span className="ml-2">→</span>
-                </button>
-                <button className="border-2 border-[#14142B] text-[#14142B] px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors inline-flex items-center justify-center">
-                  Explore courses <span className="ml-2">→</span>
+                <button  onClick={() => navigate("/course")} className="bg-[#14142B] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#14142B]/90 transition-colors inline-flex items-center justify-center">
+                  Khám phá ngay <span className="ml-2">→</span>
                 </button>
               </div>
 

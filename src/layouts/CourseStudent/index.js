@@ -32,7 +32,7 @@ export default function CourseListing() {
           fetchCourses(token || ""),
           fetchCategories(token || ""),
         ]);
-        console.log("data", courseResponse);
+
         const allUsers = userResponse.data.users;
         const courseData = courseResponse.data;
         const categoryData = categoriesResponse.data.categories;

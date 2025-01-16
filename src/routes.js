@@ -83,6 +83,7 @@ const routes = [
     noCollapse: true,
   },
   { type: "title", title: "Account Pages", key: "account-pages" },
+
   {
     type: "collapse",
     name: "Profile",
@@ -126,6 +127,15 @@ const routes = [
     name: "Course Checkout",
     key: "coursecheckout",
     route: "/checkout/:slug",
+    icon: <SpaceShip size="12px" />,
+    component: <CourseCheckout />,
+    element: <CourseCheckout />,
+    noCollapse: true,
+  },
+  {
+    name: "Course Checkoutt",
+    key: "coursecheckoutt",
+    route: "/checkout",
     icon: <SpaceShip size="12px" />,
     component: <CourseCheckout />,
     element: <CourseCheckout />,

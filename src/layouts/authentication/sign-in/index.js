@@ -44,17 +44,15 @@ function SignIn() {
       const { accessToken } = response.data;
 
       if (accessToken) {
-        console.log("Token received:", accessToken);
+
         localStorage.setItem("token", accessToken);
 
         try {
           const decoded = jwtDecode(accessToken);
-          console.log("Decoded token:", decoded);
 
           if (decoded.exp) {
             const currentTime = Date.now() / 1000;
-            console.log("Token expiry time:", decoded.exp);
-            console.log("Current time:", currentTime);
+
 
             if (decoded.exp < currentTime) {
               console.error("Token expired after login.");
@@ -137,15 +135,15 @@ function SignIn() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Token from localStorage:", token);
+
 
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        console.log("Decoded token on load:", decoded);
+
 
         const currentTime = Date.now() / 1000;
-        console.log("Current time on load:", currentTime);
+
 
         if (decoded.exp && decoded.exp < currentTime) {
           console.error("Token expired on load.");

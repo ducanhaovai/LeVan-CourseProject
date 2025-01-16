@@ -62,7 +62,7 @@ export default function CourseSearch() {
         {/* Benefits List */}
         <div className="space-y-8">
           <h2 className="text-3xl font-semibold">
-            <span className="text-purple-400">Benefits</span> From Our Online Learning
+            <span className="text-purple-400">Tại Sao Chọn LeVan Academy?</span>
           </h2>
 
           <div className="space-y-6">
@@ -71,10 +71,9 @@ export default function CourseSearch() {
                 <GraduationCap className="h-6 w-6 text-purple-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Online Degrees</h3>
+                <h3 className="font-semibold text-lg">Làm chủ công nghệ hiện đại</h3>
                 <p className="text-gray-600">
-                  Earn accredited degrees from the comfort of your home, opening doors to a world of
-                  possibilities.
+                Nắm bắt kỹ thuật tiên tiến, đáp ứng mọi xu hướng làm đẹp.
                 </p>
               </div>
             </div>
@@ -84,10 +83,10 @@ export default function CourseSearch() {
                 <BookOpen className="h-6 w-6 text-pink-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Short Courses</h3>
+                <h3 className="font-semibold text-lg">Học thực tế – Tăng thu nhập</h3>
                 <p className="text-gray-600">
-                  Enhance your skills with our concise and focused short courses, designed for quick
-                  and effective learning.
+                Thực hành trên mẫu thật, nhận chứng chỉ chuyên nghiệp, 
+nâng cao uy tín và thu nhập.
                 </p>
               </div>
             </div>
@@ -97,10 +96,9 @@ export default function CourseSearch() {
                 <Users className="h-6 w-6 text-purple-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Training From Experts</h3>
+                <h3 className="font-semibold text-lg">Hỗ trợ tận tâm: Đồng hành 24/7</h3>
                 <p className="text-gray-600">
-                  Immerse yourself in knowledge with industry experts guiding you through hands-on
-                  experience.
+                Đảm bảo bạn thành công trong sự nghiệp.
                 </p>
               </div>
             </div>
@@ -117,6 +115,7 @@ export default function CourseSearch() {
                 </p>
               </div>
             </div>
+            
           </div>
         </div>
       </div>

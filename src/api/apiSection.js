@@ -9,7 +9,7 @@ export const fetchSectionsByCourseId = (courseId, token) => {
 };
 
 export const fetchSectionById = (sectionId, token) => {
-  return axiosInstance.get(`http://localhost:3001/api/sections/${sectionId}`, {
+  return axiosInstance.get(`https://node.levanacademy.com/api/sections/${sectionId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };

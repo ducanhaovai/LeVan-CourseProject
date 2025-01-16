@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-
 // @mui material components
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -57,6 +56,8 @@ function DefaultProjectCard({
           title={title}
           sx={{
             maxWidth: "100%",
+            maxHeight: "210px",
+            height: "210px",
             margin: 0,
             boxShadow: ({ boxShadows: { md } }) => md,
             objectFit: "cover",
@@ -133,6 +134,5 @@ function DefaultProjectCard({
     </Card>
   );
 }
-
 
 export default DefaultProjectCard;
