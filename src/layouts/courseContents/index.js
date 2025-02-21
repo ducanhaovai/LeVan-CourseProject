@@ -19,8 +19,9 @@ import {
 } from "lucide-react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import { useParams } from "react-router-dom";
-import { fetchCourseBySlug } from "api/apiAdmin";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchCourseBySlug } from "../../api/apiAdmin";
+import { checkEnrollmentStatus } from "../../api/apiEnrollments";
 import ReactPlayer from "react-player";
 import usePrevent from "hook/PreventHandler";
 
@@ -30,19 +31,53 @@ export default function CourseContent() {
   const [courseData, setCourseData] = useState({ sections: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Thêm state lưu enrollment status
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
+  
   const { slug } = useParams();
+  const navigate = useNavigate();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  // Kiểm tra đăng ký khóa học trước khi cho phép truy cập trang (chỉ gọi 1 lần)
   useEffect(() => {
-    const fetchCourseData = async () => {
+    async function checkEnrollment() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("User is not authenticated");
+        setLoading(false);
+        navigate("/login");
+        return;
+      }
+      try {
+        // Sử dụng slug làm tham số nếu API của bạn dựa vào slug
+        const enrollmentResponse = await checkEnrollmentStatus(slug, token);
+        console.log("Enrollment API response:", enrollmentResponse);
+        // Lưu vào state
+        setEnrollmentStatus(enrollmentResponse.enrollmentStatus);
+        // Nếu trạng thái không phải 'done' (tức là chưa đăng ký hoặc chưa được xác minh), chuyển hướng
+        if (enrollmentResponse.enrollmentStatus !== "done") {
+          alert("Bạn chưa đăng ký khóa học này hoặc đang chờ xác minh. Vui lòng đăng ký hoặc chờ xác minh.");
+          navigate(`/enroll/${slug}`);
+        }
+      } catch (error) {
+        console.error("Error checking enrollment status:", error);
+        setError("Failed to check enrollment status");
+        navigate(`/enroll/${slug}`);
+      }
+    }
+    checkEnrollment();
+  }, [slug, navigate]);
+
+  // Fetch course data (chỉ chạy khi slug thay đổi)
+  useEffect(() => {
+    async function fetchCourseData() {
       const token = localStorage.getItem("token");
       if (!token) {
         setError("User is not authenticated");
         setLoading(false);
         return;
       }
-
       try {
         const courseResponse = await fetchCourseBySlug(slug, token);
         setCourseData(courseResponse.data.data);
@@ -52,25 +87,40 @@ export default function CourseContent() {
         setError("Failed to load course data");
         setLoading(false);
       }
-    };
-
+    }
     fetchCourseData();
   }, [slug]);
-  console.count("Render count");
+
   usePrevent();
+  console.count("Render count");
+
+  if (loading) return <div className="text-center mt-8">Loading...</div>;
+  if (error) return <div className="text-red-600 text-center mt-8">Error: {error}</div>;
+  if (!courseData) return <div className="text-center mt-8">No course data available</div>;
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <div className="flex flex-col h-screen bg-white text-gray-800">
         <header className="bg-white border-b border-gray-200 p-4">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <h1 className="text-xl font-bold mb-2 md:mb-0">{courseData.title || "Course Title"}</h1>
+            <h1 className="text-xl font-bold mb-2 md:mb-0">
+              {courseData.title || "Course Title"}
+            </h1>
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" className="text-blue-600 hover:bg-blue-50">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-blue-600 hover:bg-blue-50"
+              >
                 <FileText className="mr-2 h-4 w-4" />
                 Notes
               </Button>
-              <Button variant="ghost" size="sm" className="text-blue-600 hover:bg-blue-50">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-blue-600 hover:bg-blue-50"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Resources
               </Button>
@@ -152,12 +202,10 @@ export default function CourseContent() {
           </aside>
 
           <main
-            className={`flex-1 overflow-y-auto p-4 ${
-              isSidebarOpen ? "" : "ml-0"
-            } transition-margin duration-300`}
+            className={`flex-1 overflow-y-auto p-4 ${isSidebarOpen ? "" : "ml-0"} transition-margin duration-300`}
           >
-            <div className="aspect-video  mb-4 rounded-lg flex items-center justify-center text-white">
-              {currentLecture?.content_type === "video" && (
+            <div className="aspect-video mb-4 rounded-lg flex items-center justify-center text-white">
+              {courseData.sections && currentLecture?.content_type === "video" && (
                 <ReactPlayer
                   url={currentLecture.content_url}
                   title="Lecture Content"
@@ -165,7 +213,7 @@ export default function CourseContent() {
                   playing={true}
                   width="100%"
                   height="100%"
-                ></ReactPlayer>
+                />
               )}
               {currentLecture?.content_type === "document" && (
                 <iframe
@@ -174,7 +222,7 @@ export default function CourseContent() {
                   height="600px"
                   allow="fullscreen"
                   style={{ border: "none" }}
-                ></iframe>
+                />
               )}
             </div>
 
@@ -191,10 +239,18 @@ export default function CourseContent() {
 
         <footer className="border-t border-gray-200 p-4 flex justify-between items-center bg-white">
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="icon" className="text-gray-600 hover:text-gray-800">
+            <Button
+              variant="outline"
+              size="icon"
+              className="text-gray-600 hover:text-gray-800"
+            >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" className="text-gray-600 hover:text-gray-800">
+            <Button
+              variant="outline"
+              size="icon"
+              className="text-gray-600 hover:text-gray-800"
+            >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -202,7 +258,10 @@ export default function CourseContent() {
             <Progress value={22} className="w-48" />
             <p className="text-sm text-gray-600">
               2 of{" "}
-              {courseData.sections.reduce((acc, section) => acc + (section.content.length || 0), 0)}{" "}
+              {courseData.sections.reduce(
+                (acc, section) => acc + (section.content.length || 0),
+                0
+              )}{" "}
               complete
             </p>
           </div>

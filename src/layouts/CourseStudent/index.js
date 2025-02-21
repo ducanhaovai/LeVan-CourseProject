@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -106,7 +107,7 @@ export default function CourseListing() {
         <div className="flex flex-col md:flex-row">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentItems.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard key={course.slug} course={course} />
             ))}
           </div>
         </div>

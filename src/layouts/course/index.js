@@ -1,14 +1,12 @@
+// Trong ManagerCourse.js
+
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import Table from "examples/Tables/Table";
 import {
   fetchUsers,
   fetchCourses,
@@ -16,18 +14,14 @@ import {
   updateCourse,
   deleteCourse,
 } from "../../api/apiAdmin";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 
-// Alert component for feedback
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import CourseTable from './components/CourseTable';
+import EditCourseModal from './components/EditCourseModal';
+import FeedbackAlert from './components/FeedbackAlert';
+import LoadingScreen from './components/LoadingScreen';
+import AddCourse from "./components/AddCourse/AddCourse";
+import AddCategory from "./components/AddCategory";
+import { Button } from "layouts/student/button";
 
 function ManagerCourse() {
   const [users, setUsers] = useState([]);
@@ -35,14 +29,15 @@ function ManagerCourse() {
   const [categories, setCategories] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [editingCourse, setEditingCourse] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [openAddCategory, setOpenAddCategory] = useState(false);
+  const [openAddCourse, setOpenAddCourse] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const fetchData = async () => {
+      const token = localStorage.getItem("token");
       setLoading(true);
       try {
         const [userResponse, courseResponse, categoriesResponse] = await Promise.all([
@@ -53,17 +48,12 @@ function ManagerCourse() {
 
         const allUsers = userResponse.data.users;
         setUsers(allUsers);
-
-        const instructorList = allUsers.filter((user) => user.role === 2);
-        setInstructors(instructorList);
-
+        setInstructors(allUsers.filter((user) => user.role === 2));
         setCourses(courseResponse.data);
         setCategories(categoriesResponse.data.categories);
-
-        setLoading(false);
       } catch (error) {
-        setError("Error fetching data");
         setSnackbar({ open: true, message: "Failed to fetch data", severity: "error" });
+      } finally {
         setLoading(false);
       }
     };
@@ -80,19 +70,135 @@ function ManagerCourse() {
     const token = localStorage.getItem("token");
     try {
       await updateCourse(editingCourse.id, editingCourse, token || "");
+      
       setCourses((prevCourses) =>
-        prevCourses.map((course) => (course.id === editingCourse.id ? editingCourse : course))
+        prevCourses.map((course) =>
+          course.id === editingCourse.id ? editingCourse : course
+        )
       );
       setOpenEditModal(false);
-      setSnackbar({ open: true, message: "Course updated successfully", severity: "success" });
+      setSnackbar({
+        open: true,
+        message: "Course updated successfully",
+        severity: "success",
+      });
     } catch (error) {
-      setSnackbar({ open: true, message: "Failed to update course", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: "Failed to update course",
+        severity: "error",
+      });
+      console.error("Error updating course:", error);
     }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditingCourse((prevCourse) => ({ ...prevCourse, [name]: value }));
+  };
+
+  // Định nghĩa hàm xử lý cho sections và contents:
+  const handleSectionChange = (sectionIndex, field, value) => {
+    setEditingCourse((prev) => {
+      const newSections = [...(prev.sections || [])];
+      newSections[sectionIndex] = {
+        ...newSections[sectionIndex],
+        [field]: value,
+      };
+      return { ...prev, sections: newSections };
+    });
+  };
+
+  const handleContentChange = (sectionIndex, contentIndex, field, value) => {
+    setEditingCourse((prev) => {
+      const newSections = [...(prev.sections || [])];
+      const section = newSections[sectionIndex] || {};
+      const newContents = [...(section.contents || [])];
+      newContents[contentIndex] = {
+        ...newContents[contentIndex],
+        [field]: value,
+      };
+      section.contents = newContents;
+      newSections[sectionIndex] = section;
+      return { ...prev, sections: newSections };
+    });
+  };
+
+  const handleAddSection = () => {
+    setEditingCourse((prev) => {
+      if (!prev) return prev;
+      const newSections = prev.sections ? [...prev.sections] : [];
+
+      const newOrder =
+        newSections.length > 0
+          ? Number(newSections[newSections.length - 1].order) + 1
+          : 1;
+      newSections.push({
+        title: "",
+        description: "",
+        video_url: "",
+        is_free: false,
+        order: newOrder, // Giá trị này được lưu vào DB nhưng không cần hiển thị trên UI
+        contents: [],
+      });
+      return { ...prev, sections: newSections };
+    });
+    console.log("Section added");
+  };
+
+  const handleRemoveSection = (sectionIndex) => {
+    setEditingCourse((prev) => {
+      if (!prev) return prev;
+      const newSections = [...(prev.sections || [])];
+      // Nếu section đã được lưu (có id), chỉ đánh dấu là đã xóa
+      if (newSections[sectionIndex].id) {
+        newSections[sectionIndex].is_deleted = true;
+      } else {
+        // Nếu chưa lưu, có thể loại bỏ khỏi state
+        newSections.splice(sectionIndex, 1);
+      }
+      return { ...prev, sections: newSections };
+    });
+  };
+
+  const handleAddContent = (sectionIndex) => {
+    setEditingCourse((prev) => {
+      const newSections = [...(prev.sections || [])];
+      const section = newSections[sectionIndex] || {};
+      const newContents = section.contents ? [...section.contents] : [];
+      // Tự động tăng order_index cho content mới
+      const newOrderIndex =
+        newContents.length > 0
+          ? Number(newContents[newContents.length - 1].order_index) + 1
+          : 1;
+      newContents.push({
+        title: "",
+        content_type: "",
+        content_url: "",
+        description: "",
+        order_index: newOrderIndex, // Chỉ lưu vào DB, không hiển thị
+      });
+      section.contents = newContents;
+      newSections[sectionIndex] = section;
+      return { ...prev, sections: newSections };
+    });
+  };
+  
+  const handleRemoveContent = (sectionIndex, contentIndex) => {
+    setEditingCourse((prev) => {
+      const newSections = [...(prev.sections || [])];
+      const section = newSections[sectionIndex] || {};
+      if (section.contents && section.contents[contentIndex]) {
+        if (section.contents[contentIndex].id) {
+          section.contents[contentIndex].is_deleted = true;
+        } else {
+          section.contents.splice(contentIndex, 1);
+        }
+      }
+      newSections[sectionIndex] = section;
+      return { ...prev, sections: newSections };
+    });
   };
 
   const handleDeleteCourse = async (courseId) => {
@@ -109,95 +215,8 @@ function ManagerCourse() {
     }
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbar({ open: false, message: "", severity: "" });
-  };
-
-  const formatDateTime = (dateTimeString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const date = new Date(dateTimeString);
-    return date.toLocaleDateString("en-US", options);
-  };
-
-  const coursesTableData = {
-    columns: [
-      { name: "ID", align: "center" },
-      { name: "Title", align: "center" },
-      { name: "Instructor", align: "center" },
-      { name: "Description", align: "center" },
-      { name: "Price", align: "center" },
-      { name: "Duration", align: "center" },
-      { name: "Category", align: "center" },
-      { name: "Published Date", align: "center" },
-      { name: "Last update", align: "center" },
-      { name: "Total enrollments", align: "center" },
-      { name: "Status", align: "center" },
-      { name: "Rating", align: "center" },
-      { name: "PDF", align: "center" },
-      { name: "Action", align: "center" },
-    ],
-    rows: courses.map((course) => ({
-      ID: <Typography variant="caption">{course.id}</Typography>,
-      Title: <Typography variant="caption">{course.title}</Typography>,
-      Instructor: (
-        <Typography variant="caption">
-          {instructors.find((inst) => inst.id === course.instructor_id)?.username || "Unknown"}
-        </Typography>
-      ),
-      Description: <Typography variant="caption">{course.description}</Typography>,
-      Price: <Typography variant="caption">${course.price}</Typography>,
-      Duration: <Typography variant="caption">{`${course.duration} hours`}</Typography>,
-      Category: (
-        <Typography variant="caption">
-          {categories.find((cat) => cat.id === course.category_id)?.name || "Unknown"}
-        </Typography>
-      ),
-      "Published Date": (
-        <Typography variant="caption">{formatDateTime(course.published_date)}</Typography>
-      ),
-      "Last update": (
-        <Typography variant="caption">{formatDateTime(course.last_updated)}</Typography>
-      ),
-      "Total enrollments": <Typography variant="caption">{course.total_enrollments}</Typography>,
-      Status: (
-        <Typography variant="caption" color={course.status ? "green" : "red"}>
-          {course.status ? "Published" : "Unpublished"}
-        </Typography>
-      ),
-      Rating: <Typography variant="caption">{course.rating}</Typography>,
-      PDF: (
-        <a href={course.pdf_url} target="_blank" rel="noopener noreferrer">
-          Download PDF
-        </a>
-      ),
-      Action: (
-        <Box display="flex" justifyContent="center">
-          <Button variant="outlined" color="primary" onClick={() => handleEditCourse(course)}>
-            Edit
-          </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            style={{ marginLeft: 8 }}
-            onClick={() => handleDeleteCourse(course.id)}
-          >
-            Delete
-          </Button>
-        </Box>
-      ),
-    })),
-  };
-
   if (loading) {
-    return (
-      <DashboardLayout>
-        <DashboardNavbar />
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-          <CircularProgress />
-        </Box>
-        <Footer />
-      </DashboardLayout>
-    );
+    return <LoadingScreen />;
   }
 
   return (
@@ -207,85 +226,46 @@ function ManagerCourse() {
         <Card>
           <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
             <Typography variant="h6">Course Management</Typography>
+            <SoftBox display="flex" gap={2} py={2}>
+              <Button onClick={() => setOpenAddCategory(true)}>Add Category</Button>
+              <Button onClick={() => setOpenAddCourse(true)}>Add Course</Button>
+            </SoftBox>
           </SoftBox>
-          <Table columns={coursesTableData.columns} rows={coursesTableData.rows} />
+          <CourseTable
+            courses={courses}
+            instructors={instructors}
+            categories={categories}
+            onEditCourse={handleEditCourse}
+            onDeleteCourse={handleDeleteCourse}
+          />
         </Card>
       </SoftBox>
-      <Modal open={openEditModal} onClose={() => setOpenEditModal(false)}>
-        <Card style={{ padding: "20px", margin: "100px auto", width: "400px" }}>
-          <Typography variant="h5" gutterBottom>
-            Edit Course
-          </Typography>
-          <TextField
-            label="Title"
-            name="title"
-            value={editingCourse?.title || ""}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Description"
-            name="description"
-            value={editingCourse?.description || ""}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Price"
-            name="price"
-            type="number"
-            value={editingCourse?.price || ""}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Duration"
-            name="duration"
-            type="number"
-            value={editingCourse?.duration || ""}
-            onChange={handleInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <Box mt={2} mb={2}>
-            <Typography variant="subtitle2">Category</Typography>
-            <Select
-              name="category_id"
-              value={editingCourse?.category_id || ""}
-              onChange={handleInputChange}
-              fullWidth
-            >
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-          <Box display="flex" justifyContent="space-between" mt={3}>
-            <Button variant="contained" color="primary" onClick={handleSaveCourse}>
-              Save
-            </Button>
-            <Button variant="contained" color="secondary" onClick={() => setOpenEditModal(false)}>
-              Cancel
-            </Button>
-          </Box>
-        </Card>
-      </Modal>
-      <Footer />
-      <Snackbar
+
+      <EditCourseModal
+        open={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+        course={editingCourse}
+        categories={categories}
+        onInputChange={handleInputChange}
+        onSectionChange={handleSectionChange}   // truyền hàm cập nhật section
+        onContentChange={handleContentChange}     // truyền hàm cập nhật content
+        onAddSection={handleAddSection}           // truyền hàm thêm section
+        onRemoveSection={handleRemoveSection}     // truyền hàm xóa section
+        onAddContent={handleAddContent}           // truyền hàm thêm content
+        onRemoveContent={handleRemoveContent}     // truyền hàm xóa content
+        onSave={handleSaveCourse}
+      />
+
+      <FeedbackAlert
         open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      />
+
+      <AddCategory />
+      <AddCourse />
+      <Footer />
     </DashboardLayout>
   );
 }

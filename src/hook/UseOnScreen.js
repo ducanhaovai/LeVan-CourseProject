@@ -6,7 +6,7 @@ function useOnScreen(ref) {
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => setIntersecting(entry.isIntersecting), {
       rootMargin: "0px",
-      threshold: 0.5, // Trigger when 50% of the element is in view
+      threshold: 0.5, 
     });
 
     if (ref.current) {

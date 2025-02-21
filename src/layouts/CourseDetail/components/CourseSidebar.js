@@ -1,7 +1,7 @@
 import { enrollCourse } from "api/apiEnrollments";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode }from "jwt-decode";
 import {
   Play,
   Clock,
@@ -10,7 +10,6 @@ import {
   Tv,
   Infinity,
   Award,
-  Share2,
   Facebook,
   Twitter,
   Instagram,
@@ -27,11 +26,23 @@ const CourseSidebar = ({ course, enrollmentStatus }) => {
     const token = localStorage.getItem("token");
 
     try {
+      if (enrollmentStatus) {
+      
+        if (enrollmentStatus === "pending" || enrollmentStatus === "completed") {
+          alert("Vui lòng đợi xác minh thanh toán");
+          return;
+        }
+        if (enrollmentStatus === "done") {
+          navigate(`/learn/${course.slug}`);
+          return;
+        }
+      }
+
+
       const decodedToken = jwtDecode(token);
       const enrollmentData = await enrollCourse(decodedToken.id, course.id);
-
       if (enrollmentData) {
-        navigate(`/checkout?slug=${course.slug}`);
+        navigate(`/checkout/${course.slug}`);
       }
     } catch (error) {
       console.error("Error enrolling in course:", error);
@@ -45,7 +56,11 @@ const CourseSidebar = ({ course, enrollmentStatus }) => {
   return (
     <Card className="w-full max-w-md">
       <div className="relative aspect-video">
-        <img src={course.thumbnail} alt="Course preview" className="object-cover rounded-t-xl" />
+        <img
+          src={course.thumbnail}
+          alt="Course preview"
+          className="object-cover rounded-t-xl"
+        />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-white rounded-full p-4">
             <Play className="w-8 h-8 text-primary" />
@@ -57,15 +72,23 @@ const CourseSidebar = ({ course, enrollmentStatus }) => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-primary">${course.price}</span>
-              <span className="text-xl line-through text-muted-foreground">$89.0</span>
+              <span className="text-3xl font-bold text-primary">
+                ${course.price}
+              </span>
+              <span className="text-xl line-through text-muted-foreground">
+                $89.0
+              </span>
             </div>
-            <Badge variant="secondary" className="bg-[#FFF2F0] text-[#FF4D4F]">
+            <Badge
+              variant="secondary"
+              className="bg-[#FFF2F0] text-[#FF4D4F]"
+            >
               39% OFF
             </Badge>
           </div>
 
-          {enrollmentStatus === "completed" ? (
+          {/* Nếu enrollmentStatus là "done", hiển thị Learn Now; ngược lại, hiển thị Enroll Now */}
+          {enrollmentStatus === "done" ? (
             <Button
               className="w-full bg-[#1d1b48] hover:bg-[#1d1b48]/90 text-white transition duration-300"
               onClick={handleLearnNow}
@@ -94,7 +117,8 @@ const CourseSidebar = ({ course, enrollmentStatus }) => {
               54.5 hours on-demand video
             </li>
             <li className="flex items-center gap-3 text-sm">
-              <FileText className="w-5 h-5 text-muted-foreground" />3 articles
+              <FileText className="w-5 h-5 text-muted-foreground" />
+              3 articles
             </li>
             <li className="flex items-center gap-3 text-sm">
               <Download className="w-5 h-5 text-muted-foreground" />

@@ -1,0 +1,126 @@
+{
+    "homepage": {
+        "header-landing": {
+            "greeting": "Xin chào, tôi là Lê Vân",
+            "title-c": "Chuyên gia",
+            "title-i": "Phun xăm",
+            "title-a": "thẩm mỹ",
+            "title": "với hơn 10 năm kinh nghiệm.",
+            "intro": " Tôi đã tổ chức các khóa học tại nhiều quốc gia như Nhật Bản, Hàn Quốc, Indonesia, Malaysia và làm việc với hàng trăm học viên quốc tế. Điều tôi luôn nhận được là câu hỏi về bí quyết thành công trong lĩnh vực này. Đây chính là thời điểm lý tưởng để bạn đầu tư cho bản thân và phát triển sự nghiệp. Hãy để tôi đồng hành cùng bạn trên hành trình chinh phục thành công!",
+            "exploreNow": "Khám phá ngay ",
+            "lectures": "Bài Giảng",
+            "students": "Học Sinh",
+            "learningHours": "Số giờ học",
+            "totalLearningHours": "Tổng số giờ đã học"
+        },
+        "courseSearch": {
+            "searchCourses": "Tìm Kiếm Khóa Học",
+            "searchPlaceholder": "Tìm kiếm hơn 50+ khóa học",
+            "searchButton": "Tìm Kiếm",
+            "whyChooseUs": "Tại Sao Chọn LeVan Academy?",
+            "masterModernTech": "Làm chủ công nghệ hiện đại",
+            "masterModernTechDesc": "Nắm bắt kỹ thuật tiên tiến, đáp ứng mọi xu hướng làm đẹp.",
+            "realLearning": "Học thực tế – Tăng thu nhập",
+            "realLearningDesc": "Thực hành trên mẫu thật, nhận chứng chỉ chuyên nghiệp, nâng cao uy tín và thu nhập.",
+            "dedicatedSupport": "Hỗ trợ tận tâm: Đồng hành 24/7",
+            "dedicatedSupportDesc": "Đảm bảo bạn thành công trong sự nghiệp."
+        }
+    },
+    "faqSection": {
+        "title": "Câu Hỏi Thường Gặp",
+        "subtitle": "Bắt đầu học từ giảng viên Le Van",
+        "description": "Các câu mà mọi người thường hay hỏi!",
+        "faqs": [
+            {
+                "question": "Lịch đăng ký khóa học như thế nào?",
+                "answer": "Mở liên tục trong suốt cả năm, thời gian kéo dài linh hoạt theo từng khóa học."
+            },
+            {
+                "question": "Thời gian học kéo dài bao lâu?",
+                "answer": "Truy cập khóa học trong 1 năm."
+            },
+            {
+                "question": "Khóa học có linh hoạt không?",
+                "answer": "Nội dung có sẵn 24/7, học theo tốc độ của bạn."
+            },
+            {
+                "question": "Tài liệu học tập như thế nào?",
+                "answer": "Tải xuống và in giáo trình PDF."
+            },
+            {
+                "question": "Cộng đồng hỗ trợ ra sao?",
+                "answer": "Trao đổi qua hệ thống học tập hoặc nhóm Facebook riêng tư."
+            },
+            {
+                "question": "Buổi học trực tiếp được xử lý thế nào?",
+                "answer": "Ghi lại và thêm vào khóa học, bao gồm phần Hỏi & Đáp."
+            }
+        ]
+    },
+    "learningJourney": {
+        "headerTitle": "Tại Sao Chọn LeVan Academy?",
+        "subHeader": "LeVan Academy là nơi giúp bạn",
+        "description": "Làm chủ kỹ thuật phun xăm thẩm mỹ với chương trình đào tạo chuẩn quốc tế, giảng viên tận tâm, và cơ hội nghề nghiệp rộng mở. Bắt đầu hành trình học tập ngay hôm nay để chạm tới thành công!",
+        "features": [
+            {
+                "icon": "UserCheck",
+                "title": "Giảng viên uy tín",
+                "description": "Lê Vân với hơn 10 năm kinh nghiệm và các khóa học quốc tế."
+            },
+            {
+                "icon": "Target",
+                "title": "Lộ trình chuyên nghiệp",
+                "description": "Từ lý thuyết đến thực hành, đảm bảo nắm vững kỹ thuật."
+            },
+            {
+                "icon": "Award",
+                "title": "Chứng chỉ quốc tế",
+                "description": "Nâng cao uy tín, mở rộng cơ hội nghề nghiệp."
+            },
+            {
+                "icon": "LifeBuoy",
+                "title": "Hỗ trợ 24/7",
+                "description": "Đồng hành trong suốt quá trình học và áp dụng."
+            },
+            {
+                "icon": "Clock",
+                "title": "Học linh hoạt",
+                "description": "Truy cập nội dung mọi lúc, mọi nơi."
+            },
+            {
+                "icon": "TrendingUp",
+                "title": "Hiệu quả vượt trội",
+                "description": "Nâng cao tay nghề, tăng thu nhập và thu hút khách hàng."
+            }
+        ]
+    },
+    "footer": {
+        "contactTitle": "Liên hệ",
+        "contactAddress": "Địa chỉ: 4 Ng. 26 P. Đỗ Quang, Trung Hoà, Cầu Giấy, Hà Nội, Việt Nam",
+        "contactPhone": "Điện thoại: +84 962 830 779",
+        "contactEmail": "Email: levan@levanacademy.com",
+        "discoverSlogan": "Khám phá vẻ đẹp tự nhiên theo cách riêng của bạn!",
+        "servicesTitle": "Dịch vụ",
+        "coursesTitle": "Khóa Học",
+        "servicesList": [
+            "Họa Mày Hyper Realistic",
+            "Hoạ Mày Tán Thuỷ Realistic",
+            "Định Hình Healing Plasma"
+        ],
+        "coursesList": [
+            "Khóa Học Lông Mày - Hyper Realistic",
+            "Khóa Học Phun Môi",
+            "Khóa Học Cold Plasma"
+        ]
+    },
+    "menu": {
+        "dashboard": "Bảng điều khiển",
+        "home": "Trang chủ",
+        "managerUser": "Quản lý người dùng",
+        "managerCourse": "Quản lý khóa học",
+        "course": "Khóa học",
+        "profile": "Hồ sơ",
+        "signIn": "Đăng nhập",
+        "signUp": "Đăng ký"
+    }
+}

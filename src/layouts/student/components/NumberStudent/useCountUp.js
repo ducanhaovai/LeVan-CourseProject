@@ -59,28 +59,9 @@ export default function CountUp() {
 
   return (
     <div className="pt-10">
-      <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+      <div  className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
         {/* Left Column */}
         <div className="space-y-6 lg:space-y-8">
-          <div className="inline-flex items-center gap-2 bg-[#FFF5F5] rounded-full px-4 py-2">
-            <Zap className="w-4 h-4 text-[#FF7235]" />
-            <span className="text-sm">Your Instructor</span>
-          </div>
-
-          <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#14142B] leading-tight">
-              Hi, Im Ali Tufan,
-              <br className="hidden md:block" />
-              I Will Be Taking You Through
-              <br className="hidden md:block" />
-              Lessons.
-            </h1>
-            <p className="text-[#4E4B66] text-base lg:text-lg max-w-2xl">
-              Create beautiful website with this UpSkill UI template. Get started building a site
-              today.
-            </p>
-          </div>
-
           <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center md:text-left">
@@ -94,12 +75,6 @@ export default function CountUp() {
           </div>
         </div>
 
-        {/* Right Column - Illustration */}
-        <div className="relative mt-8 lg:mt-0 hidden md:block">
-          <div className="relative w-full aspect-[4/3] lg:aspect-square rounded-2xl overflow-hidden">
-            <img src={anh1} alt="Students learning" className="w-full h-full object-cover" />
-          </div>
-        </div>
       </div>
     </div>
   );

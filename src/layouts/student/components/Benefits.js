@@ -1,25 +1,33 @@
-import { Search, GraduationCap, BookOpen, Users, PlayCircle } from "lucide-react";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Search, GraduationCap, BookOpen, Users } from "lucide-react";
+import anh1 from "../../../assets/images/Homepage/whychose1.jpg"
+import anh2 from "../../../assets/images/Homepage/whychose2.jpg"
+import anh3 from "../../../assets/images/Homepage/whychose3.jpg"
+import anh4 from "../../../assets/images/Homepage/whychose4.jpg"
 
 export default function CourseSearch() {
+  const { t } = useTranslation();
+
   return (
     <div className="p-8">
       {/* Search Section */}
-      <div className="max-w-4xl mx-auto text-center mb-12">
-        <h1 className="text-3xl font-semibold text-gray-800 mb-6">Search Courses</h1>
+      {/* <div className="max-w-4xl mx-auto text-center mb-12">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6">{t('homepage.courseSearch.searchCourses')}</h1>
         <div className="flex gap-2 max-w-xl mx-auto">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <input
               type="text"
-              placeholder="Search for over 50+ courses"
+              placeholder={t('homepage.courseSearch.searchPlaceholder')}
               className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
           </div>
           <button className="px-6 py-2 bg-purple-400 text-white rounded-lg hover:bg-purple-500 transition-colors">
-            Search
+            {t('homepage.courseSearch.searchButton')}
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Benefits Section */}
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
@@ -29,28 +37,28 @@ export default function CourseSearch() {
             <div className="grid grid-cols-2 gap-4 h-full">
               <div className="bg-pink-300 rounded-2xl overflow-hidden">
                 <img
-                  src="/placeholder.svg?height=300&width=300"
+                  src={anh1}
                   alt="Student"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="bg-purple-400 rounded-2xl overflow-hidden">
                 <img
-                  src="/placeholder.svg?height=300&width=300"
+                  src={anh2}
                   alt="Student"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="bg-purple-400 rounded-2xl overflow-hidden">
                 <img
-                  src="/placeholder.svg?height=300&width=300"
+                  src={anh3}
                   alt="Student"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="bg-pink-300 rounded-2xl overflow-hidden">
                 <img
-                  src="/placeholder.svg?height=300&width=300"
+                  src={anh4}
                   alt="Student"
                   className="w-full h-full object-cover"
                 />
@@ -59,10 +67,9 @@ export default function CourseSearch() {
           </div>
         </div>
 
-        {/* Benefits List */}
         <div className="space-y-8">
           <h2 className="text-3xl font-semibold">
-            <span className="text-purple-400">Tại Sao Chọn LeVan Academy?</span>
+            <span className="text-purple-400">{t('homepage.courseSearch.whyChooseUs')}</span>
           </h2>
 
           <div className="space-y-6">
@@ -71,9 +78,9 @@ export default function CourseSearch() {
                 <GraduationCap className="h-6 w-6 text-purple-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Làm chủ công nghệ hiện đại</h3>
+                <h3 className="font-semibold text-lg">{t('homepage.courseSearch.masterModernTech')}</h3>
                 <p className="text-gray-600">
-                Nắm bắt kỹ thuật tiên tiến, đáp ứng mọi xu hướng làm đẹp.
+                  {t('homepage.courseSearch.masterModernTechDesc')}
                 </p>
               </div>
             </div>
@@ -83,10 +90,9 @@ export default function CourseSearch() {
                 <BookOpen className="h-6 w-6 text-pink-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Học thực tế – Tăng thu nhập</h3>
+                <h3 className="font-semibold text-lg">{t('homepage.courseSearch.realLearning')}</h3>
                 <p className="text-gray-600">
-                Thực hành trên mẫu thật, nhận chứng chỉ chuyên nghiệp, 
-nâng cao uy tín và thu nhập.
+                  {t('homepage.courseSearch.realLearningDesc')}
                 </p>
               </div>
             </div>
@@ -96,26 +102,12 @@ nâng cao uy tín và thu nhập.
                 <Users className="h-6 w-6 text-purple-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Hỗ trợ tận tâm: Đồng hành 24/7</h3>
+                <h3 className="font-semibold text-lg">{t('homepage.courseSearch.dedicatedSupport')}</h3>
                 <p className="text-gray-600">
-                Đảm bảo bạn thành công trong sự nghiệp.
+                  {t('homepage.courseSearch.dedicatedSupportDesc')}
                 </p>
               </div>
             </div>
-
-            <div className="flex gap-4 items-start">
-              <div className="p-2 bg-pink-100 rounded-lg">
-                <PlayCircle className="h-6 w-6 text-pink-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg">1.5k+ Video Courses</h3>
-                <p className="text-gray-600">
-                  Dive into a vast library of over 1.5k video courses covering many subjects,
-                  offering a visual learning experience.
-                </p>
-              </div>
-            </div>
-            
           </div>
         </div>
       </div>

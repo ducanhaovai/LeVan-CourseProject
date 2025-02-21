@@ -1,0 +1,126 @@
+{
+    "homepage": {
+        "header-landing": {
+            "greeting": "Hello, I am Le Van",
+            "title-c": "Expert",
+            "title-i": "Tattoo",
+            "title-a": "aesthetic",
+            "title": "with over 10 years of experience.",
+            "intro": "I have organized courses in multiple countries such as Japan, South Korea, Indonesia, and Malaysia, working with hundreds of international students. The question I always get is about the secret to success in this field. Now is the ideal time to invest in yourself and advance your career. Let me accompany you on your journey to achieve success!",
+            "exploreNow": "Explore Now ",
+            "lectures": "Lectures",
+            "students": "Students",
+            "learningHours": "Learning Hours",
+            "totalLearningHours": "Total Hours Studied"
+        },
+        "courseSearch": {
+            "searchCourses": "Search Courses",
+            "searchPlaceholder": "Search for over 50+ courses",
+            "searchButton": "Search",
+            "whyChooseUs": "Why Choose LeVan Academy?",
+            "masterModernTech": "Master Modern Technology",
+            "masterModernTechDesc": "Grasp advanced techniques, meeting all beauty trends.",
+            "realLearning": "Practical Learning - Increase Income",
+            "realLearningDesc": "Practice on real models, earn professional certification, enhance reputation and income.",
+            "dedicatedSupport": "Dedicated Support: 24/7 Assistance",
+            "dedicatedSupportDesc": "Ensuring your success in your career."
+        }
+    },
+    "faqSection": {
+        "title": "Frequently Asked Questions",
+        "subtitle": "Start learning from Le Van",
+        "description": "Common questions asked by people!",
+        "faqs": [
+            {
+                "question": "How is the course registration schedule?",
+                "answer": "Open continuously throughout the year, with flexible duration according to each course."
+            },
+            {
+                "question": "How long does the course last?",
+                "answer": "Access the course for one year."
+            },
+            {
+                "question": "Are the courses flexible?",
+                "answer": "Content available 24/7, learn at your own pace."
+            },
+            {
+                "question": "How are the study materials?",
+                "answer": "Download and print PDF textbooks."
+            },
+            {
+                "question": "How is the support community?",
+                "answer": "Interact through the learning system or a private Facebook group."
+            },
+            {
+                "question": "How are live sessions handled?",
+                "answer": "Recorded and added to the course, including Q&A."
+            }
+        ]
+    },
+    "learningJourney": {
+        "headerTitle": "Why Choose LeVan Academy?",
+        "subHeader": "LeVan Academy is the place to help you",
+        "description": "Master cosmetic tattoo techniques with internationally standard training programs, dedicated instructors, and broad career opportunities. Start your learning journey today to achieve success!",
+        "features": [
+            {
+                "icon": "UserCheck",
+                "title": "Reputable Instructors",
+                "description": "Le Van with over 10 years of experience and international courses."
+            },
+            {
+                "icon": "Target",
+                "title": "Professional Pathway",
+                "description": "From theory to practice, ensuring mastery of techniques."
+            },
+            {
+                "icon": "Award",
+                "title": "International Certificates",
+                "description": "Enhance credibility, broaden career opportunities."
+            },
+            {
+                "icon": "LifeBuoy",
+                "title": "24/7 Support",
+                "description": "Accompany throughout the learning and application process."
+            },
+            {
+                "icon": "Clock",
+                "title": "Flexible Learning",
+                "description": "Access content anytime, anywhere."
+            },
+            {
+                "icon": "TrendingUp",
+                "title": "Exceptional Effectiveness",
+                "description": "Improve skills, increase income, and attract customers."
+            }
+        ]
+    },
+    "footer": {
+        "contactTitle": "Contact",
+        "contactAddress": "Address: 4 Ng. 26 P. Do Quang, Trung Hoa, Cau Giay, Ha Noi, Viet Nam",
+        "contactPhone": "Phone: +84 962 830 779",
+        "contactEmail": "E-mail: levan@levanacademy.com",
+        "discoverSlogan": "Discover natural beauty in your own way!",
+        "servicesTitle": "Services",
+        "coursesTitle": "Courses",
+        "servicesList": [
+            "Hyper Realistic Eyebrow Tattoo",
+            "Realistic Watercolor Eyebrow Tattoo",
+            "Healing Plasma Sculpting"
+        ],
+        "coursesList": [
+            "Eyebrow Course - Hyper Realistic",
+            "Lip Tattoo Course",
+            "Cold Plasma Course"
+        ]
+    },
+    "menu": {
+        "dashboard": "Dashboard",
+        "home": "Home",
+        "managerUser": "Manager User",
+        "managerCourse": "Manager Course",
+        "course": "Course",
+        "profile": "Profile",
+        "signIn": "Sign In",
+        "signUp": "Sign Up"
+    }
+}

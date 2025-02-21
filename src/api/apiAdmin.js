@@ -3,6 +3,7 @@ import axios from "axios";
 const ADMIN_API_URL = process.env.REACT_APP_ADMIN_API_URL;
 const API_URL = process.env.REACT_APP_API_URL;
 
+
 export const fetchUsers = async (token) => {
   return axiosInstance.get(`${ADMIN_API_URL}/users`, {
     headers: {
@@ -19,7 +20,7 @@ export const fetchUsersByID = async (userId, token) => {
 };
 export const fetchInstructors = async (token) => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/instructors`, {
+    const response = await axiosInstance.get(`${API_URL}/api/admin/instructors`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -104,7 +105,7 @@ export const fetchCourseBySlug = async (slug, token) => {
 
 export const fetchCourseTitleById = async (id) => {
   try {
-    const response = await axiosInstance.get(`https://node.levanacademy.com/courses/${id}`);
+    const response = await axiosInstance.get(`${API_URL}/courses/${id}`);
     return response.data.title;
   } catch (error) {
     console.error("Error fetching course title:", error);
@@ -184,15 +185,35 @@ export const createCategory = async (categoryData, token) => {
 
 export const createCourse = async (courseData, token) => {
   try {
-    const response = await axiosInstance.post(`${API_URL}/courses`, courseData, {
+    const response = await axiosInstance.post(`${API_URL}/courses/course-sections`, courseData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log("data", courseData)
     return response.data;
   } catch (error) {
     console.error("Error creating course:", error);
     throw error;
+  }
+};
+export const uploadCourseImage = async (file, token) => {
+  const formData = new FormData();
+  formData.append("courseFile", file);
+  
+  try {
+      const response = await axiosInstance.post(
+          `${API_URL}/upload/course`, 
+          formData, {
+              headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: `Bearer ${token}`,
+              },
+          }
+      );
+      return response.data;
+  } catch (error) {
+      throw new Error('Error uploading course image:', error);
   }
 };
 
@@ -220,5 +241,78 @@ export const fetchUserEnrolledCourses = async (token) => {
   } catch (error) {
     console.error("Error fetching enrolled courses:", error);
     throw error;
+  }
+};
+
+export const createOrGetPaymentReference = async ({ user_id, course_id, amount, token }) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/api/payments/create`,
+      { user_id, course_id, amount },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log("createOrGetPaymentReference - Response:", response.data);
+
+    return response.data;
+  } catch (err) {
+    console.error("Error creating payment reference", err);
+    return null;
+  }
+};
+export const cancelPayment = async ({ paymentId, token }) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/api/payments/cancel`,
+      { paymentId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(`cancelPayment - Payment ${paymentId} cancelled. Response:`, response.data);
+
+    return response.data; 
+  } catch (err) {
+    console.error("Error cancelling payment", err);
+    return null;
+  }
+};
+
+export const confirmPayment = async ({ paymentId, token }) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/api/payments/confirm`,
+      { paymentId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(`confirmPayment - Payment ${paymentId} confirmed. Response:`, response.data);
+
+    return response.data;
+  } catch (err) {
+    console.error("Error confirming payment", err);
+    return null;
+  }
+};
+export const verifyPayment = async ({ paymentId, token }) => {
+  try {
+    const response = await axiosInstance.post(
+      `${API_URL}/api/payments/verify`,
+      { paymentId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log(`verifyPayment - Payment ${paymentId} verified. Response:`, response.data);
+    return response.data;
+  } catch (err) {
+    console.error("Error verifying payment", err);
+    return null;
   }
 };

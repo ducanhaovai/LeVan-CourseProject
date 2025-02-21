@@ -6,7 +6,7 @@ import MessageList from "./components/MessageList";
 import MessageInput from "./components/MessageInput";
 import { getRoomMessage } from "api/apiChat";
 import { fetchUsersByID } from "api/apiAdmin";
-
+const API_URL = process.env.REACT_APP_API_URL;
 const getCurrentUserId = () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -20,7 +20,10 @@ const getCurrentUserId = () => {
   return null;
 };
 
-const socket = io("https://node.levanacademy.com");
+const socket = io(API_URL, {
+  withCredentials: true,
+  transports: ["websocket"]
+});
 
 function Chat({ roomId, peerName }) {
   const [messages, setMessages] = useState([]);

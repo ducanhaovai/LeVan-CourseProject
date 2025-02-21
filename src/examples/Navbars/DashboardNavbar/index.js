@@ -44,7 +44,7 @@ import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import { Popover } from "@mui/material";
 import ProfilesList from "examples/Lists/ProfilesList";
 import { fetchNotifications } from "api/apiNotifications";
-
+const API_URL = process.env.REACT_APP_API_URL;
 function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useSoftUIController();
@@ -58,7 +58,10 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const [anchorElChat, setAnchorElChat] = useState(null);
   const [userID, setUserID] = useState(null);
   const navigate = useNavigate();
-  const socket = io("https://node.levanacademy.com");
+  const socket = io(API_URL, {
+    withCredentials: true,
+    transports: ["websocket"]
+  });
   const [notifications, setNotifications] = useState([]);
   const [enrollmentNotifications, setEnrollmentNotifications] = useState([]);
   const [registrationNotifications, setRegistrationNotifications] = useState([]);

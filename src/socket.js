@@ -1,8 +1,9 @@
 import { io } from "socket.io-client";
+const SOCKET_URL = process.env.REACT_APP_SOCKET;
 
-const SOCKET_URL = "https://node.levanacademy.com";
-export const socket = io(SOCKET_URL);
-
-socket.on("connect", () => {
-  console.log("Connected to socket server:", socket.id);
+export const socket = io(SOCKET_URL, {
+    withCredentials: true,
+    transports: ["websocket"]
 });
+
+

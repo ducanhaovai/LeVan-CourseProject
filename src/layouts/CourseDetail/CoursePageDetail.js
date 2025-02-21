@@ -48,7 +48,7 @@ const CoursePageDetail = () => {
         setCourse(courseData);
         setInstructor(instructorData);
 
-        const enrollmentResponse = await checkEnrollmentStatus(courseData.id, token);
+        const enrollmentResponse = await checkEnrollmentStatus(courseData.slug, token);
         setEnrollmentStatus(enrollmentResponse?.enrollmentStatus || "not_enrolled");
 
         setLoading(false);

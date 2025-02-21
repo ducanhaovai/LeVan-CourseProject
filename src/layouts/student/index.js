@@ -15,18 +15,20 @@ import CourseTop from "./components/CourseTop";
 import CourseUser from "./components/CourseUser";
 import FaqSection from "./components/FAQ";
 import LearningJourney from "./components/LearningJourney";
+import SlidePicture from "./components/SlidePictrue";
 
 function Student() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <HeaderLanding />
-      <TrendingCategories />
       <Benefits />
       <CourseUser />
       <CourseTop />
+      <SlidePicture/>
       <FaqSection />
       <LearningJourney />
+      
       <Footer />
     </DashboardLayout>
   );

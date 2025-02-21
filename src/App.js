@@ -10,7 +10,7 @@ import theme from "assets/theme";
 import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import routes from "routes";
+import useRoutes  from "../src/routes"
 import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import brand from "assets/images/logos/logoLevan.png";
 import LoadingSpinner from "hook/LoadingSpinner";
@@ -20,7 +20,7 @@ import { NotificationProvider } from "hook/NotificationContext";
 
 import { jwtDecode } from "jwt-decode";
 import checkTokenExpiration from "hook/checkTokenExpiration";
-
+import { useTranslation } from 'react-i18next';
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor } = controller;
@@ -28,7 +28,10 @@ export default function App() {
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(true);
-
+  const { t, i18n } = useTranslation();
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
   // Cache for the rtl
   useMemo(() => {
     const cacheRtl = createCache({
@@ -73,6 +76,7 @@ export default function App() {
   useEffect(() => {
     checkTokenExpiration();
   }, [pathname]);
+  const routes = useRoutes();
   const getRoutes = (allRoutes) => {
     const token = localStorage.getItem("token");
     let userRole = null;
@@ -137,8 +141,11 @@ export default function App() {
   return (
     <NotificationProvider>
       <ChatProvider>
+
         <ThemeProvider theme={theme}>
+          
           <CssBaseline />
+        
           {layout === "dashboard" && (
             <>
               <Sidenav
@@ -151,8 +158,9 @@ export default function App() {
               />
               <Configurator />
               {configsButton}
-            </>
+            </> 
           )}
+          
           <Routes>
             <Route path="/" element={<Navigate to="/home" replace />} />
             {getRoutes(routes)}

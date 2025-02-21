@@ -33,7 +33,7 @@ const ProtectedRoute = ({ element, role }) => {
     return <Navigate to="/authentication/sign-in" />;
   }
 
-  // Nếu được phép, render component cần hiển thị
+
   return element;
 };
 

@@ -68,7 +68,7 @@ function SignIn() {
               navigate("/home");
               break;
             case 2:
-              navigate("/instructor-dashboard");
+              navigate("/home");
               break;
             case 3:
               navigate("/home");
@@ -171,6 +171,9 @@ function SignIn() {
       }
     }
   }, [navigate]);
+  const handleSignUpClick = () => {
+    navigate("/authentication/sign-up");
+  };
   return (
     <CoverLayout
       title="Welcome back"
@@ -245,12 +248,13 @@ function SignIn() {
           <SoftTypography variant="button" color="text" fontWeight="regular">
             Don&apos;t have an account?
             <SoftTypography
-              component={Link}
-              to="/authentication/sign-up"
+              component="span"
+              onClick={handleSignUpClick}
               variant="button"
               color="info"
               fontWeight="medium"
               textGradient
+              style={{ cursor: 'pointer' }}
             >
               Sign up
             </SoftTypography>

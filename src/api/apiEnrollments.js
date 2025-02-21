@@ -24,19 +24,21 @@ export const getCourseAccess = async (id) => {
     throw error;
   }
 };
-export const checkEnrollmentStatus = async (id, token) => {
+export const checkEnrollmentStatus = async (slug, token) => {
   try {
-    const response = await axiosInstance.get(`${BASE_URL}/status/${id}`, {
+    const response = await axiosInstance.get(`${BASE_URL}/status/${slug}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log("data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error checking enrollment status:", error);
     throw error;
   }
 };
+
 export const fetchUserEnrolledCourses = async (token) => {
   try {
     const response = await axiosInstance.get(`${BASE_URL}/enrolled`, {
@@ -53,7 +55,7 @@ export const fetchAllUserEnrolledCourses = async (token) => {
     const response = await axiosInstance.get(`${BASE_URL}/user-enrollments`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("data", response.data);
+
     return response.data;
   } catch (error) {
     console.error("Error fetching enrolled courses:", error);

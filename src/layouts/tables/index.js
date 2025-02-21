@@ -1,78 +1,31 @@
 import React, { useEffect, useState } from "react";
-import Card from "@mui/material/Card";
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import Table from "examples/Tables/Table";
-import { fetchUsers, updateUserInfo, deleteUser } from "../../api/apiAdmin";
-import SoftBadge from "components/SoftBadge";
-import SoftAvatar from "components/SoftAvatar";
-import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import SoftBox from "components/SoftBox";
+import SoftTypography from "components/SoftTypography";
+
 import Modal from "@mui/material/Modal";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import { fetchUsers, updateUserInfo, deleteUser } from "../../api/apiAdmin";
+import UsersTable from "./components/UsersTable";
+import EditUserModal from "./components/EditUserModal";
 
-
-function Author({ user }) {
-  return (
-    <SoftBox display="flex" alignItems="center" px={1} py={0.5}>
-      <SoftBox mr={2}>
-        <SoftAvatar alt={user.username} size="sm" variant="rounded">
-          {user.first_name[0] + user.last_name[0]}
-        </SoftAvatar>
-      </SoftBox>
-      <SoftBox display="flex" flexDirection="column">
-        <SoftTypography variant="button" fontWeight="bold" color="black">
-          {user.first_name} {user.last_name}
-        </SoftTypography>
-        <SoftTypography variant="caption" color="black">
-          {user.email}
-        </SoftTypography>
-      </SoftBox>
-    </SoftBox>
-  );
-}
-
-// Hàm chuyển đổi role thành tên vai trò
-const getRoleName = (role) => {
-  switch (role) {
-    case 1:
-      return "Admin";
-    case 2:
-      return "Instructor";
-    case 3:
-      return "Student";
-    default:
-      return "Unknown";
-  }
-};
-
-// Component hiển thị Role kèm Created At
-function RoleWithCreatedAt({ role, createdAt }) {
-  return (
-    <SoftBox display="flex" flexDirection="column">
-      <SoftTypography variant="caption" fontWeight="medium" color="text">
-        Role: {getRoleName(role)}
-      </SoftTypography>
-      <SoftTypography variant="caption" fontWeight="medium" color="secondary">
-        Created At: {new Date(createdAt).toLocaleString("en-GB")}
-      </SoftTypography>
-    </SoftBox>
-  );
-}
-
-function Tables() {
+const Tables = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
+
+  // Các trường để edit user
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState(3); // Role mặc định là Student
-  const [status, setStatus] = useState(1); // Status mặc định là Active
+  const [role, setRole] = useState(3);
+  const [status, setStatus] = useState(1);
+
+  // **State cho tính năng tìm kiếm**
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -85,11 +38,21 @@ function Tables() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data", error);
+        setError("Error fetching data");
         setLoading(false);
       }
     };
     fetchData();
   }, []);
+
+  // Lọc danh sách người dùng dựa trên searchQuery (theo username hoặc email)
+  const filteredUsers = users.filter((user) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      user.username.toLowerCase().includes(query) ||
+      user.email.toLowerCase().includes(query)
+    );
+  });
 
   const handleEditUser = (user) => {
     setEditingUser(user);
@@ -106,8 +69,10 @@ function Tables() {
     try {
       await updateUserInfo(editingUser.id, { username, email, role, status }, token || "");
       setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === editingUser.id ? { ...user, username, email, role, status } : user
+        prevUsers.map((u) =>
+          u.id === editingUser.id
+            ? { ...u, username, email, role, status }
+            : u
         )
       );
       setEditingUser(null);
@@ -121,88 +86,14 @@ function Tables() {
   const handleDeleteUser = async (userId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this user?");
     if (!confirmDelete) return;
-
     const token = localStorage.getItem("token");
     try {
       await deleteUser(userId, token || "");
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId));
       alert("User deleted successfully!");
     } catch (error) {
       alert("Failed to delete user.");
     }
-  };
-
-  const authorsTableData = {
-    columns: [
-      { name: "Logo", align: "center" },
-      { name: "ID", align: "center" },
-      { name: "User Name", align: "center" },
-      { name: "Email", align: "center" },
-      { name: "Role & Created At", align: "center" },
-      { name: "Status", align: "center" },
-      { name: "Updated At", align: "center" },
-      { name: "Last Logout", align: "center" },
-      { name: "Action", align: "center" },
-    ],
-    rows: users.map((user) => ({
-      Logo: (
-        <SoftAvatar alt={user.username} size="sm" variant="rounded">
-          <SoftTypography variant="caption" color="black">
-            {user.first_name[0] + user.last_name[0]}
-          </SoftTypography>
-        </SoftAvatar>
-      ),
-      ID: (
-        <SoftTypography variant="caption" color="text" fontWeight="medium">
-          {user.id}
-        </SoftTypography>
-      ),
-      "User Name": (
-        <SoftTypography variant="caption" color="black" fontWeight="bold">
-          {user.username}
-        </SoftTypography>
-      ),
-      Email: (
-        <SoftTypography variant="caption" color="black" fontWeight="medium">
-          {user.email}
-        </SoftTypography>
-      ),
-      "Role & Created At": <RoleWithCreatedAt role={user.role} createdAt={user.created_at} />,
-      Status: (
-        <SoftBadge
-          variant="gradient"
-          badgeContent={user.status === 1 ? "Active" : "Inactive"}
-          color={user.status === 1 ? "success" : "error"}
-          size="xs"
-          container
-        />
-      ),
-      "Updated At": (
-        <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-          {new Date(user.updated_at).toLocaleString("en-GB")}
-        </SoftTypography>
-      ),
-      "Last Logout": (
-        <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-          {user.last_logout ? new Date(user.last_logout).toLocaleString("en-GB") : "Never"}
-        </SoftTypography>
-      ),
-      Action: (
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleEditUser(user)}
-            style={{ marginRight: 8 }}
-          >
-            Edit
-          </Button>
-          <Button variant="contained" color="secondary" onClick={() => handleDeleteUser(user.id)}>
-            Delete
-          </Button>
-        </div>
-      ),
-    })),
   };
 
   if (loading) {
@@ -224,62 +115,94 @@ function Tables() {
       <DashboardNavbar />
       <SoftBox py={3}>
         <Card>
-          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SoftTypography variant="h6">User Table</SoftTypography>
+          <SoftBox display="flex" flexDirection="column" p={3}>
+            <SoftTypography variant="h6" mb={2}>
+              User Table
+            </SoftTypography>
+
+            {/* Thay vì form HTML tĩnh, ta dùng input control để search */}
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="search"
+                id="search"
+                className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50
+                           focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600
+                           dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search"
+                value={searchQuery}            // Giá trị được lấy từ state
+                onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật state khi gõ
+              />
+              {/* Nếu muốn nút Search có chức năng submit form, bạn có thể thêm onClick hoặc onSubmit */}
+              <button
+                type="button"
+                className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800
+                           focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2
+                           dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={() => console.log("Search query:", searchQuery)}
+              >
+                Search
+              </button>
+            </div>
           </SoftBox>
-          <Table columns={authorsTableData.columns} rows={authorsTableData.rows} />
+
+          {/* Bao bọc bảng trong container với max-height để cuộn */}
+          <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+            <UsersTable users={filteredUsers} onEdit={handleEditUser} onDelete={handleDeleteUser} />
+          </div>
         </Card>
       </SoftBox>
 
-      <Modal open={openEditModal} onClose={() => setOpenEditModal(false)}>
-        <Card style={{ padding: "20px", margin: "100px auto", width: "400px" }}>
-          <h2>Edit User</h2>
-          <TextField
-            label="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            fullWidth
-            margin="normal"
+      <Modal
+        open={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+        aria-labelledby="edit-user-modal"
+        aria-describedby="modal-to-edit-user-information"
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            outline: 0,
+          }}
+        >
+          <EditUserModal
+            open={openEditModal}
+            onClose={() => setOpenEditModal(false)}
+            username={username}
+            setUsername={setUsername}
+            email={email}
+            setEmail={setEmail}
+            role={role}
+            setRole={setRole}
+            status={status}
+            setStatus={setStatus}
+            onSave={handleSaveUser}
           />
-          <TextField
-            label="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <SoftBox display="flex" flexDirection="column" mt={2} mb={2}>
-            <SoftTypography variant="subtitle2">Role</SoftTypography>
-            <Select value={role} onChange={(e) => setRole(e.target.value)} fullWidth>
-              <MenuItem value={1}>Admin</MenuItem>
-              <MenuItem value={2}>Instructor</MenuItem>
-              <MenuItem value={3}>Student</MenuItem>
-            </Select>
-          </SoftBox>
-          <SoftBox display="flex" flexDirection="column" mt={2} mb={2}>
-            <SoftTypography variant="subtitle2">Status</SoftTypography>
-            <Select value={status} onChange={(e) => setStatus(e.target.value)} fullWidth>
-              <MenuItem value={1}>Active</MenuItem>
-              <MenuItem value={0}>Inactive</MenuItem>
-            </Select>
-          </SoftBox>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSaveUser}
-            style={{ marginRight: 8 }}
-          >
-            Save
-          </Button>
-          <Button variant="contained" color="secondary" onClick={() => setOpenEditModal(false)}>
-            Cancel
-          </Button>
-        </Card>
+        </div>
       </Modal>
 
       <Footer />
     </DashboardLayout>
   );
-}
+};
 
 export default Tables;

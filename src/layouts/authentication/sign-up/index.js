@@ -1,118 +1,163 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import axios from "axios"
+import { jwtDecode } from "jwt-decode"
+import { useNavigate, Link } from "react-router-dom"
 
-import Card from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
-import Typography from "@mui/material/Typography";
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import SoftInput from "components/SoftInput";
-import SoftButton from "components/SoftButton";
+import Card from "@mui/material/Card"
+import Checkbox from "@mui/material/Checkbox"
+import Typography from "@mui/material/Typography"
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
+import SoftBox from "components/SoftBox"
+import SoftTypography from "components/SoftTypography"
+import SoftInput from "components/SoftInput"
+import SoftButton from "components/SoftButton"
 
-import BasicLayout from "layouts/authentication/components/BasicLayout";
-import Socials from "layouts/authentication/components/Socials";
-import Separator from "layouts/authentication/components/Separator";
+import BasicLayout from "layouts/authentication/components/BasicLayout"
+import Socials from "layouts/authentication/components/Socials"
+import Separator from "layouts/authentication/components/Separator"
 
-import curved6 from "assets/images/curved-images/curved14.jpg";
-const API_URL = process.env.REACT_APP_API_URL_AUTH;
+import curved6 from "assets/images/curved-images/curved14.jpg"
+const API_URL = process.env.REACT_APP_API_URL_AUTH
+
 function SignUp() {
-  const [agreement, setAgremment] = useState(true);
-
-  const handleSetAgremment = () => setAgremment(!agreement);
+  const [agreement, setAgreement] = useState(true)
   const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
-    first_name: "",
-    last_name: "",
-  });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [passwordMatchError, setPasswordMatchError] = useState("");
-  const navigate = useNavigate();
+  })
+  const [errors, setErrors] = useState({})
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success")
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
     if (token) {
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(token)
         if (decoded.role) {
           switch (decoded.role) {
             case 1:
-              navigate("/dashboard");
-              break;
+              navigate("/dashboard")
+              break
             case 2:
-              navigate("/instructor-dashboard");
-              break;
+              navigate("/instructor-dashboard")
+              break
             case 3:
-              navigate("/student-dashboard");
-              break;
+              navigate("/student-dashboard")
+              break
             default:
-              navigate("/");
-              break;
+              navigate("/")
+              break
           }
         }
       } catch (error) {
-        console.error("Invalid token:", error);
+        console.error("Invalid token:", error)
       }
     }
-  }, [navigate]);
+  }, [navigate])
+
+  const validate = () => {
+    const tempErrors = {};
+    tempErrors.first_name = formData.first_name.trim() ? "" : "First name is required.";
+    tempErrors.last_name = formData.last_name.trim() ? "" : "Last name is required.";
+    tempErrors.username = formData.username.trim() ? "" : "Username is required.";
+    if (!tempErrors.username) {
+      tempErrors.username = /^[a-zA-Z0-9_]{3,20}$/.test(formData.username)
+        ? ""
+        : "Username must be 3-20 characters long and can only contain letters, numbers, and underscores.";
+    }
+    tempErrors.email = /^\S+@\S+\.\S+$/.test(formData.email) ? "" : "Email is not valid.";
+    tempErrors.password = formData.password.length >= 8 ? "" : "Password must be at least 8 characters long.";
+    if (!tempErrors.password) {
+      tempErrors.password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(formData.password)
+        ? ""
+        : "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+    }
+    tempErrors.confirmPassword = formData.confirmPassword === formData.password ? "" : "Passwords do not match.";
+    setErrors(tempErrors);
+    return Object.values(tempErrors).every(x => x === "");
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Perform validation on each change
+    const tempErrors = { ...errors };
+    switch (name) {
+      case "first_name":
+        tempErrors.first_name = value.trim() ? "" : "First name is required.";
+        break;
+      case "last_name":
+        tempErrors.last_name = value.trim() ? "" : "Last name is required.";
+        break;
+      case "username":
+        tempErrors.username = value.trim() ? "" : "Username is required.";
+        if (!tempErrors.username) {
+          tempErrors.username = /^[a-zA-Z0-9_]{3,20}$/.test(value)
+            ? ""
+            : "Username must be 3-20 characters long and can only contain letters, numbers, and underscores.";
+        }
+        break;
+      case "email":
+        tempErrors.email = /^\S+@\S+\.\S+$/.test(value) ? "" : "Email is not valid.";
+        break;
+      case "password":
+        tempErrors.password = value.length >= 8 ? "" : "Password must be at least 8 characters long.";
+        if (!tempErrors.password) {
+          tempErrors.password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(value)
+            ? ""
+            : "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+        }
+        tempErrors.confirmPassword = formData.confirmPassword === value ? "" : "Passwords do not match.";
+        break;
+      case "confirmPassword":
+        tempErrors.confirmPassword = value === formData.password ? "" : "Passwords do not match.";
+        break;
+      default:
+        break;
+    }
+    setErrors(tempErrors);
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate required fields
-    if (
-      !formData.username ||
-      !formData.email ||
-      !formData.password ||
-      !formData.confirmPassword ||
-      !formData.first_name ||
-      !formData.last_name
-    ) {
-      setError("Please fill in all required fields.");
-      return;
+    e.preventDefault()
+    if (validate()) {
+      try {
+        const response = await axios.post(`${API_URL}/register`, formData);
+        setSnackbarMessage("Registration successful! Redirecting to sign in...")
+        setSnackbarSeverity("success")
+        setOpenSnackbar(true)
+        setTimeout(() => {
+          navigate("/authentication/sign-in")
+        }, 2000)
+      } catch (error) {
+        setSnackbarMessage("Registration failed. Please try again.")
+        setSnackbarSeverity("error")
+        setOpenSnackbar(true)
+        setErrors((prev) => ({ ...prev, formError: "Registration failed. Please try again." }))
+      }
+    } else {
+      const firstErrorKey = Object.keys(errors).find(key => errors[key] !== "");
+      const firstErrorMessage = errors[firstErrorKey] || "Please check your input.";
+      setSnackbarMessage(firstErrorMessage);
+      setSnackbarSeverity("warning");
+      setOpenSnackbar(true);
     }
+  }
 
-    if (formData.password !== formData.confirmPassword) {
-      setPasswordMatchError("Passwords do not match.");
-      return;
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return
     }
-
-    try {
-      await axios.post(`${API_URL}/register`, {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-      });
-      setSuccess(true);
-    } catch (error) {
-      setError("Registration failed");
-    }
-  };
-
-  useEffect(() => {
-    if (success) {
-      const timer = setTimeout(() => {
-        navigate("/authentication/sign-in");
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [success, navigate]);
+    setOpenSnackbar(false)
+  }
 
   return (
     <BasicLayout
@@ -132,105 +177,45 @@ function SignUp() {
         <Separator />
         <SoftBox pt={2} pb={3} px={3}>
           <SoftBox component="form" role="form" onSubmit={handleSubmit} noValidate>
-            <SoftBox mb={2}>
-              <SoftInput
-                placeholder="First Name"
-                name="first_name"
-                value={formData.first_name}
-                onChange={handleChange}
-                required
-                autoFocus
-                fullWidth
-              />
-            </SoftBox>
-            <SoftBox mb={2}>
-              <SoftInput
-                placeholder="Last Name"
-                value={formData.last_name}
-                onChange={handleChange}
-                name="last_name"
-                required
-                fullWidth
-              />
-            </SoftBox>
-            <SoftBox mb={2}>
-              <SoftInput
-                placeholder="Username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                required
-                fullWidth
-                variant="outlined"
-                color="primary"
-              />
-            </SoftBox>
-            <SoftBox mb={2}>
-              <SoftInput
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="your@email.com"
-                autoComplete="email"
-                required
-                fullWidth
-              />
-            </SoftBox>
-            <SoftBox mb={2}>
-              <SoftInput
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Password"
-                autoComplete="new-password"
-                required
-                fullWidth
-              />
-            </SoftBox>
-            <SoftBox mb={2}>
-              <SoftInput
-                type="password"
-                placeholder="Confirm Password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                autoComplete="new-password"
-                required
-                fullWidth
-              />
-            </SoftBox>
-            {passwordMatchError && <Typography color="error">{passwordMatchError}</Typography>}
-            {error && <Typography color="error">{error}</Typography>}
-            {success && (
-              <Typography color="success">
-                Registration successful! You will be redirected to the login page in 3 seconds.
-              </Typography>
-            )}
+            {Object.keys(formData).map((key) => (
+              <SoftBox mb={2} key={key}>
+                <SoftInput
+                  type={key.includes("password") ? "password" : "text"}
+                  placeholder={key
+                    .split("_")
+                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(" ")}
+                  name={key}
+                  value={formData[key]}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  error={Boolean(errors[key])}
+
+                  inputProps={{
+                    autoComplete: key === "confirmPassword" ? "new-password" : "on",
+                  }}
+                />
+              </SoftBox>
+            ))}
+            {errors.formError && <Typography color="error">{errors.formError}</Typography>}
             <SoftBox display="flex" alignItems="center">
-              <Checkbox checked={agreement} onChange={handleSetAgremment} />
+              <Checkbox checked={agreement} onChange={() => setAgreement(!agreement)} />
               <SoftTypography
                 variant="button"
                 fontWeight="regular"
-                onClick={handleSetAgremment}
-                sx={{ cursor: "poiner", userSelect: "none" }}
+                onClick={() => setAgreement(!agreement)}
+                sx={{ cursor: "pointer", userSelect: "none" }}
               >
-                &nbsp;&nbsp;I agree the&nbsp;
+                &nbsp;I agree to the&nbsp;
               </SoftTypography>
-              <SoftTypography
-                component="a"
-                href="#"
-                variant="button"
-                fontWeight="bold"
-                textGradient
-              >
+              <SoftTypography component="a" href="#" variant="button" fontWeight="bold" textGradient>
                 Terms and Conditions
               </SoftTypography>
             </SoftBox>
             <SoftBox mt={4} mb={1}>
-              <SoftButton variant="gradient" color="dark" fullWidth type="submit">
-                sign up
+              <SoftButton variant="gradient" color="dark" fullWidth type="submit" disabled={!agreement}>
+                Sign Up
               </SoftButton>
             </SoftBox>
             <SoftBox mt={3} textAlign="center">
@@ -251,8 +236,14 @@ function SignUp() {
           </SoftBox>
         </SoftBox>
       </Card>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </BasicLayout>
-  );
+  )
 }
 
-export default SignUp;
+export default SignUp
+

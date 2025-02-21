@@ -1,8 +1,8 @@
 import axios from "axios";
 import { createBrowserHistory } from "history";
-
+const API_URL = process.env.REACT_APP_API_URL;
 const axiosInstance = axios.create({
-  baseURL: "https://node.levanacademy.com",
+  baseURL: {API_URL},
   headers: {
     "Content-Type": "application/json",
   },

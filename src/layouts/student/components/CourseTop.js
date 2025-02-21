@@ -6,12 +6,14 @@ import { fetchUsers } from "api/apiAdmin";
 import { fetchCourses } from "api/apiAdmin";
 import { fetchCategories } from "api/apiAdmin";
 import CourseCard from "layouts/CourseStudent/components/CourseCard";
+
 export default function CourseTop() {
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const fetchData = async () => {
@@ -39,10 +41,14 @@ export default function CourseTop() {
 
     fetchData();
   }, []);
+
+  // Lọc ra các khóa học có dữ liệu top là 1
+  const topCourses = courses.filter((course) => course.top === 1);
+
   return (
     <div className="pb-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-10 mt-10">
           <h2 className="text-3xl font-bold mb-2">
             The World is Top <span className="text-[#FF7235]">Courses</span>
           </h2>
@@ -51,14 +57,14 @@ export default function CourseTop() {
           </p>
         </div>
       </div>
-      {courses.length === 0 ? (
+      {topCourses.length === 0 ? (
         <div className="text-center text-gray-600 text-lg">
-          <p>No courses enrolled yet.</p>
+          <p>No top courses available.</p>
           <button
             className="mt-4 px-6 py-3 bg-[#FF7235] text-white rounded-lg shadow-md hover:bg-[#e3622f] transition"
             onClick={() => (window.location.href = "/courses")}
           >
-            Enroll Now
+            View All Courses
           </button>
         </div>
       ) : (
@@ -67,8 +73,8 @@ export default function CourseTop() {
             <ChevronLeft className="w-6 h-6" />
           </button>
           <div className="flex content-center justify-center md:flex-row">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((course) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+              {topCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
               ))}
             </div>
@@ -78,7 +84,6 @@ export default function CourseTop() {
           </button>
         </div>
       )}
-      <CountUp />
     </div>
   );
 }

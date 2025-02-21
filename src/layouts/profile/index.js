@@ -47,7 +47,7 @@ function Overview() {
     fetchAllUserEnrolledCourses(token)
       .then((data) => {
         const relevantEnrollments = data[0];
-        console.log("Fetched and flattened enrollments:", relevantEnrollments);
+
         setEnrollments(relevantEnrollments);
       })
       .catch((error) => {
