@@ -15,6 +15,7 @@ import CourseContent from "./components/CourseContent";
 import Instructor from "./components/Instructor/PageInstructor";
 import Footer from "examples/Footer";
 import Reviews from "./components/Review";
+import CourseDetails from "./components/CourseDetails";
 
 const CoursePageDetail = () => {
   const { slug } = useParams();
@@ -76,20 +77,20 @@ const CoursePageDetail = () => {
               <div className="border-b-2 border-gray-200 pb-5 ">
                 <CourseHeader course={course} user={instructor} category={category} />
               </div>
-              <div className="border-b-2 border-gray-200 pb-5 ">
+              <div className="border-b-2 border-gray-200 pb-5">
+                <CourseDetails course={course} />
+              </div>
+              {/* <div className="border-b-2 border-gray-200 pb-5 ">
                 <PageLearn />
               </div>
               <div className="border-b-2 border-gray-200 pb-5 ">
                 <PageDesReq />
-              </div>
+              </div> */}
               <div className="border-b-2 border-gray-200 pb-5 ">
                 <CourseContent course={course} enrollmentStatus={enrollmentStatus} />
               </div>
               <div className="border-b-2 border-gray-200 pb-5">
                 <Instructor />
-              </div>
-              <div className="border-b-2 border-gray-200 pb-5">
-                <Reviews />
               </div>
               <CommentForm />
             </div>

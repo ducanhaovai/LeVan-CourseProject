@@ -42,7 +42,6 @@ export default function CourseTop() {
     fetchData();
   }, []);
 
-  // Lọc ra các khóa học có dữ liệu top là 1
   const topCourses = courses.filter((course) => course.top === 1);
 
   return (

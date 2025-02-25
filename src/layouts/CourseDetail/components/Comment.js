@@ -14,36 +14,12 @@ export default function CommentForm() {
 
   return (
     <div className="p-4 sm:p-6 ">
-      <h2 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6">Leave A Reply</h2>
+      <h2 className="text-lg sm:text-xl font-medium mb-4 sm:mb-6">Leave A Reply We Will Contact</h2>
       <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
         Your email address will not be published. Required fields are marked *
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Ratings */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Ratings</label>
-          <div className="flex gap-2">
-            {[1, 2, 3, 4, 5].map((index) => (
-              <button
-                key={index}
-                type="button"
-                className="p-0 hover:scale-110 transition-transform"
-                onMouseEnter={() => setHoveredRating(index)}
-                onMouseLeave={() => setHoveredRating(0)}
-                onClick={() => setRating(index)}
-              >
-                <Star
-                  className={`w-5 h-5 ${
-                    index <= (hoveredRating || rating)
-                      ? "fill-primary text-primary"
-                      : "text-muted-foreground"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Input Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -100,24 +76,11 @@ export default function CommentForm() {
           />
         </div>
 
-        {/* Remember Me */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="remember"
-            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-          />
-          <label htmlFor="remember" className="text-sm">
-            Save my name, email, and website in this browser for the next time I comment.
-          </label>
-        </div>
-
-        {/* Submit Button */}
         <Button
           type="submit"
           className="w-full bg-[#1d1b48] hover:bg-[#1d1b48]/90 text-white text-sm sm:text-base py-2 sm:py-3"
         >
-          Post Comment →
+          Send →
         </Button>
       </form>
     </div>

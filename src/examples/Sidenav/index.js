@@ -148,12 +148,12 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
           </SoftTypography>
         </SoftBox>
         <SoftBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <SoftBox component="img" src={brand} alt="Le Van Academy" width="2rem" />}
+          {brand && <SoftBox component="img" src="https://levanacademy.com/wp-content/uploads/2024/09/logo-e1727260905499.png" alt="Le Van Academy" width="2rem" />}
           <SoftBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <SoftTypography component="h6" variant="button" fontWeight="medium">
+            <SoftTypography component="h6" variant="button" fontWeight="medium" margin-left="10px" >   
               {brandName}
             </SoftTypography>
           </SoftBox>

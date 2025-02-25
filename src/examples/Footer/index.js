@@ -18,7 +18,7 @@ export default function Footer() {
 
         {/* Logo + Social Media */}
         <div className="flex flex-col items-center space-y-4">
-          <img src={brand} alt="Le Van Logo" className="w-32" />
+          <img src="https://levanacademy.com/wp-content/uploads/2024/09/logo-e1727260905499.png" alt="Le Van Logo" className="w-32" />
           <p className="text-sm text-center">{t('footer.discoverSlogan')}</p>
           {/* Social Media Icons */}
         </div>

@@ -4,7 +4,7 @@ export function Avatar({ src, alt, fallback, className }) {
   const [error, setError] = React.useState(false);
 
   return (
-    <div className={`relative flex shrink-0 overflow-hidden rounded-full ${className}`}>
+    <div className={`relative flex shrink-0 overflow-hidden ${className}`}>
       {!error ? (
         <img
           src={src}

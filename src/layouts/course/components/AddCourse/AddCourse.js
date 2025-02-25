@@ -23,6 +23,7 @@ export default function AddCourse() {
     pricing_info: "",
     requirements: "",
     sections: [],
+    top: 0,
   });
 
   const [categories, setCategories] = useState([]);
@@ -361,7 +362,23 @@ export default function AddCourse() {
                       <img src={course.thumbnail} alt="Thumbnail Preview" className="h-32" />
                     </div>
                   )}
+                  
                 </div>
+                <div>
+      <label htmlFor="top" className="block text-sm font-medium text-gray-700">
+        Top Course
+      </label>
+      <input
+        type="checkbox"
+        id="top"
+        name="top"
+        checked={course.top === 1}
+        onChange={(e) =>
+          setCourse(prev => ({ ...prev, top: e.target.checked ? 1 : 0 }))
+        }
+        className="mt-1"
+      />
+    </div>
                 <div>
                   <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                     Status

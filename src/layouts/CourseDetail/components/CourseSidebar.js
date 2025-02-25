@@ -18,6 +18,7 @@ import {
 import { Badge } from "./Badge";
 import { Button } from "./Button";
 import { Card } from "./Card";
+import { TiktokIcon } from "./Instructor/SocialButton";
 
 const CourseSidebar = ({ course, enrollmentStatus }) => {
   const navigate = useNavigate();
@@ -104,57 +105,44 @@ const CourseSidebar = ({ course, enrollmentStatus }) => {
             </Button>
           )}
 
-          <div className="text-center text-sm text-muted-foreground">
-            30-Day Money-Back Guarantee
-          </div>
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-semibold">This course includes:</h3>
+          <h3 className="font-semibold">Khóa học này cung cấp</h3>
           <ul className="space-y-3">
             <li className="flex items-center gap-3 text-sm">
-              <Clock className="w-5 h-5 text-muted-foreground" />
-              54.5 hours on-demand video
-            </li>
-            <li className="flex items-center gap-3 text-sm">
-              <FileText className="w-5 h-5 text-muted-foreground" />
-              3 articles
-            </li>
-            <li className="flex items-center gap-3 text-sm">
               <Download className="w-5 h-5 text-muted-foreground" />
-              249 downloadable resources
+              Có thể tải các dữ liệu đã cung cấp
             </li>
             <li className="flex items-center gap-3 text-sm">
               <Tv className="w-5 h-5 text-muted-foreground" />
-              Access on mobile and TV
+              Có thể truy cập bất cứ lúc nào
             </li>
             <li className="flex items-center gap-3 text-sm">
               <Infinity className="w-5 h-5 text-muted-foreground" />
-              Full lifetime access
+              Hỗ trợ 24/7 và thực hành thực tế
             </li>
             <li className="flex items-center gap-3 text-sm">
               <Award className="w-5 h-5 text-muted-foreground" />
-              Certificate of completion
+              Nhận bằng sau khi hoàn thành khóa học
             </li>
           </ul>
         </div>
 
         <div className="space-y-4">
           <div className="text-center">
-            <h3 className="font-semibold">Share this course</h3>
+            <h3 className="font-semibold">Chi tiết hơn về khóa học</h3>
+            <h3 className="font-semibold">hãy liên hệ</h3>
           </div>
           <div className="flex justify-center gap-4">
             <Button variant="outline" size="icon" className="rounded-full w-10 h-10">
-              <Facebook className="w-4 h-4" />
+              <Facebook className="w-4 h-4"  href="https://www.facebook.com/yumi.ling.9?locale=vi_VN" target="_blank"/>
             </Button>
             <Button variant="outline" size="icon" className="rounded-full w-10 h-10">
-              <Twitter className="w-4 h-4" />
+              <Instagram className="w-4 h-4" href="https://www.instagram.com/levan.academy_hyper.realistic/" target="_blank"/>
             </Button>
             <Button variant="outline" size="icon" className="rounded-full w-10 h-10">
-              <Instagram className="w-4 h-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-full w-10 h-10">
-              <Linkedin className="w-4 h-4" />
+              <TiktokIcon className="w-4 h-4" />
             </Button>
           </div>
         </div>
