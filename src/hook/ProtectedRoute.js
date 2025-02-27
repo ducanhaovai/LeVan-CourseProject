@@ -28,7 +28,6 @@ const ProtectedRoute = ({ element, role }) => {
   }, [role]);
 
 
-  // Nếu không được phép, chuyển hướng về trang đăng nhập
   if (authStatus === "unauthorized") {
     return <Navigate to="/authentication/sign-in" />;
   }

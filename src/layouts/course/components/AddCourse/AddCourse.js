@@ -71,7 +71,6 @@ export default function AddCourse() {
         }
     } catch (error) {
         console.error("Error uploading image:", error);
-        toast.error('Failed to upload image.');
     } finally {
         setUploading(false);
     }

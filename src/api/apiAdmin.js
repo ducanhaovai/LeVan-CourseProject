@@ -2,7 +2,7 @@ import axiosInstance from "hook/AxiosInterceptor";
 import axios from "axios";
 const ADMIN_API_URL = process.env.REACT_APP_ADMIN_API_URL;
 const API_URL = process.env.REACT_APP_API_URL;
-
+const PAYMENT_API_URL = process.env.REACT_APP_Payments_API_URL;
 
 export const fetchUsers = async (token) => {
   return axiosInstance.get(`${ADMIN_API_URL}/users`, {
@@ -20,7 +20,7 @@ export const fetchUsersByID = async (userId, token) => {
 };
 export const fetchInstructors = async (token) => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/api/admin/instructors`, {
+    const response = await axiosInstance.get(`${API_URL}/admin/instructors`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -247,13 +247,12 @@ export const fetchUserEnrolledCourses = async (token) => {
 export const createOrGetPaymentReference = async ({ user_id, course_id, amount, token }) => {
   try {
     const response = await axiosInstance.post(
-      `${API_URL}/api/payments/create`,
+      `${PAYMENT_API_URL}/create`,
       { user_id, course_id, amount },
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    console.log("createOrGetPaymentReference - Response:", response.data);
 
     return response.data;
   } catch (err) {
@@ -264,7 +263,7 @@ export const createOrGetPaymentReference = async ({ user_id, course_id, amount, 
 export const cancelPayment = async ({ paymentId, token }) => {
   try {
     const response = await axiosInstance.post(
-      `${API_URL}/api/payments/cancel`,
+      `${PAYMENT_API_URL}/cancel`,
       { paymentId },
       {
         headers: {
@@ -272,8 +271,6 @@ export const cancelPayment = async ({ paymentId, token }) => {
         },
       }
     );
-    console.log(`cancelPayment - Payment ${paymentId} cancelled. Response:`, response.data);
-
     return response.data; 
   } catch (err) {
     console.error("Error cancelling payment", err);
@@ -284,7 +281,7 @@ export const cancelPayment = async ({ paymentId, token }) => {
 export const confirmPayment = async ({ paymentId, token }) => {
   try {
     const response = await axiosInstance.post(
-      `${API_URL}/api/payments/confirm`,
+      `${PAYMENT_API_URL}/confirm`,
       { paymentId },
       {
         headers: {
@@ -292,7 +289,6 @@ export const confirmPayment = async ({ paymentId, token }) => {
         },
       }
     );
-    console.log(`confirmPayment - Payment ${paymentId} confirmed. Response:`, response.data);
 
     return response.data;
   } catch (err) {
@@ -303,7 +299,7 @@ export const confirmPayment = async ({ paymentId, token }) => {
 export const verifyPayment = async ({ paymentId, token }) => {
   try {
     const response = await axiosInstance.post(
-      `${API_URL}/api/payments/verify`,
+      `${PAYMENT_API_URL}/verify`,
       { paymentId },
       {
         headers: { Authorization: `Bearer ${token}` },

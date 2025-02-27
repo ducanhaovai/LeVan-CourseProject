@@ -9,7 +9,7 @@ export const fetchSectionsByCourseId = (courseId, token) => {
 };
 
 export const fetchSectionById = (sectionId, token) => {
-  return axiosInstance.get(`${API_URL}/api/sections/${sectionId}`, {
+  return axiosInstance.get(`${API_URL}/sections/${sectionId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };

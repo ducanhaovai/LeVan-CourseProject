@@ -24,13 +24,11 @@ export default function CourseCheckoutManual() {
   const token = localStorage.getItem("token");
   const currentUser = useMemo(() => (token ? jwtDecode(token) : null), [token]);
 
-  // Ref để theo dõi trạng thái xác nhận payment
   const isConfirmedRef = useRef(isPaymentConfirmed);
   useEffect(() => {
     isConfirmedRef.current = isPaymentConfirmed;
   }, [isPaymentConfirmed]);
 
-  // Effect: fetch course data (chỉ chạy khi slug thay đổi)
   useEffect(() => {
     async function fetchCourse() {
       if (!slug) {
@@ -51,11 +49,10 @@ export default function CourseCheckoutManual() {
     fetchCourse();
   }, [slug]);
 
-  // Effect: tạo payment khi course data đã có và payment chưa được tạo
   useEffect(() => {
     async function createPayment() {
       if (!course) return;
-      if (paymentId) return; // đã có payment, không cần tạo lại
+      if (paymentId) return; 
       const user_id = currentUser?.id;
       const course_id = course.id;
       const amount = course.price;
