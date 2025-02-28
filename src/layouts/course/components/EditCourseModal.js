@@ -26,7 +26,7 @@ const EditCourseModal = ({
 }) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <Card style={{ padding: "20px", margin: "40px auto", maxWidth: "800px", maxHeight: "80vh", overflowY: "auto", }}>
+      <Card style={{ padding: "20px", margin: "40px auto", maxWidth: "800px", maxHeight: "80vh", overflowY: "auto" }}>
         <Typography variant="h5" gutterBottom>
           Edit Course
         </Typography>
@@ -58,13 +58,71 @@ const EditCourseModal = ({
           margin="normal"
         />
         <TextField
-          label="Duration"
+          label="Duration (hours)"
           name="duration"
           type="number"
           value={course?.duration || ""}
           onChange={onInputChange}
           fullWidth
           margin="normal"
+        />
+        <TextField
+          label="Thumbnail URL"
+          name="thumbnail"
+          value={course?.thumbnail || ""}
+          onChange={onInputChange}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Detailed Description"
+          name="detailed_description"
+          value={course?.detailed_description || ""}
+          onChange={onInputChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={3}
+        />
+        <TextField
+          label="Course Content"
+          name="course_content"
+          value={course?.course_content || ""}
+          onChange={onInputChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={3}
+        />
+        <TextField
+          label="Course Features"
+          name="course_features"
+          value={course?.course_features || ""}
+          onChange={onInputChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={3}
+        />
+        <TextField
+          label="Pricing Info"
+          name="pricing_info"
+          value={course?.pricing_info || ""}
+          onChange={onInputChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={2}
+        />
+        <TextField
+          label="Requirements"
+          name="requirements"
+          value={course?.requirements || ""}
+          onChange={onInputChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={2}
         />
         <Box mt={2} mb={2}>
           <Typography variant="subtitle2">Category</Typography>
@@ -81,8 +139,20 @@ const EditCourseModal = ({
             ))}
           </Select>
         </Box>
-
-        {/* Các phần (sections) của khóa học */}
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="status"
+              checked={course?.status === 1}
+              onChange={(e) =>
+                onInputChange({
+                  target: { name: "status", value: e.target.checked ? 1 : 0 }
+                })
+              }
+            />
+          }
+          label="Published"
+        />
         <Box mt={3}>
           <Typography variant="h6">Sections</Typography>
           {course?.sections?.filter(sec => !sec.is_deleted).map((section, sectionIndex) => (
@@ -128,8 +198,6 @@ const EditCourseModal = ({
                 }
                 label="Is Free"
               />
-
-              {/* Danh sách nội dung (contents) của section */}
               <Box mt={2}>
                 <Typography variant="subtitle2">Contents</Typography>
                 {section.contents &&
@@ -207,8 +275,6 @@ const EditCourseModal = ({
             Add Section
           </Button>
         </Box>
-
-        {/* Nút lưu và hủy */}
         <Box display="flex" justifyContent="flex-end" mt={3}>
           <Button variant="contained" color="primary" onClick={onSave} style={{ marginRight: 10 }}>
             Save

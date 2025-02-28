@@ -38,11 +38,16 @@ export default function CourseListing() {
         const courseData = courseResponse.data;
         const categoryData = categoriesResponse.data.categories;
 
+        console.log("Fetched courses:", courseData);
+        console.log("Fetched instructors:", allUsers.filter((user) => user.role === 2));
+        console.log("Fetched categories:", categoryData);
+
         setInstructors(allUsers.filter((user) => user.role === 2));
         setCourses(courseData);
         setCategories(categoryData);
         setLoading(false);
       } catch (error) {
+        console.error("Error fetching data:", error);
         setError("Error fetching data");
         setLoading(false);
       }
@@ -63,6 +68,9 @@ export default function CourseListing() {
 
     return matchesCategory && matchesInstructor && matchesSearch && isActive;
   });
+
+  // Log danh sách khóa học sau khi lọc
+  console.log("Filtered courses:", filteredCourses);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

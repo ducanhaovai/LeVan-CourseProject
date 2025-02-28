@@ -32,6 +32,7 @@ export default function AddCourse() {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(null);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const token = localStorage.getItem("token");
 
   useEffect(() => {

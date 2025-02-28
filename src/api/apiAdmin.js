@@ -202,17 +202,24 @@ export const uploadCourseImage = async (file, token) => {
   formData.append("courseFile", file);
   
   try {
-      const response = await axiosInstance.post(
-          `${API_URL}/upload/course`, 
-          formData, {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-          }
-      );
-      return response.data;
+    const response = await axiosInstance.post(
+      `${API_URL}/upload/course`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // Đừng set header Content-Type thủ công,
+          // nhưng override transformRequest để giữ nguyên FormData
+        },
+        transformRequest: [(data, headers) => {
+          // Axios sẽ tự động thiết lập header multipart/form-data với boundary
+          return data;
+        }],
+      }
+    );
+    return response.data;
   } catch (error) {
-      throw new Error('Error uploading course image:', error);
+    throw new Error('Error uploading course image:', error);
   }
 };
 
