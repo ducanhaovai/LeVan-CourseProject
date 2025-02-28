@@ -30,6 +30,8 @@ export default function AddCourse() {
   const [instructors, setInstructors] = useState([]);
   const [activeTab, setActiveTab] = useState("basic");
   const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -56,30 +58,13 @@ export default function AddCourse() {
     setCourse((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    setSelectedFile(file);
+    setPreviewURL(URL.createObjectURL(file));
+  };
 
-    setUploading(true);
-    try {
-        const response = await uploadCourseImage(file, token);
-        console.log("API Response:", response);
-        if (response && response.imageUrl) { 
-            setCourse(prev => ({ ...prev, thumbnail: response.imageUrl }));
-        } else {
-            console.error("No image URL in response or malformed response:", response);
-        }
-    } catch (error) {
-        console.error("Error uploading image:", error);
-    } finally {
-        setUploading(false);
-    }
-};
-
-
-
-
-  // Các hàm xử lý sections & contents
   const handleSectionChange = (index, e) => {
     const { name, value, type, checked } = e.target;
     const newSections = [...course.sections];
@@ -138,7 +123,19 @@ export default function AddCourse() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await createCourse(course, token);
+      let imageUrl = course.thumbnail;
+      if (selectedFile) {
+        setUploading(true);
+        const response = await uploadCourseImage(selectedFile, token);
+        if (response && response.imageUrl) {
+          imageUrl = response.imageUrl;
+        } else {
+          console.error("No image URL in response:", response);
+        }
+        setUploading(false);
+      }
+      const coursePayload = { ...course, thumbnail: imageUrl };
+      const result = await createCourse(coursePayload, token);
       console.log("Course created successfully:", result);
     } catch (error) {
       console.error("Error creating course:", error);
@@ -348,6 +345,7 @@ export default function AddCourse() {
                   </label>
                   <input
                     type="file"
+                    name="courseFile"
                     id="thumbnail"
                     onChange={handleFileChange}
                     className="mt-1 block w-full text-sm text-gray-500

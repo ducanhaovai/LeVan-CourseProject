@@ -206,7 +206,6 @@ export const uploadCourseImage = async (file, token) => {
           `${API_URL}/upload/course`, 
           formData, {
               headers: {
-                  "Content-Type": "multipart/form-data",
                   Authorization: `Bearer ${token}`,
               },
           }
@@ -298,7 +297,7 @@ export const confirmPayment = async ({ paymentId, token }) => {
 };
 export const verifyPayment = async ({ paymentId, token }) => {
   try {
-    const response = await axiosInstance.post(
+    const response = await axiosInstance.postz(
       `${PAYMENT_API_URL}/verify`,
       { paymentId },
       {
