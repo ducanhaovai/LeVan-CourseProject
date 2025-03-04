@@ -1,5 +1,3 @@
-// Trong ManagerCourse.js
-
 import React, { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
@@ -14,11 +12,10 @@ import {
   updateCourse,
   deleteCourse,
 } from "../../api/apiAdmin";
-
-import CourseTable from './components/CourseTable';
-import EditCourseModal from './components/EditCourseModal';
-import FeedbackAlert from './components/FeedbackAlert';
-import LoadingScreen from './components/LoadingScreen';
+import CourseTable from "./components/CourseTable";
+import EditCourseModal from "./components/EditCourse/edit-course-modal";
+import FeedbackAlert from "./components/FeedbackAlert";
+import LoadingScreen from "./components/LoadingScreen";
 import AddCourse from "./components/AddCourse/AddCourse";
 import AddCategory from "./components/AddCategory";
 import { Button } from "layouts/student/button";
@@ -91,14 +88,13 @@ function ManagerCourse() {
       console.error("Error updating course:", error);
     }
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditingCourse((prevCourse) => ({ ...prevCourse, [name]: value }));
   };
 
-  // Định nghĩa hàm xử lý cho sections và contents:
+  // Xử lý cập nhật thông tin của section và content trong course
   const handleSectionChange = (sectionIndex, field, value) => {
     setEditingCourse((prev) => {
       const newSections = [...(prev.sections || [])];
@@ -129,33 +125,25 @@ function ManagerCourse() {
     setEditingCourse((prev) => {
       if (!prev) return prev;
       const newSections = prev.sections ? [...prev.sections] : [];
-
-      const newOrder =
-        newSections.length > 0
-          ? Number(newSections[newSections.length - 1].order) + 1
-          : 1;
+      // Nếu cần, có thể tự động tăng order cho section
       newSections.push({
         title: "",
         description: "",
         video_url: "",
         is_free: false,
-        order: newOrder, // Giá trị này được lưu vào DB nhưng không cần hiển thị trên UI
         contents: [],
       });
       return { ...prev, sections: newSections };
     });
-    console.log("Section added");
   };
 
   const handleRemoveSection = (sectionIndex) => {
     setEditingCourse((prev) => {
       if (!prev) return prev;
       const newSections = [...(prev.sections || [])];
-      // Nếu section đã được lưu (có id), chỉ đánh dấu là đã xóa
       if (newSections[sectionIndex].id) {
         newSections[sectionIndex].is_deleted = true;
       } else {
-        // Nếu chưa lưu, có thể loại bỏ khỏi state
         newSections.splice(sectionIndex, 1);
       }
       return { ...prev, sections: newSections };
@@ -167,24 +155,18 @@ function ManagerCourse() {
       const newSections = [...(prev.sections || [])];
       const section = newSections[sectionIndex] || {};
       const newContents = section.contents ? [...section.contents] : [];
-      // Tự động tăng order_index cho content mới
-      const newOrderIndex =
-        newContents.length > 0
-          ? Number(newContents[newContents.length - 1].order_index) + 1
-          : 1;
       newContents.push({
         title: "",
         content_type: "",
         content_url: "",
         description: "",
-        order_index: newOrderIndex, // Chỉ lưu vào DB, không hiển thị
       });
       section.contents = newContents;
       newSections[sectionIndex] = section;
       return { ...prev, sections: newSections };
     });
   };
-  
+
   const handleRemoveContent = (sectionIndex, contentIndex) => {
     setEditingCourse((prev) => {
       const newSections = [...(prev.sections || [])];
@@ -224,13 +206,13 @@ function ManagerCourse() {
       <DashboardNavbar />
       <SoftBox py={3}>
         <Card>
-          <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+          {/* <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
             <Typography variant="h6">Course Management</Typography>
             <SoftBox display="flex" gap={2} py={2}>
               <Button onClick={() => setOpenAddCategory(true)}>Add Category</Button>
               <Button onClick={() => setOpenAddCourse(true)}>Add Course</Button>
             </SoftBox>
-          </SoftBox>
+          </SoftBox> */}
           <CourseTable
             courses={courses}
             instructors={instructors}
@@ -247,12 +229,12 @@ function ManagerCourse() {
         course={editingCourse}
         categories={categories}
         onInputChange={handleInputChange}
-        onSectionChange={handleSectionChange}   // truyền hàm cập nhật section
-        onContentChange={handleContentChange}     // truyền hàm cập nhật content
-        onAddSection={handleAddSection}           // truyền hàm thêm section
-        onRemoveSection={handleRemoveSection}     // truyền hàm xóa section
-        onAddContent={handleAddContent}           // truyền hàm thêm content
-        onRemoveContent={handleRemoveContent}     // truyền hàm xóa content
+        onSectionChange={handleSectionChange}
+        onContentChange={handleContentChange}
+        onAddSection={handleAddSection}
+        onRemoveSection={handleRemoveSection}
+        onAddContent={handleAddContent}
+        onRemoveContent={handleRemoveContent}
         onSave={handleSaveCourse}
       />
 

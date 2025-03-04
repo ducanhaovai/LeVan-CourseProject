@@ -12,11 +12,10 @@ const CourseTable = ({ courses, instructors, categories, onEditCourse, onDeleteC
   };
 
   const columns = [
-    { name: "ID", align: "center" },
+    // { name: "ID", align: "center" },
     { name: "Title", align: "center" },
     { name: "Thumbnail", align: "center" },
     { name: "Instructor", align: "center" },
-    { name: "Description", align: "center" },
     { name: "Price", align: "center" },
     { name: "Duration", align: "center" },
     { name: "Category", align: "center" },
@@ -30,7 +29,7 @@ const CourseTable = ({ courses, instructors, categories, onEditCourse, onDeleteC
   ];
 
   const rows = courses.map((course) => ({
-    ID: <Typography variant="caption">{course.id}</Typography>,
+    // ID: <Typography variant="caption">{course.id}</Typography>,
     Title: <Typography variant="caption">{course.title}</Typography>,
     Instructor: (
       <Typography variant="caption">
@@ -44,7 +43,6 @@ const CourseTable = ({ courses, instructors, categories, onEditCourse, onDeleteC
         style={{ width: "80px", height: "auto", borderRadius: "4px" }}
       />
     ),
-    Description: <Typography variant="caption">{course.description}</Typography>,
     Price: <Typography variant="caption">${course.price}</Typography>,
     Duration: (
       <Typography variant="caption">
@@ -86,7 +84,16 @@ const CourseTable = ({ courses, instructors, categories, onEditCourse, onDeleteC
     ),
   }));
 
-  return <Table columns={columns} rows={rows} />;
+  const tableContainerStyle = {
+    maxHeight: courses.length > 10 ? "600px" : "auto",
+    overflowY: courses.length > 10 ? "auto" : "visible",
+  };
+
+  return (
+    <Box style={tableContainerStyle}>
+      <Table columns={columns} rows={rows} />
+    </Box>
+  );
 };
 
 export default CourseTable;

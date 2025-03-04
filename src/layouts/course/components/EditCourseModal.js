@@ -153,6 +153,7 @@ const EditCourseModal = ({
           }
           label="Published"
         />
+
         <Box mt={3}>
           <Typography variant="h6">Sections</Typography>
           {course?.sections?.filter(sec => !sec.is_deleted).map((section, sectionIndex) => (
@@ -288,4 +289,4 @@ const EditCourseModal = ({
   );
 };
 
-export default EditCourseModal;
+export default EditCourseModals;
