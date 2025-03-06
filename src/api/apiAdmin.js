@@ -61,7 +61,7 @@ export const fetchCategoriesByID = async (id, token) => {
 
 export const fetchCourses = async (token) => {
   try {
-    const courseResponse = await axiosInstance.get(`${API_URL}/courses`, {
+    const courseResponse = await axiosInstance.get(`${API_URL}/courses/basic`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -96,25 +96,35 @@ export const fetchCourseBySlug = async (slug, token) => {
       throw new Error("API did not return 'data' field.");
     }
 
-    return response; // Trả về toàn bộ response nếu `data` tồn tại
+    return response; 
   } catch (error) {
     console.error("Error fetching course by slug:", error.message);
     throw error;
   }
 };
 
-export const fetchCourseTitleById = async (id) => {
+export const fetchCourseTitleById = async (id, token) => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/courses/${id}`);
+    const response = await axiosInstance.get(`${API_URL}/courses/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.title;
   } catch (error) {
     console.error("Error fetching course title:", error);
     return null;
   }
 };
-export const fetchCourseTitleBySlug = async (slug) => {
+export const fetchCourseTitleBySlug = async (slug, token) => {
   try {
-    const response = await axios.get(`${API_URL}/courses/${slug}`);
+    const response = await axios.get(`${API_URL}/courses/${slug}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     return response.data.data;
   } catch (error) {
@@ -134,9 +144,13 @@ export const updateUserRole = async (userId, newRole, token) => {
     }
   );
 };
-export const getCourseDetails = async (id) => {
+export const getCourseDetails = async (id, token) => {
   try {
-    const response = await axiosInstance.get(`${API_URL}/courses/${id}`);
+    const response = await axiosInstance.get(`${API_URL}/courses/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching course details:", error);
@@ -208,11 +222,8 @@ export const uploadCourseImage = async (file, token) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          // Đừng set header Content-Type thủ công,
-          // nhưng override transformRequest để giữ nguyên FormData
         },
         transformRequest: [(data, headers) => {
-          // Axios sẽ tự động thiết lập header multipart/form-data với boundary
           return data;
         }],
       }

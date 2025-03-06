@@ -17,7 +17,8 @@ export default function CourseCard({ course }) {
         <ul className="meta list-wrap">
           <li className="meta-item">
             <i className="fa-regular fa-calendar"></i>
-            <p className="meta-p">{course.sections.length} sections</p>
+            <p className="meta-p">{course.total_sections} sections</p>
+
           </li>
           <li className="meta-item">
             <i className="fa-regular fa-user"></i>

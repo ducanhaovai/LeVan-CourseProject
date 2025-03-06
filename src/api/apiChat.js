@@ -6,9 +6,13 @@ const axiosInstance = axios.create({
 });
 
 // Tạo phòng chat
-export const postRoom = async (roomData) => {
+export const postRoom = async (roomData, token) => {
   return axiosInstance
-    .post("/create-room", roomData)
+    .post("/create-room", roomData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .then((response) => {
       return response;
     })
@@ -19,9 +23,13 @@ export const postRoom = async (roomData) => {
 };
 
 // Lấy thông tin phòng chat và tin nhắn của người dùng
-export const getRoomUserMessage = async (userId) => {
+export const getRoomUserMessage = async (userId, token) => {
   return axiosInstance
-    .get(`/rooms/${userId}`)
+    .get(`/rooms/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .then((response) => {
       return response;
     })
@@ -32,9 +40,12 @@ export const getRoomUserMessage = async (userId) => {
 };
 
 // Lấy tin nhắn trong một phòng
-export const getRoomMessage = async (roomId, page = 1, limit = 20) => {
+export const getRoomMessage = async (roomId, token, page = 1, limit = 20) => {
   return axiosInstance
     .get(`/messages/${roomId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       params: { page, limit },
     })
     .then((response) => {
@@ -47,9 +58,13 @@ export const getRoomMessage = async (roomId, page = 1, limit = 20) => {
 };
 
 // Gửi tin nhắn
-export const postMessage = async (messageData) => {
+export const postMessage = async (messageData, token) => {
   return axiosInstance
-    .post("/send-message", messageData)
+    .post("/send-message", messageData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .then((response) => {
       return response;
     })
@@ -60,9 +75,13 @@ export const postMessage = async (messageData) => {
 };
 
 // Tạo phòng chat riêng tư
-export const postRoomUser = async (userData) => {
+export const postRoomUser = async (userData, token) => {
   return axiosInstance
-    .post("/create-private-room", userData)
+    .post("/create-private-room", userData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
     .then((response) => {
       return response;
     })

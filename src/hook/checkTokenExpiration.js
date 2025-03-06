@@ -8,7 +8,7 @@ const checkTokenExpiration = () => {
 
   try {
     const decodedToken = jwtDecode(token);
-    const currentTime = Date.now() / 1000; // Đơn vị là giây
+    const currentTime = Date.now() / 1000;
 
     if (decodedToken.exp < currentTime) {
 

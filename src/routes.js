@@ -41,7 +41,7 @@ const useRoutes = () => {
       route: "/home",
       icon: <Cube size="12px" />,
       component: <Student />,
-      element: <Student />,
+      element: <ProtectedRoute element={<Student />} role={1} />,
       noCollapse: true,
     },
     {

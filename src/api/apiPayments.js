@@ -9,6 +9,7 @@ export const makePayment = async ({
   amount,
   payment_method,
   transaction_id,
+  token
 }) => {
   try {
     const response = await axiosInstance.post(`${BASE_URL}/payment`, {
@@ -17,6 +18,9 @@ export const makePayment = async ({
       amount,
       payment_method,
       transaction_id,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return response.data;

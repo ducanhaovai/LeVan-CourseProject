@@ -2,11 +2,14 @@ import axiosInstance from "hook/AxiosInterceptor";
 
 const BASE_URL = process.env.REACT_APP_Enrollments_API_URL;
 
-export const enrollCourse = async (user_id, courseSlug, course_id) => {
+export const enrollCourse = async (user_id, courseSlug, course_id, token) => {
   try {
     const response = await axiosInstance.post(`${BASE_URL}/enroll`, {
       user_id,
       course_id: courseSlug,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
@@ -15,9 +18,13 @@ export const enrollCourse = async (user_id, courseSlug, course_id) => {
   }
 };
 
-export const getCourseAccess = async (id) => {
+export const getCourseAccess = async (id, token) => {
   try {
-    const response = await axiosInstance.get(`${BASE_URL}/courses/${id}/access`);
+    const response = await axiosInstance.get(`${BASE_URL}/courses/${id}/access`, 
+      {headers: {
+        Authorization: `Bearer ${token}`,
+      },}
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching course access:", error);
