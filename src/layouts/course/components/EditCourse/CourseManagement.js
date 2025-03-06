@@ -106,7 +106,6 @@ export default function CourseManagement() {
   }
 
   const handleSave = () => {
-    console.log("Saving course:", course)
     setIsModalOpen(false)
   }
 

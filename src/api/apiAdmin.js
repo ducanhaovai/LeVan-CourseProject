@@ -118,14 +118,11 @@ export const fetchCourseTitleById = async (id, token) => {
 };
 export const fetchCourseTitleBySlug = async (slug, token) => {
   try {
-    const response = await axios.get(`${API_URL}/courses/${slug}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
+    const response = await axiosInstance.get(`${API_URL}/courses/${slug}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
     console.error("Error fetching course title:", error);
@@ -204,7 +201,7 @@ export const createCourse = async (courseData, token) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("data", courseData)
+
     return response.data;
   } catch (error) {
     console.error("Error creating course:", error);
@@ -322,7 +319,6 @@ export const verifyPayment = async ({ paymentId, token }) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    console.log(`verifyPayment - Payment ${paymentId} verified. Response:`, response.data);
     return response.data;
   } catch (err) {
     console.error("Error verifying payment", err);

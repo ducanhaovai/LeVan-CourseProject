@@ -137,7 +137,6 @@ export default function AddCourse() {
       }
       const coursePayload = { ...course, thumbnail: imageUrl };
       const result = await createCourse(coursePayload, token);
-      console.log("Course created successfully:", result);
     } catch (error) {
       console.error("Error creating course:", error);
     }

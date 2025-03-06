@@ -50,12 +50,9 @@ export default function CourseContent() {
         return;
       }
       try {
-        // Sử dụng slug làm tham số nếu API của bạn dựa vào slug
         const enrollmentResponse = await checkEnrollmentStatus(slug, token);
-        console.log("Enrollment API response:", enrollmentResponse);
         // Lưu vào state
         setEnrollmentStatus(enrollmentResponse.enrollmentStatus);
-        // Nếu trạng thái không phải 'done' (tức là chưa đăng ký hoặc chưa được xác minh), chuyển hướng
         if (enrollmentResponse.enrollmentStatus !== "done") {
           alert("Bạn chưa đăng ký khóa học này hoặc đang chờ xác minh. Vui lòng đăng ký hoặc chờ xác minh.");
           navigate(`/enroll/${slug}`);

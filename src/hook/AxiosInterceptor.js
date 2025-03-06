@@ -2,13 +2,23 @@ import axios from "axios";
 import { createBrowserHistory } from "history";
 const API_URL = process.env.REACT_APP_API_URL;
 const axiosInstance = axios.create({
-  baseURL: {API_URL},
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 const browserHistory = createBrowserHistory();
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 axiosInstance.interceptors.response.use(
   (response) => response,

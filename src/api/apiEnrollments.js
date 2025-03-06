@@ -2,21 +2,27 @@ import axiosInstance from "hook/AxiosInterceptor";
 
 const BASE_URL = process.env.REACT_APP_Enrollments_API_URL;
 
-export const enrollCourse = async (user_id, courseSlug, course_id, token) => {
+export const enrollCourse = async (user_id, courseSlug, token) => {
   try {
-    const response = await axiosInstance.post(`${BASE_URL}/enroll`, {
-      user_id,
-      course_id: courseSlug,
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await axiosInstance.post(
+      `${BASE_URL}/enroll`,
+      {
+        user_id,
+        course_id: courseSlug, 
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error enrolling in course:", error);
     throw error;
   }
 };
+
 
 export const getCourseAccess = async (id, token) => {
   try {
@@ -38,7 +44,6 @@ export const checkEnrollmentStatus = async (slug, token) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error checking enrollment status:", error);

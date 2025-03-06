@@ -42,7 +42,6 @@ export default function CourseCheckoutManual() {
         setLoading(false);
         return;
       }
-      console.log("Course data received:", courseData.data);
       setCourse(courseData.data);
       setLoading(false);
     }
@@ -62,7 +61,6 @@ export default function CourseCheckoutManual() {
       }
       const paymentResponse = await createOrGetPaymentReference({ user_id, course_id, amount, token });
       if (paymentResponse?.success) {
-        console.log("Payment response received:", paymentResponse.payment);
         setPaymentRefCode(paymentResponse.payment.reference_code);
         setPaymentId(paymentResponse.payment.id);
       } else {
@@ -72,22 +70,17 @@ export default function CourseCheckoutManual() {
     createPayment();
   }, [course, currentUser, token, paymentId]);
 
-  // Effect: tự động xóa payment khi mã xác nhận hết hạn (10 phút)
-  // hoặc khi người dùng chuyển trang nếu payment chưa được xác nhận
   useEffect(() => {
     if (!paymentId) return;
 
-    console.log("Setting up auto-cancel timer for payment:", paymentId);
     const timer = setTimeout(() => {
       if (!isConfirmedRef.current) {
-        console.log("Auto-cancel timer triggered for payment:", paymentId);
         cancelPayment({ paymentId, token });
       }
     }, 600000); // 600000ms = 10 phút
 
     const handleBeforeUnload = () => {
       if (!isConfirmedRef.current) {
-        console.log("Before unload - cancelling payment:", paymentId);
         cancelPayment({ paymentId, token });
       }
     };
@@ -98,7 +91,6 @@ export default function CourseCheckoutManual() {
       clearTimeout(timer);
       window.removeEventListener("beforeunload", handleBeforeUnload);
       if (!isConfirmedRef.current) {
-        console.log("Component unmount - cancelling payment:", paymentId);
         cancelPayment({ paymentId, token });
       }
     };
@@ -107,11 +99,9 @@ export default function CourseCheckoutManual() {
   // Hàm xử lý khi người dùng nhấn "Đã chuyển tiền"
   const handleConfirmTransfer = useCallback(async () => {
     if (!paymentId) return;
-    console.log("User confirmed transfer for payment:", paymentId);
     const result = await confirmPayment({ paymentId, token });
     if (result?.success) {
       setIsPaymentConfirmed(true);
-      console.log("Payment confirmed successfully for:", paymentId);
       alert("Xác nhận chuyển tiền thành công. Hệ thống sẽ kiểm tra giao dịch của bạn.");
     } else {
       console.error("Error confirming payment for:", paymentId);

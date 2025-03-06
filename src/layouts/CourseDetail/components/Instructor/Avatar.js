@@ -9,7 +9,7 @@ export function Avatar({ src, alt, fallback, className }) {
         <img
           src={src}
           alt={alt}
-          className="aspect-square h-full w-full"
+          className=" h-full w-full"
           onError={() => setError(true)}
         />
       ) : (
