@@ -62,11 +62,6 @@ const CourseSidebar = ({ course, enrollmentStatus }) => {
           alt="Course preview"
           className="object-cover rounded-t-xl"
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white rounded-full p-4">
-            <Play className="w-8 h-8 text-primary" />
-          </div>
-        </div>
       </div>
 
       <div className="p-6 space-y-6">

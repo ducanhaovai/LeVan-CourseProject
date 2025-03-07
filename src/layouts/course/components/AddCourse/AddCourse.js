@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchInstructors, createCourse , uploadCourseImage} from "../../../../api/apiAdmin";
+import { fetchInstructors, createCourse, uploadCourseImage } from "../../../../api/apiAdmin";
 import axiosInstance from "../../../../hook/AxiosInterceptor";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -16,7 +16,6 @@ export default function AddCourse() {
     instructor_id: "",
     status: 1,
     thumbnail: "",
-
     detailed_description: "",
     course_content: "",
     course_features: "",
@@ -25,14 +24,12 @@ export default function AddCourse() {
     sections: [],
     top: 0,
   });
-
   const [categories, setCategories] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [activeTab, setActiveTab] = useState("basic");
   const [uploading, setUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // file ảnh khóa học
   const [previewURL, setPreviewURL] = useState(null);
-  const [imgLoaded, setImgLoaded] = useState(false);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -59,6 +56,7 @@ export default function AddCourse() {
     setCourse((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Xử lý thay đổi file cho ảnh khóa học (courseImage)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -66,6 +64,7 @@ export default function AddCourse() {
     setPreviewURL(URL.createObjectURL(file));
   };
 
+  // Xử lý thay đổi cho section
   const handleSectionChange = (index, e) => {
     const { name, value, type, checked } = e.target;
     const newSections = [...course.sections];
@@ -73,12 +72,20 @@ export default function AddCourse() {
       ...newSections[index],
       [name]: type === "checkbox" ? checked : value,
     };
+    // Nếu chưa có contents thì khởi tạo
+    if (!newSections[index].contents) {
+      newSections[index].contents = [];
+    }
     setCourse((prev) => ({ ...prev, sections: newSections }));
   };
 
+  // Xử lý thay đổi cho content
   const handleContentChange = (sectionIndex, contentIndex, e) => {
     const { name, value } = e.target;
     const newSections = [...course.sections];
+    if (!newSections[sectionIndex].contents) {
+      newSections[sectionIndex].contents = [];
+    }
     newSections[sectionIndex].contents[contentIndex] = {
       ...newSections[sectionIndex].contents[contentIndex],
       [name]: value,
@@ -86,12 +93,37 @@ export default function AddCourse() {
     setCourse((prev) => ({ ...prev, sections: newSections }));
   };
 
+  // Đổi tên hàm từ handlePdfFileChange thành handleDocumentFileChange
+  // để nhất quán với "document"
+  const handleDocumentFileChange = (sectionIndex, contentIndex, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const newSections = [...course.sections];
+    if (!newSections[sectionIndex].contents) {
+      newSections[sectionIndex].contents = [];
+    }
+    // Lưu vào thuộc tính documentFile
+    newSections[sectionIndex].contents[contentIndex] = {
+      ...newSections[sectionIndex].contents[contentIndex],
+      documentFile: file,
+    };
+    setCourse((prev) => ({ ...prev, sections: newSections }));
+  };
+
+  // Khi thêm section, gán order = sections.length + 1
   const addSection = () => {
     setCourse((prev) => ({
       ...prev,
       sections: [
         ...prev.sections,
-        { title: "", description: "", video_url: "", is_free: false, order: "", contents: [] },
+        {
+          title: "",
+          description: "",
+          video_url: "",
+          is_free: false,
+          order: prev.sections.length + 1,
+          contents: [],
+        },
       ],
     }));
   };
@@ -103,42 +135,94 @@ export default function AddCourse() {
     }));
   };
 
+  // Khi thêm content, gán order_index = contents.length + 1
   const addContent = (sectionIndex) => {
     const newSections = [...course.sections];
+    if (!newSections[sectionIndex].contents) {
+      newSections[sectionIndex].contents = [];
+    }
     newSections[sectionIndex].contents.push({
       content_type: "",
       content_url: "",
       title: "",
       description: "",
-      order_index: "",
+      order_index: newSections[sectionIndex].contents.length + 1,
     });
     setCourse((prev) => ({ ...prev, sections: newSections }));
   };
 
   const removeContent = (sectionIndex, contentIndex) => {
     const newSections = [...course.sections];
-    newSections[sectionIndex].contents.splice(contentIndex, 1);
+    if (newSections[sectionIndex].contents) {
+      newSections[sectionIndex].contents.splice(contentIndex, 1);
+    }
     setCourse((prev) => ({ ...prev, sections: newSections }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let imageUrl = course.thumbnail;
+      setUploading(true);
+      // Tạo FormData
+      const formData = new FormData();
+      formData.append("title", course.title);
+      formData.append("description", course.description);
+      formData.append("price", course.price);
+      formData.append("duration", course.duration);
+      formData.append("category_id", course.category_id);
+      formData.append("instructor_id", course.instructor_id);
+      formData.append("status", course.status);
+      formData.append("detailed_description", course.detailed_description);
+      formData.append("course_content", course.course_content);
+      formData.append("course_features", course.course_features);
+      formData.append("pricing_info", course.pricing_info);
+      formData.append("requirements", course.requirements);
+      formData.append("top", course.top);
+
+      // Loại bỏ documentFile khỏi sections trước khi stringify
+      const clonedSections = course.sections.map((section) => ({
+        ...section,
+        contents: section.contents
+          ? section.contents.map((content) => {
+              // Tách documentFile ra
+              const { documentFile, ...rest } = content;
+              return rest;
+            })
+          : [],
+      }));
+      formData.append("sections", JSON.stringify(clonedSections));
+
+      // Ảnh khóa học (nếu có)
       if (selectedFile) {
-        setUploading(true);
-        const response = await uploadCourseImage(selectedFile, token);
-        if (response && response.imageUrl) {
-          imageUrl = response.imageUrl;
-        } else {
-          console.error("No image URL in response:", response);
-        }
-        setUploading(false);
+        formData.append("courseImage", selectedFile);
       }
-      const coursePayload = { ...course, thumbnail: imageUrl };
-      const result = await createCourse(coursePayload, token);
+
+      // Append file "document" cho các content
+      course.sections.forEach((section) => {
+        if (section.contents && section.contents.length > 0) {
+          section.contents.forEach((content) => {
+            // Thay "pdf" thành "document"
+            if (content.content_type === "document" && content.documentFile) {
+              // Append với key "documentFile"
+              formData.append("documentFile", content.documentFile);
+            }
+          });
+        }
+      });
+
+      // Gửi request
+      const response = await axiosInstance.post(`${API_URL}/courses/course-sections`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Course created:", response.data);
+      setUploading(false);
+      // Sau khi tạo thành công, reset hoặc điều hướng
     } catch (error) {
       console.error("Error creating course:", error);
+      setUploading(false);
     }
   };
 
@@ -197,8 +281,7 @@ export default function AddCourse() {
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   ></textarea>
                 </div>
-
-                {/* Các trường bổ sung cho thông tin chi tiết */}
+                {/* Detailed Fields */}
                 <div>
                   <label htmlFor="detailed_description" className="block text-sm font-medium text-gray-700">
                     Detailed Description
@@ -269,7 +352,6 @@ export default function AddCourse() {
                     placeholder="E.g. prerequisites, equipment needed, etc."
                   ></textarea>
                 </div>
-
                 {/* Price, Duration, Category, Instructor, Thumbnail, Status */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
@@ -345,37 +427,36 @@ export default function AddCourse() {
                   </label>
                   <input
                     type="file"
-                    name="courseFile"
+                    name="courseImage"
                     id="thumbnail"
                     onChange={handleFileChange}
                     className="mt-1 block w-full text-sm text-gray-500
-                            file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
-                            file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700
-                            hover:file:bg-blue-100"
+                      file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+                      file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700
+                      hover:file:bg-blue-100"
                   />
                   {uploading && <p className="text-sm text-gray-500 mt-2">Uploading...</p>}
-                  {course.thumbnail && (
+                  {previewURL && (
                     <div className="mt-2">
-                      <img src={course.thumbnail} alt="Thumbnail Preview" className="h-32" />
+                      <img src={previewURL} alt="Thumbnail Preview" className="h-32" />
                     </div>
                   )}
-                  
                 </div>
                 <div>
-      <label htmlFor="top" className="block text-sm font-medium text-gray-700">
-        Top Course
-      </label>
-      <input
-        type="checkbox"
-        id="top"
-        name="top"
-        checked={course.top === 1}
-        onChange={(e) =>
-          setCourse(prev => ({ ...prev, top: e.target.checked ? 1 : 0 }))
-        }
-        className="mt-1"
-      />
-    </div>
+                  <label htmlFor="top" className="block text-sm font-medium text-gray-700">
+                    Top Course
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="top"
+                    name="top"
+                    checked={course.top === 1}
+                    onChange={(e) =>
+                      setCourse((prev) => ({ ...prev, top: e.target.checked ? 1 : 0 }))
+                    }
+                    className="mt-1"
+                  />
+                </div>
                 <div>
                   <label htmlFor="status" className="block text-sm font-medium text-gray-700">
                     Status
@@ -396,12 +477,25 @@ export default function AddCourse() {
             )}
             {activeTab === "sections" && (
               <div className="space-y-6">
-                {/* Phần Sections & Content */}
+                {/* Sections & Content */}
                 {course.sections.map((section, sectionIndex) => (
                   <div key={sectionIndex} className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">
                       Section {sectionIndex + 1} {section.title ? `- ${section.title}` : ""}
                     </h3>
+                    {/* Hiển thị thứ tự của section (read-only) */}
+                    <div className="mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Order
+                      </label>
+                      <input
+                        type="number"
+                        name="order"
+                        value={section.order}
+                        readOnly
+                        className="mt-1 block w-full border border-gray-300 rounded-md bg-gray-100 py-2 px-3 sm:text-sm"
+                      />
+                    </div>
                     <div className="space-y-4">
                       <input
                         type="text"
@@ -440,14 +534,6 @@ export default function AddCourse() {
                           Is Free
                         </label>
                       </div>
-                      <input
-                        type="number"
-                        name="order"
-                        value={section.order || ""}
-                        onChange={(e) => handleSectionChange(sectionIndex, e)}
-                        placeholder="Section Order"
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      />
                       <h4 className="font-medium text-gray-900 mt-4 mb-2">Contents</h4>
                       {section.contents && section.contents.length > 0 ? (
                         section.contents.map((content, contentIndex) => (
@@ -460,22 +546,39 @@ export default function AddCourse() {
                               placeholder="Content Title"
                               className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                             />
-                            <input
-                              type="text"
+                            <select
                               name="content_type"
                               value={content.content_type || ""}
                               onChange={(e) => handleContentChange(sectionIndex, contentIndex, e)}
-                              placeholder="Content Type"
                               className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
-                            <input
-                              type="text"
-                              name="content_url"
-                              value={content.content_url || ""}
-                              onChange={(e) => handleContentChange(sectionIndex, contentIndex, e)}
-                              placeholder="Content URL"
-                              className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
+                            >
+                              <option value="">Select Content Type</option>
+                              <option value="video">Video</option>
+                              <option value="document">Document</option>
+                            </select>
+                            {/* Nếu content_type là document => hiển thị input file */}
+                            {content.content_type === "document" && (
+                              <input
+                                type="file"
+                                name="documentFile"
+                                onChange={(e) => handleDocumentFileChange(sectionIndex, contentIndex, e)}
+                                className="block w-full text-sm text-gray-500
+                                  file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+                                  file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700
+                                  hover:file:bg-blue-100"
+                              />
+                            )}
+                            {/* Nếu content_type là video => hiển thị input link */}
+                            {content.content_type === "video" && (
+                              <input
+                                type="text"
+                                name="content_url"
+                                value={content.content_url || ""}
+                                onChange={(e) => handleContentChange(sectionIndex, contentIndex, e)}
+                                placeholder="Content URL (Video link)"
+                                className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                              />
+                            )}
                             <textarea
                               name="description"
                               value={content.description || ""}
@@ -484,14 +587,19 @@ export default function AddCourse() {
                               rows="2"
                               className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                             ></textarea>
-                            <input
-                              type="number"
-                              name="order_index"
-                              value={content.order_index || ""}
-                              onChange={(e) => handleContentChange(sectionIndex, contentIndex, e)}
-                              placeholder="Order Index"
-                              className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
+                            {/* Thứ tự content (read-only) */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700">
+                                Order Index
+                              </label>
+                              <input
+                                type="number"
+                                name="order_index"
+                                value={content.order_index}
+                                readOnly
+                                className="mt-1 block w-full border border-gray-300 rounded-md bg-gray-100 py-2 px-3 sm:text-sm"
+                              />
+                            </div>
                             <button
                               type="button"
                               onClick={() => removeContent(sectionIndex, contentIndex)}
@@ -533,9 +641,10 @@ export default function AddCourse() {
             <div className="mt-8">
               <button
                 type="submit"
+                disabled={uploading}
                 className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Create Course
+                {uploading ? "Uploading..." : "Create Course"}
               </button>
             </div>
           </form>

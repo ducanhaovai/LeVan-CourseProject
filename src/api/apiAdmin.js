@@ -58,8 +58,21 @@ export const fetchCategoriesByID = async (id, token) => {
     throw error;
   }
 };
-
 export const fetchCourses = async (token) => {
+  try {
+    const courseResponse = await axiosInstance.get(`${API_URL}/courses`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return courseResponse;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
+export const fetchCoursesBasic = async (token) => {
   try {
     const courseResponse = await axiosInstance.get(`${API_URL}/courses/basic`, {
       headers: {
@@ -163,6 +176,7 @@ export const deleteUser = async (userId, token) => {
 };
 
 export const updateUserInfo = async (userId, userData, token) => {
+  console.log("updateCourse (client) called => courseId =", courseId, "courseData =", courseData);
   return axiosInstance.put(`${ADMIN_API_URL}/users/info/${userId}`, userData, {
     headers: {
       Authorization: `Bearer ${token}`,

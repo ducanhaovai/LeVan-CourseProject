@@ -359,24 +359,46 @@ const EditCourseModal = ({
                             margin="normal"
                             variant="outlined"
                           />
-                          <TextField
-                            label="Content Type"
+                          <Select
+                            name="content_type"
                             value={content.content_type || ""}
-                            onChange={(e) =>
-                              onContentChange(sectionIndex, contentIndex, "content_type", e.target.value)
-                            }
+                            onChange={(e) => {
+                              console.log(`Content [${sectionIndex}][${contentIndex}] Type changed:`, e.target.value);
+                              onContentChange(sectionIndex, contentIndex, "content_type", e.target.value);
+                            }}
                             fullWidth
-                            margin="normal"
                             variant="outlined"
-                          />
-                          <TextField
-                            label="Content URL"
-                            value={content.content_url || ""}
-                            onChange={(e) => onContentChange(sectionIndex, contentIndex, "content_url", e.target.value)}
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                          />
+                            style={{ marginTop: 8, marginBottom: 8 }}
+                          >
+                            <MenuItem value="">
+                              <em>Select Content Type</em>
+                            </MenuItem>
+                            <MenuItem value="video">Video</MenuItem>
+                            <MenuItem value="document">Document</MenuItem>
+                          </Select>
+                          {content.content_type === "document" && (
+                            <input
+                              type="file"
+                              name="documentFile"
+                              onChange={(e) => {
+                                handleDocumentFileChange(sectionIndex, contentIndex, e);
+                              }}
+                              style={{ marginTop: "8px" }}
+                            />
+                          )}
+                          {content.content_type === "video" && (
+                            <TextField
+                              label="Content URL (Video link)"
+                              value={content.content_url || ""}
+                              onChange={(e) => {
+                            
+                                onContentChange(sectionIndex, contentIndex, "content_url", e.target.value);
+                              }}
+                              fullWidth
+                              margin="normal"
+                              variant="outlined"
+                            />
+                          )}
                           <TextField
                             label="Content Description"
                             value={content.description || ""}

@@ -24,14 +24,13 @@ import { fetchCourseBySlug } from "../../api/apiAdmin";
 import { checkEnrollmentStatus } from "../../api/apiEnrollments";
 import ReactPlayer from "react-player";
 import usePrevent from "hook/PreventHandler";
-
+const API_URL = process.env.REACT_APP_URL;
 export default function CourseContent() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [currentLecture, setCurrentLecture] = useState(null);
   const [courseData, setCourseData] = useState({ sections: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Thêm state lưu enrollment status
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
   
   const { slug } = useParams();
@@ -39,11 +38,11 @@ export default function CourseContent() {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Kiểm tra đăng ký khóa học trước khi cho phép truy cập trang (chỉ gọi 1 lần)
   useEffect(() => {
     async function checkEnrollment() {
       const token = localStorage.getItem("token");
       if (!token) {
+        console.log("No token found. User is not authenticated.");
         setError("User is not authenticated");
         setLoading(false);
         navigate("/login");
@@ -51,7 +50,7 @@ export default function CourseContent() {
       }
       try {
         const enrollmentResponse = await checkEnrollmentStatus(slug, token);
-        // Lưu vào state
+        console.log("Enrollment response:", enrollmentResponse);
         setEnrollmentStatus(enrollmentResponse.enrollmentStatus);
         if (enrollmentResponse.enrollmentStatus !== "done") {
           alert("Bạn chưa đăng ký khóa học này hoặc đang chờ xác minh. Vui lòng đăng ký hoặc chờ xác minh.");
@@ -71,12 +70,14 @@ export default function CourseContent() {
     async function fetchCourseData() {
       const token = localStorage.getItem("token");
       if (!token) {
+        console.log("No token found when fetching course data.");
         setError("User is not authenticated");
         setLoading(false);
         return;
       }
       try {
         const courseResponse = await fetchCourseBySlug(slug, token);
+        console.log("Fetched course response:", courseResponse);
         setCourseData(courseResponse.data.data);
         setLoading(false);
       } catch (error) {
@@ -87,6 +88,11 @@ export default function CourseContent() {
     }
     fetchCourseData();
   }, [slug]);
+
+  // Log courseData mỗi khi thay đổi
+  useEffect(() => {
+    console.log("Course data updated:", courseData);
+  }, [courseData]);
 
   usePrevent();
   console.count("Render count");
@@ -173,7 +179,10 @@ export default function CourseContent() {
                           <div
                             key={content.id}
                             className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => setCurrentLecture(content)}
+                            onClick={() => {
+                              console.log("Setting current lecture:", content);
+                              setCurrentLecture(content);
+                            }}
                           >
                             {content.content_type === "video" ? (
                               <PlayCircle className="h-4 w-4 text-gray-400 mr-2" />
@@ -212,15 +221,15 @@ export default function CourseContent() {
                   height="100%"
                 />
               )}
-              {currentLecture?.content_type === "document" && (
-                <iframe
-                  src={`${currentLecture.content_url}#toolbar=0`}
-                  width="100%"
-                  height="600px"
-                  allow="fullscreen"
-                  style={{ border: "none" }}
-                />
-              )}
+            {currentLecture?.content_type === "document" && (
+  <iframe
+    src={`${API_URL}/${currentLecture.content_url.replace(/\\/g, "/")}#toolbar=0`}
+    width="100%"
+    height="600px"
+    allow="fullscreen"
+    style={{ border: "none" }}
+  />
+)}
             </div>
 
             <div className="p-6">

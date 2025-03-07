@@ -35,6 +35,7 @@ function ManagerCourse() {
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
+      console.log("ManagerCourse: fetching data with token =", token);
       setLoading(true);
       try {
         const [userResponse, courseResponse, categoriesResponse] = await Promise.all([
@@ -42,6 +43,9 @@ function ManagerCourse() {
           fetchCourses(token || ""),
           fetchCategories(token || ""),
         ]);
+        console.log("User response:", userResponse.data);
+        console.log("Course response:", courseResponse.data);
+        console.log("Categories response:", categoriesResponse.data);
 
         const allUsers = userResponse.data.users;
         setUsers(allUsers);
@@ -49,29 +53,34 @@ function ManagerCourse() {
         setCourses(courseResponse.data);
         setCategories(categoriesResponse.data.categories);
       } catch (error) {
+        console.error("ManagerCourse: error fetching data:", error);
         setSnackbar({ open: true, message: "Failed to fetch data", severity: "error" });
       } finally {
         setLoading(false);
+        console.log("ManagerCourse: loading finished");
       }
     };
     fetchData();
   }, []);
 
   const handleEditCourse = (course) => {
+    console.log("ManagerCourse: handleEditCourse =>", course);
     setEditingCourse(course);
     setOpenEditModal(true);
   };
 
   const handleSaveCourse = async () => {
-    if (!editingCourse) return;
+    if (!editingCourse) {
+      console.log("ManagerCourse: handleSaveCourse => no editingCourse set");
+      return;
+    }
     const token = localStorage.getItem("token");
+    console.log("ManagerCourse: handleSaveCourse => updating course with ID =", editingCourse.id);
     try {
       await updateCourse(editingCourse.id, editingCourse, token || "");
-      
+      console.log("ManagerCourse: course updated successfully =>", editingCourse.id);
       setCourses((prevCourses) =>
-        prevCourses.map((course) =>
-          course.id === editingCourse.id ? editingCourse : course
-        )
+        prevCourses.map((c) => (c.id === editingCourse.id ? editingCourse : c))
       );
       setOpenEditModal(false);
       setSnackbar({
@@ -80,22 +89,24 @@ function ManagerCourse() {
         severity: "success",
       });
     } catch (error) {
+      console.error("ManagerCourse: Failed to update course =>", error);
       setSnackbar({
         open: true,
         message: "Failed to update course",
         severity: "error",
       });
-      console.error("Error updating course:", error);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(`ManagerCourse: handleInputChange => name=${name}, value=${value}`);
     setEditingCourse((prevCourse) => ({ ...prevCourse, [name]: value }));
   };
 
   // Xử lý cập nhật thông tin của section và content trong course
   const handleSectionChange = (sectionIndex, field, value) => {
+    console.log(`ManagerCourse: handleSectionChange => sectionIndex=${sectionIndex}, field=${field}, value=${value}`);
     setEditingCourse((prev) => {
       const newSections = [...(prev.sections || [])];
       newSections[sectionIndex] = {
@@ -107,6 +118,9 @@ function ManagerCourse() {
   };
 
   const handleContentChange = (sectionIndex, contentIndex, field, value) => {
+    console.log(
+      `ManagerCourse: handleContentChange => sectionIndex=${sectionIndex}, contentIndex=${contentIndex}, field=${field}, value=${value}`
+    );
     setEditingCourse((prev) => {
       const newSections = [...(prev.sections || [])];
       const section = newSections[sectionIndex] || {};
@@ -122,10 +136,10 @@ function ManagerCourse() {
   };
 
   const handleAddSection = () => {
+    console.log("ManagerCourse: handleAddSection");
     setEditingCourse((prev) => {
       if (!prev) return prev;
       const newSections = prev.sections ? [...prev.sections] : [];
-      // Nếu cần, có thể tự động tăng order cho section
       newSections.push({
         title: "",
         description: "",
@@ -138,19 +152,23 @@ function ManagerCourse() {
   };
 
   const handleRemoveSection = (sectionIndex) => {
+    console.log("ManagerCourse: handleRemoveSection => sectionIndex=", sectionIndex);
     setEditingCourse((prev) => {
       if (!prev) return prev;
       const newSections = [...(prev.sections || [])];
       if (newSections[sectionIndex].id) {
         newSections[sectionIndex].is_deleted = true;
+        console.log("Marked existing section as is_deleted:", newSections[sectionIndex].id);
       } else {
         newSections.splice(sectionIndex, 1);
+        console.log("Removed newly created section at index:", sectionIndex);
       }
       return { ...prev, sections: newSections };
     });
   };
 
   const handleAddContent = (sectionIndex) => {
+    console.log("ManagerCourse: handleAddContent => sectionIndex=", sectionIndex);
     setEditingCourse((prev) => {
       const newSections = [...(prev.sections || [])];
       const section = newSections[sectionIndex] || {};
@@ -168,14 +186,19 @@ function ManagerCourse() {
   };
 
   const handleRemoveContent = (sectionIndex, contentIndex) => {
+    console.log(
+      `ManagerCourse: handleRemoveContent => sectionIndex=${sectionIndex}, contentIndex=${contentIndex}`
+    );
     setEditingCourse((prev) => {
       const newSections = [...(prev.sections || [])];
       const section = newSections[sectionIndex] || {};
       if (section.contents && section.contents[contentIndex]) {
         if (section.contents[contentIndex].id) {
           section.contents[contentIndex].is_deleted = true;
+          console.log("Marked existing content as is_deleted:", section.contents[contentIndex].id);
         } else {
           section.contents.splice(contentIndex, 1);
+          console.log("Removed newly created content at index:", contentIndex);
         }
       }
       newSections[sectionIndex] = section;
@@ -184,20 +207,27 @@ function ManagerCourse() {
   };
 
   const handleDeleteCourse = async (courseId) => {
+    console.log("ManagerCourse: handleDeleteCourse => courseId=", courseId);
     const confirmDelete = window.confirm("Are you sure you want to delete this course?");
-    if (!confirmDelete) return;
+    if (!confirmDelete) {
+      console.log("ManagerCourse: delete course canceled");
+      return;
+    }
 
     const token = localStorage.getItem("token");
     try {
       await deleteCourse(courseId, token || "");
-      setCourses((prevCourses) => prevCourses.filter((course) => course.id !== courseId));
+      console.log("ManagerCourse: course deleted =>", courseId);
+      setCourses((prevCourses) => prevCourses.filter((c) => c.id !== courseId));
       setSnackbar({ open: true, message: "Course deleted successfully", severity: "success" });
     } catch (error) {
+      console.error("ManagerCourse: failed to delete course =>", error);
       setSnackbar({ open: true, message: "Failed to delete course", severity: "error" });
     }
   };
 
   if (loading) {
+    console.log("ManagerCourse: loading data...");
     return <LoadingScreen />;
   }
 
@@ -206,13 +236,6 @@ function ManagerCourse() {
       <DashboardNavbar />
       <SoftBox py={3}>
         <Card>
-          {/* <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <Typography variant="h6">Course Management</Typography>
-            <SoftBox display="flex" gap={2} py={2}>
-              <Button onClick={() => setOpenAddCategory(true)}>Add Category</Button>
-              <Button onClick={() => setOpenAddCourse(true)}>Add Course</Button>
-            </SoftBox>
-          </SoftBox> */}
           <CourseTable
             courses={courses}
             instructors={instructors}
@@ -225,7 +248,10 @@ function ManagerCourse() {
 
       <EditCourseModal
         open={openEditModal}
-        onClose={() => setOpenEditModal(false)}
+        onClose={() => {
+          console.log("ManagerCourse: closing EditCourseModal");
+          setOpenEditModal(false);
+        }}
         course={editingCourse}
         categories={categories}
         onInputChange={handleInputChange}
@@ -242,7 +268,10 @@ function ManagerCourse() {
         open={snackbar.open}
         message={snackbar.message}
         severity={snackbar.severity}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        onClose={() => {
+          console.log("ManagerCourse: closing snackbar");
+          setSnackbar({ ...snackbar, open: false });
+        }}
       />
 
       <AddCategory />
